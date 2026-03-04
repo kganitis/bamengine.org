@@ -9,7 +9,7 @@ body.theme-switch-dark .navbar-logo img {
 /* Prevent hero title from wrapping and use serif font */
 .hero-title {
   white-space: nowrap;
-  font-family: "Merriweather", "Georgia", serif;
+  font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
   font-size: 5em;
 }
 
@@ -22,5 +22,5 @@ body.theme-switch-dark .navbar-logo img {
 
 /* Serif font for navbar logo text */
 .navbar-logo span {
-  font-family: "Merriweather", "Georgia", serif;
+  font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
 }

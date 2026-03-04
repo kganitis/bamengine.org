@@ -22,8 +22,6 @@ params:
   fonts:
     - name: "Lato"
       weights: [400, 900]
-    - name: "Merriweather"
-      weights: [700, 900]
 
   navbarlogo:
     image: logo.svg
