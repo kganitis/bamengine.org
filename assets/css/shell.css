@@ -39,15 +39,19 @@
     text-align: left;
     flex: 1;
     padding: 0 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .shell-lesson .highlight {
-    height: 100%;
+    flex: 1;
 }
 
 .shell-lesson .highlight pre {
     background-color: var(--pst-gray-800);
     height: 100%;
+    margin: 0;
 }
 
 .shell-lesson .highlight pre code {
