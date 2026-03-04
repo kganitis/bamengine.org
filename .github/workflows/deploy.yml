@@ -1,0 +1,52 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "latest"
+          extended: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install JupyterLite
+        run: pip install jupyterlite-core jupyterlite-pyodide-kernel
+
+      - name: Build Hugo site
+        run: hugo --minify
+
+      - name: Build JupyterLite REPL
+        run: |
+          jupyter lite build \
+            --contents content/try/notebooks \
+            --output-dir public/try/repl
+
+      - name: Build search index
+        run: npx pagefind --site public
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          cname: bamengine.org
