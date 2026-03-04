@@ -12,9 +12,11 @@ body.theme-switch-dark .navbar-logo img {
   font-family: "Merriweather", "Georgia", serif;
 }
 
-/* Scale up hero logo */
+/* Scale hero logo to match text height and center-align */
 .hero-logo {
-  max-height: 1.2em;
+  align-self: center;
+  max-height: 1em;
+  margin-left: 0.15em;
 }
 
 /* Serif font for navbar logo text */
