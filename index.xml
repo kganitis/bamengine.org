@@ -41,8 +41,11 @@ profits, bank equity, interest rates, and firm size distribution.&lt;/em&gt;&lt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv publish
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv preview&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;</description></item><item><title>Community</title><link>https://bamengine.org/community/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/community/</guid><description>&lt;h2 id="contributing"&gt;Contributing&lt;a class="headerlink" href="#contributing" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;BAM Engine welcomes contributions of all kinds — bug reports, documentation
-improvements, new examples, and code changes.&lt;/p&gt;
+&lt;p&gt;BAM Engine is not currently accepting external contributions as the project
+is part of ongoing thesis work. Once the thesis is submitted, contribution
+guidelines will be published.&lt;/p&gt;
+&lt;p&gt;In the meantime, bug reports and feature requests are welcome via the issue
+tracker.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Issue tracker:&lt;/strong&gt; &lt;a href="https://github.com/kganitis/bam-engine/issues"&gt;github.com/kganitis/bam-engine/issues&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Source code:&lt;/strong&gt; &lt;a href="https://github.com/kganitis/bam-engine"&gt;github.com/kganitis/bam-engine&lt;/a&gt;&lt;/li&gt;
@@ -50,9 +53,7 @@ improvements, new examples, and code changes.&lt;/p&gt;
 &lt;h2 id="related-projects--the-cats-family"&gt;Related Projects — The CATS Family&lt;a class="headerlink" href="#related-projects--the-cats-family" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The BAM model (Delli Gatti et al., 2011) has inspired a family of
 implementations and extensions within the CATS (Complex Adaptive Trivial
-Systems) lineage.&lt;/p&gt;
-&lt;h3 id="bammodel-netlogo"&gt;BAMmodel (NetLogo)&lt;a class="headerlink" href="#bammodel-netlogo" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h3&gt;
-&lt;p&gt;NetLogo implementation by Platas-López et al. using the ODD protocol.&lt;/p&gt;</description></item><item><title>Documentation</title><link>https://bamengine.org/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/docs/</guid><description/></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment, technology adoption, and
+Systems) lineage.&lt;/p&gt;</description></item><item><title>Documentation</title><link>https://bamengine.org/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/docs/</guid><description/></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment, technology adoption, and
 productivity growth to the baseline model.&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus.png" alt="Growth+ scenario output"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Aggregate output grows as firms accumulate technology through R&amp;amp;D.&lt;/em&gt;&lt;/p&gt;
