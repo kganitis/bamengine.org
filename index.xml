@@ -9,18 +9,19 @@ decisions.&lt;/p&gt;
 &lt;h2 id="history"&gt;History&lt;a class="headerlink" href="#history" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;BAM Engine began as an MSc thesis at the Department of Informatics,
 University of Piraeus, Greece, with the goal of producing a modern,
-extensible Python implementation of the BAM model.&lt;/p&gt;</description></item><item><title>Baseline Scenario</title><link>https://bamengine.org/gallery/baseline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/baseline/</guid><description>&lt;p&gt;The baseline scenario runs the core BAM model without extensions,
-reproducing key stylized facts from Chapter 3 of Delli Gatti et al. (2011).&lt;/p&gt;
+extensible Python implementation of the BAM model.&lt;/p&gt;</description></item><item><title>Baseline Scenario</title><link>https://bamengine.org/gallery/baseline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/baseline/</guid><description>&lt;p&gt;The baseline scenario reproduces section 3.9.1 of Delli Gatti et al. (2011)
+with default parameters.&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-baseline.png" alt="Baseline scenario output"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;8-panel macro dashboard: GDP, unemployment, price index, wages, firm
-profits, bank equity, interest rates, and firm size distribution.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Eight panels: Real GDP, unemployment rate, inflation, productivity vs real
+wage, Phillips curve, Okun curve, Beveridge curve, and firm size distribution.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Run this yourself:&lt;/strong&gt;&lt;/p&gt;
 
 
 &lt;div class="highlight"&gt;
  &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Benchmarks</title><link>https://bamengine.org/benchmarks/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/</guid><description>&lt;p&gt;Performance benchmarks tracked with
 &lt;a href="https://asv.readthedocs.io/"&gt;ASV (Airspeed Velocity)&lt;/a&gt;.&lt;/p&gt;
@@ -40,7 +41,25 @@ profits, bank equity, interest rates, and firm size distribution.&lt;/em&gt;&lt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv run
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv publish
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv preview&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;</description></item><item><title>Community</title><link>https://bamengine.org/community/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/community/</guid><description>&lt;h2 id="contributing"&gt;Contributing&lt;a class="headerlink" href="#contributing" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;/div&gt;</description></item><item><title>Buffer-Stock Consumption</title><link>https://bamengine.org/gallery/buffer-stock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/buffer-stock/</guid><description>&lt;p&gt;The buffer-stock extension (section 3.9.4) replaces the baseline mean-field
+MPC with an individual adaptive rule based on buffer-stock saving theory.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-buffer-stock-1.png" alt="Buffer-stock wealth CCDF"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Complementary CDF of household wealth on log-log axes, fitted against
+Singh-Maddala, Dagum, and GB2 distributions (Figure 3.8).&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Run this yourself:&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.rnd&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RND&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.buffer_stock&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;BUFFER_STOCK&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RND&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;BUFFER_STOCK&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_buffer_stock.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Community</title><link>https://bamengine.org/community/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/community/</guid><description>&lt;h2 id="contributing"&gt;Contributing&lt;a class="headerlink" href="#contributing" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;BAM Engine is not currently accepting external contributions as the project
 is part of ongoing thesis work. Once the thesis is submitted, contribution
 guidelines will be published.&lt;/p&gt;
@@ -53,18 +72,26 @@ tracker.&lt;/p&gt;
 &lt;h2 id="related-projects--the-cats-family"&gt;Related Projects — The CATS Family&lt;a class="headerlink" href="#related-projects--the-cats-family" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
 &lt;p&gt;The BAM model (Delli Gatti et al., 2011) has inspired a family of
 implementations and extensions within the CATS (Complex Adaptive Trivial
-Systems) lineage.&lt;/p&gt;</description></item><item><title>Documentation</title><link>https://bamengine.org/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/docs/</guid><description/></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment, technology adoption, and
-productivity growth to the baseline model.&lt;/p&gt;
-&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus.png" alt="Growth+ scenario output"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Aggregate output grows as firms accumulate technology through R&amp;amp;D.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Enable Growth+ in one line:&lt;/strong&gt;&lt;/p&gt;
+Systems) lineage.&lt;/p&gt;</description></item><item><title>Documentation</title><link>https://bamengine.org/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/docs/</guid><description/></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment and endogenous productivity growth
+to the baseline model (chapter 3.8).&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus-1.png" alt="Growth+ macro dynamics"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Time series with recession bands (GDP, unemployment, inflation,
+productivity-wage ratio), Phillips, Okun, and Beveridge curves, and firm
+size distribution.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus-2.png" alt="Growth+ financial dynamics"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Output and net-worth growth rate distributions, real interest rate,
+bankruptcies, financial fragility, price-clearing ratio, price dispersion,
+and equity-sales dispersion.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Run this yourself:&lt;/strong&gt;&lt;/p&gt;
 
 
 &lt;div class="highlight"&gt;
- &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.rnd&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RND&lt;/span&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.rnd&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RND&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RND&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_growth_plus.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Installation</title><link>https://bamengine.org/install/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/install/</guid><description>&lt;h2 id="requirements"&gt;Requirements&lt;a class="headerlink" href="#requirements" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
 &lt;ul&gt;
@@ -128,9 +155,14 @@ Agent-Based Macroeconomic Model&lt;/em&gt; [Computer software].
 &lt;blockquote&gt;
 &lt;p&gt;Delli Gatti, D., Desiderio, S., Gaffeo, E., Cirillo, P., &amp;amp; Gallegati, M.
 (2011). &lt;em&gt;Macroeconomics from the Bottom-up&lt;/em&gt;. Springer Milano.
-&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;BAM Engine&amp;rsquo;s robustness module implements Sections 3.10.1–3.10.2 of
-Delli Gatti et al. (2011).&lt;/p&gt;
-&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness.png" alt="Robustness analysis output"&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Cross-correlation structure (Figure 3.9): unemployment, productivity,
-price index, real interest rate, and real wage co-movements with GDP.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/validation/robustness.html"&gt;robustness documentation&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
+&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;Robustness analysis inspired by Section 3.10, using the Growth+ model for
+internal validity and sensitivity experiments.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-1.png" alt="Co-movements at leads and lags"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Internal validity: cross-correlations of unemployment, productivity, price
+index, and real wage with GDP across multiple seeds.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-2.png" alt="Impulse-response function"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;AR(2) vs AR(1) impulse-response functions for the GDP cyclical component.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-3.png" alt="Sensitivity to credit market reach"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Sensitivity analysis: co-movement structure under different values of the
+credit market reach parameter H.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-4.png" alt="Preferential attachment experiment"&gt;&lt;/p&gt;</description></item></channel></rss>
