@@ -35,6 +35,12 @@ params:
     buttontext: "Get Started"
     buttonlink: "https://bam-engine.readthedocs.io/en/latest/quickstart.html"
 
+  shell:
+    title: placeholder
+    intro:
+      - title: Try BAM Engine
+        text: Use the interactive shell to try BAM Engine in the browser
+
   navbar:
     - title: Install
       url: /install/

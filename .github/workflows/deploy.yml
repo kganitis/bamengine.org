@@ -41,8 +41,8 @@ jobs:
       - name: Build JupyterLite REPL
         run: |
           jupyter lite build \
-            --contents content/try/notebooks \
-            --output-dir public/try/repl
+            --apps repl \
+            --output-dir public/try/lite
 
       - name: Build search index
         run: npx pagefind --site public
