@@ -33,7 +33,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install JupyterLite
-        run: pip install jupyterlite-core jupyterlite-pyodide-kernel
+        run: pip install jupyterlite-core jupyterlite-pyodide-kernel jupyter-server
 
       - name: Build Hugo site
         run: hugo --minify
