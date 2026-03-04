@@ -1,0 +1,98 @@
+baseURL: "https://bamengine.org/"
+languageCode: "en-us"
+title: "BAM Engine"
+theme: scientific-python-hugo-theme
+relativeURLs: false
+disableKinds: ["taxonomy"]
+
+markup:
+  highlight:
+    noClasses: false
+  goldmark:
+    renderer:
+      unsafe: true
+
+params:
+  description: "Agent-based macroeconomic simulation in Python"
+  colorScheme: auto
+  images:
+    - /images/logo.svg
+  search: true
+
+  fonts:
+    - name: "Lato"
+      weights: [400, 900]
+
+  navbarlogo:
+    image: logo.svg
+    text: BAM Engine
+    link: /
+
+  hero:
+    title: BAM Engine
+    subtitle: "Agent-based macroeconomic simulation in Python"
+    image: logo.svg
+    buttontext: "Get Started"
+    buttonlink: "https://bam-engine.readthedocs.io/en/latest/quickstart.html"
+
+  navbar:
+    - title: Install
+      url: /install/
+    - title: Try It
+      url: /try/
+    - title: Gallery
+      url: /gallery/
+    - title: Blog
+      url: /posts/
+    - title: More
+      sublinks:
+        - title: About
+          url: /about/
+        - title: Publications
+          url: /publications/
+        - title: Community
+          url: /community/
+        - title: Benchmarks
+          url: /benchmarks/
+    - title: Docs
+      url: https://bam-engine.readthedocs.io
+      is_external: true
+
+  footer:
+    logo: logo.svg
+    socialmediatitle: ""
+    socialmedia:
+      - link: https://github.com/kganitis/bam-engine
+        icon: github
+    quicklinks:
+      column1:
+        title: "Resources"
+        links:
+          - text: Documentation
+            link: https://bam-engine.readthedocs.io
+            is_external: true
+          - text: PyPI
+            link: https://pypi.org/project/bamengine/
+            is_external: true
+          - text: GitHub
+            link: https://github.com/kganitis/bam-engine
+            is_external: true
+          - text: Benchmarks
+            link: /benchmarks/
+      column2:
+        title: "Community"
+        links:
+          - text: About
+            link: /about/
+          - text: Publications
+            link: /publications/
+          - text: Community
+            link: /community/
+          - text: Blog
+            link: /posts/
+      column3:
+        title: ""
+        links:
+          - text: MIT License
+            link: https://github.com/kganitis/bam-engine/blob/main/LICENSE
+            is_external: true
