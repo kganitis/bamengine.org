@@ -4,8 +4,12 @@ title: Community
 
 ## Contributing
 
-BAM Engine welcomes contributions of all kinds — bug reports, documentation
-improvements, new examples, and code changes.
+BAM Engine is not currently accepting external contributions as the project
+is part of ongoing thesis work. Once the thesis is submitted, contribution
+guidelines will be published.
+
+In the meantime, bug reports and feature requests are welcome via the issue
+tracker.
 
 - **Issue tracker:** [github.com/kganitis/bam-engine/issues](https://github.com/kganitis/bam-engine/issues)
 - **Source code:** [github.com/kganitis/bam-engine](https://github.com/kganitis/bam-engine)
