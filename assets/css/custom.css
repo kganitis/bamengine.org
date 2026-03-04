@@ -6,7 +6,7 @@ body.theme-switch-dark .navbar-logo img {
   content: url("/images/logo-dark.svg");
 }
 
-/* Prevent hero title from wrapping and use serif font */
+/* Hero title: serif font, no-wrap on desktop */
 .hero-title {
   white-space: nowrap;
   font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
@@ -23,4 +23,21 @@ body.theme-switch-dark .navbar-logo img {
 /* Serif font for navbar logo text */
 .navbar-logo span {
   font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
+}
+
+/* Mobile: allow wrapping, shrink title, stack logo below */
+@media only screen and (max-width: 600px) {
+  .hero-title {
+    white-space: normal;
+    font-size: 3em;
+    text-align: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-logo {
+    max-height: 2.5em;
+    margin-left: 0;
+    margin-top: 0.3em;
+  }
 }
