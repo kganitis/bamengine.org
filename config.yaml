@@ -44,8 +44,6 @@ params:
   navbar:
     - title: Install
       url: /install/
-    - title: Try It
-      url: /try/
     - title: Gallery
       url: /gallery/
     - title: Posts
