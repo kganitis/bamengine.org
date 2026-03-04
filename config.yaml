@@ -33,7 +33,7 @@ params:
   hero:
     title: BAM Engine
     subtitle: "Agent-based macroeconomic simulation in Python"
-    image: logo.svg
+    image: logo-icon.svg
     buttontext: "Get Started"
     buttonlink: "https://bam-engine.readthedocs.io/en/latest/quickstart.html"
 

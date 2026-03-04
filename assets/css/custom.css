@@ -1,5 +1,7 @@
-/* Dark mode: swap hero and navbar logos */
-body.theme-switch-dark .hero-title img,
+/* Dark mode: swap logos */
+body.theme-switch-dark .hero-title img {
+  content: url("/images/logo-icon-dark.svg");
+}
 body.theme-switch-dark .navbar-logo img {
   content: url("/images/logo-dark.svg");
 }
