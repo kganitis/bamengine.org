@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Gallery on BAM Engine</title><link>https://bamengine.org/gallery/</link><description>Recent content in Gallery on BAM Engine</description><generator>Hugo</generator><language>en-us</language><atom:link href="https://bamengine.org/gallery/index.xml" rel="self" type="application/rss+xml"/><item><title>Baseline Scenario</title><link>https://bamengine.org/gallery/baseline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/baseline/</guid><description>&lt;p&gt;The baseline scenario runs the core BAM model without extensions,
+reproducing key stylized facts from Chapter 3 of Delli Gatti et al. (2011).&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-baseline.png" alt="Baseline scenario output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;8-panel macro dashboard: GDP, unemployment, price index, wages, firm
+profits, bank equity, interest rates, and firm size distribution.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Run this yourself:&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment, technology adoption, and
+productivity growth to the baseline model.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus.png" alt="Growth+ scenario output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Aggregate output grows as firms accumulate technology through R&amp;amp;D.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Enable Growth+ in one line:&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.rnd&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RND&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RND&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_growth_plus.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;BAM Engine&amp;rsquo;s robustness module implements Sections 3.10.1–3.10.2 of
+Delli Gatti et al. (2011).&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness.png" alt="Robustness analysis output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Cross-correlation structure (Figure 3.9): unemployment, productivity,
+price index, real interest rate, and real wage co-movements with GDP.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/validation/robustness.html"&gt;robustness documentation&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>

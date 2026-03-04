@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>BAM Engine</title><link>https://bamengine.org/</link><description>Recent content on BAM Engine</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Wed, 04 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://bamengine.org/index.xml" rel="self" type="application/rss+xml"/><item><title>BAM Engine 0.5.1 and the Launch of bamengine.org</title><link>https://bamengine.org/posts/2026-03-launch/</link><pubDate>Wed, 04 Mar 2026 00:00:00 +0000</pubDate><guid>https://bamengine.org/posts/2026-03-launch/</guid><description>&lt;p&gt;We are excited to announce &lt;strong&gt;BAM Engine 0.5.1&lt;/strong&gt; and the launch of
+&lt;a href="https://bamengine.org"&gt;bamengine.org&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>About</title><link>https://bamengine.org/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/about/</guid><description>&lt;p&gt;BAM Engine is a high-performance Python implementation of the BAM
+(Bottom-Up Adaptive Macroeconomics) model from
+&lt;em&gt;&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;Macroeconomics from the Bottom-up&lt;/a&gt;&lt;/em&gt;
+(Delli Gatti et al., 2011). It simulates three agent types — households,
+firms, and banks — interacting across labor, credit, and consumption goods
+markets. Macroeconomic dynamics emerge entirely from individual agent
+decisions.&lt;/p&gt;
+&lt;h2 id="history"&gt;History&lt;a class="headerlink" href="#history" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;BAM Engine began as an MSc thesis at the Department of Informatics,
+University of Piraeus, Greece, with the goal of producing a modern,
+extensible Python implementation of the BAM model.&lt;/p&gt;</description></item><item><title>Baseline Scenario</title><link>https://bamengine.org/gallery/baseline/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/baseline/</guid><description>&lt;p&gt;The baseline scenario runs the core BAM model without extensions,
+reproducing key stylized facts from Chapter 3 of Delli Gatti et al. (2011).&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-baseline.png" alt="Baseline scenario output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;8-panel macro dashboard: GDP, unemployment, price index, wages, firm
+profits, bank equity, interest rates, and firm size distribution.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Run this yourself:&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Benchmarks</title><link>https://bamengine.org/benchmarks/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/</guid><description>&lt;p&gt;Performance benchmarks tracked with
+&lt;a href="https://asv.readthedocs.io/"&gt;ASV (Airspeed Velocity)&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;View the &lt;a href="https://kganitis.github.io/bam-engine/"&gt;latest benchmark results&lt;/a&gt;.&lt;/p&gt;
+&lt;h2 id="what-is-benchmarked"&gt;What is Benchmarked&lt;a class="headerlink" href="#what-is-benchmarked" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Baseline simulation throughput (periods/second)&lt;/li&gt;
+&lt;li&gt;Economy scaling (100–500 firms)&lt;/li&gt;
+&lt;li&gt;Extension overhead (Growth+, Buffer-Stock, Taxation)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="running-locally"&gt;Running Locally&lt;a class="headerlink" href="#running-locally" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://github.com/kganitis/bam-engine.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; bam-engine/asv_benchmarks
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv run
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv publish
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv preview&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</description></item><item><title>Community</title><link>https://bamengine.org/community/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/community/</guid><description>&lt;h2 id="contributing"&gt;Contributing&lt;a class="headerlink" href="#contributing" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;BAM Engine welcomes contributions of all kinds — bug reports, documentation
+improvements, new examples, and code changes.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Issue tracker:&lt;/strong&gt; &lt;a href="https://github.com/kganitis/bam-engine/issues"&gt;github.com/kganitis/bam-engine/issues&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Source code:&lt;/strong&gt; &lt;a href="https://github.com/kganitis/bam-engine"&gt;github.com/kganitis/bam-engine&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="related-projects--the-cats-family"&gt;Related Projects — The CATS Family&lt;a class="headerlink" href="#related-projects--the-cats-family" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;The BAM model (Delli Gatti et al., 2011) has inspired a family of
+implementations and extensions within the CATS (Complex Adaptive Trivial
+Systems) lineage.&lt;/p&gt;
+&lt;h3 id="bammodel-netlogo"&gt;BAMmodel (NetLogo)&lt;a class="headerlink" href="#bammodel-netlogo" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h3&gt;
+&lt;p&gt;NetLogo implementation by Platas-López et al. using the ODD protocol.&lt;/p&gt;</description></item><item><title>Documentation</title><link>https://bamengine.org/docs/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/docs/</guid><description/></item><item><title>Growth+ Extension</title><link>https://bamengine.org/gallery/growth-plus/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/growth-plus/</guid><description>&lt;p&gt;The Growth+ extension adds R&amp;amp;D investment, technology adoption, and
+productivity growth to the baseline model.&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-growth-plus.png" alt="Growth+ scenario output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Aggregate output grows as firms accumulate technology through R&amp;amp;D.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Enable Growth+ in one line:&lt;/strong&gt;&lt;/p&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;extensions.rnd&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;RND&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;seed&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;42&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;use&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;RND&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collect&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_growth_plus.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Installation</title><link>https://bamengine.org/install/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/install/</guid><description>&lt;h2 id="requirements"&gt;Requirements&lt;a class="headerlink" href="#requirements" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Python 3.11 or later&lt;/li&gt;
+&lt;li&gt;NumPy &amp;gt;= 1.26 (installed automatically)&lt;/li&gt;
+&lt;li&gt;PyYAML &amp;gt;= 6.0.2 (installed automatically)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="install-with-pip"&gt;Install with pip&lt;a class="headerlink" href="#install-with-pip" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h3 id="optional-extras"&gt;Optional extras&lt;a class="headerlink" href="#optional-extras" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h3&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;span class="o"&gt;[&lt;/span&gt;pandas&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# DataFrame export&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;span class="o"&gt;[&lt;/span&gt;viz&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Matplotlib plotting&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;span class="o"&gt;[&lt;/span&gt;validation&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Validation framework&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;span class="o"&gt;[&lt;/span&gt;extensions&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# All extensions&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install bamengine&lt;span class="o"&gt;[&lt;/span&gt;dev&lt;span class="o"&gt;]&lt;/span&gt; &lt;span class="c1"&gt;# Development dependencies&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id="install-from-source"&gt;Install from source&lt;a class="headerlink" href="#install-from-source" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://github.com/kganitis/bam-engine.git
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; bam-engine
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;pip install -e &lt;span class="s2"&gt;&amp;#34;.[dev]&amp;#34;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;h2 id="verify"&gt;Verify&lt;a class="headerlink" href="#verify" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;bamengine&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="nn"&gt;bam&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;print&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__version__&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;</description></item><item><title>Publications &amp; Citations</title><link>https://bamengine.org/publications/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/publications/</guid><description>&lt;p&gt;If you use BAM Engine in your research, please cite both the software
+and the original BAM model.&lt;/p&gt;
+&lt;h2 id="citing-the-software"&gt;Citing the Software&lt;a class="headerlink" href="#citing-the-software" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Ganitis, K. (2026). &lt;em&gt;BAM Engine: A Modular Python Framework for the BAM
+Agent-Based Macroeconomic Model&lt;/em&gt; [Computer software].
+&lt;a href="https://doi.org/10.5281/zenodo.17610305"&gt;https://doi.org/10.5281/zenodo.17610305&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+
+&lt;div class="highlight"&gt;
+ &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nc"&gt;@software&lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;&lt;span class="nl"&gt;ganitis2026bamengine&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;title&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{{BAM Engine}: A Modular Python Framework for the {BAM}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="s"&gt; Agent-Based Macroeconomic Model}&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;author&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{Ganitis, Konstantinos}&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;year&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{2026}&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;url&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{https://github.com/kganitis/bam-engine}&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;doi&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{10.5281/zenodo.17610305}&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt; &lt;span class="na"&gt;license&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt; &lt;span class="s"&gt;{MIT}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="p"&gt;}&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;a href="https://doi.org/10.5281/zenodo.17610305"&gt;&lt;img src="https://zenodo.org/badge/972128676.svg" alt="DOI"&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id="citing-the-original-bam-model"&gt;Citing the Original BAM Model&lt;a class="headerlink" href="#citing-the-original-bam-model" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Delli Gatti, D., Desiderio, S., Gaffeo, E., Cirillo, P., &amp;amp; Gallegati, M.
+(2011). &lt;em&gt;Macroeconomics from the Bottom-up&lt;/em&gt;. Springer Milano.
+&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;BAM Engine&amp;rsquo;s robustness module implements Sections 3.10.1–3.10.2 of
+Delli Gatti et al. (2011).&lt;/p&gt;
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness.png" alt="Robustness analysis output"&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Cross-correlation structure (Figure 3.9): unemployment, productivity,
+price index, real interest rate, and real wage co-movements with GDP.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/validation/robustness.html"&gt;robustness documentation&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Try BAM Engine</title><link>https://bamengine.org/try/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/try/</guid><description>&lt;p&gt;Run BAM Engine simulations interactively without installing anything.
+The console below uses &lt;a href="https://jupyterlite.readthedocs.io/"&gt;JupyterLite&lt;/a&gt;
+with &lt;a href="https://pyodide.org/"&gt;Pyodide&lt;/a&gt; to run Python entirely in your browser.&lt;/p&gt;
+&lt;div class="jupyterlite-container" style="width:100%; height:650px; border:1px solid var(--pst-color-border); border-radius:4px; overflow:hidden; margin:1em 0;"&gt;
+ &lt;iframe
+ src="https://bamengine.org/try/repl/?toolbar=1&amp;amp;kernel=python&amp;amp;code=import%20micropip%0Aawait%20micropip.install%28%27bamengine%27%29%0A%0Aimport%20bamengine%20as%20bam%0Asim%20%3D%20bam.Simulation.init%28seed%3D42%29%0Aresults%20%3D%20sim.run%28n_periods%3D100%2C%20collect%3DTrue%29%0Aprint%28f%27Unemployment%3A%20%7Bsim.ec.unemp_rate_history%5B-1%5D%3A.2%25%7D%27%29"
+ width="100%"
+ height="100%"
+ style="border:none;"
+ allowfullscreen
+ &gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;div class="admonition note"&gt;
+ &lt;div class="admonition-title"&gt; Note&lt;/div&gt;
+ &lt;p&gt;
+ The first load installs the &lt;code&gt;bamengine&lt;/code&gt; package via &lt;code&gt;micropip&lt;/code&gt; inside the
+browser — this takes 10–20 seconds. Subsequent loads are faster.
+ &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;For serious work, &lt;a href="https://bamengine.org/install/"&gt;install locally&lt;/a&gt;.&lt;/p&gt;</description></item></channel></rss>
