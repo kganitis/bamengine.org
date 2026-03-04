@@ -1,0 +1,11 @@
+{{- $src := .Get "src" | default "/try/repl/" -}}
+{{- $height := .Get "height" | default "600px" -}}
+<div class="jupyterlite-container" style="width:100%; height:{{ $height }}; border:1px solid var(--pst-color-border); border-radius:4px; overflow:hidden; margin:1em 0;">
+  <iframe
+    src="{{ $src }}"
+    width="100%"
+    height="100%"
+    style="border:none;"
+    allowfullscreen
+  ></iframe>
+</div>
