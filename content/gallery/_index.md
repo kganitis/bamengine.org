@@ -1,5 +1,6 @@
 ---
 title: Gallery
+listPages: true
 ---
 
 A selection of charts produced by BAM Engine simulations. Each image links

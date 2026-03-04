@@ -22,6 +22,8 @@ params:
   fonts:
     - name: "Lato"
       weights: [400, 900]
+    - name: "Merriweather"
+      weights: [700, 900]
 
   navbarlogo:
     image: logo.svg
@@ -42,7 +44,7 @@ params:
       url: /try/
     - title: Gallery
       url: /gallery/
-    - title: Blog
+    - title: Posts
       url: /posts/
     - title: More
       sublinks:
@@ -88,7 +90,7 @@ params:
             link: /publications/
           - text: Community
             link: /community/
-          - text: Blog
+          - text: Posts
             link: /posts/
       column3:
         title: ""

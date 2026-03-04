@@ -3,3 +3,19 @@ body.theme-switch-dark .hero-title img,
 body.theme-switch-dark .navbar-logo img {
   content: url("/images/logo-dark.svg");
 }
+
+/* Prevent hero title from wrapping and use serif font */
+.hero-title {
+  white-space: nowrap;
+  font-family: "Merriweather", "Georgia", serif;
+}
+
+/* Scale up hero logo */
+.hero-logo {
+  max-height: 1.2em;
+}
+
+/* Serif font for navbar logo text */
+.navbar-logo span {
+  font-family: "Merriweather", "Georgia", serif;
+}
