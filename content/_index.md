@@ -2,8 +2,6 @@
 title: BAM Engine
 ---
 
-## Why BAM Engine?
-
 {{< grid columns="1 2 2 3" >}}
 
 [[item]]
