@@ -1,0 +1,5 @@
+/* Dark mode: swap hero and navbar logos */
+body.theme-switch-dark .hero-title img,
+body.theme-switch-dark .navbar-logo img {
+  content: url("/images/logo-dark.svg");
+}
