@@ -22,7 +22,9 @@ vectorized NumPy operations, and YAML-configurable event pipelines.
 Subsequent releases added validation and calibration frameworks (v0.2.0),
 the buffer-stock consumption extension (v0.3.0), robustness analysis and
 a rebuilt calibration pipeline (v0.4.0), and the Extension bundle system
-with `sim.use()` (v0.5.0).
+with `sim.use()` (v0.5.0). Version 0.6.0 consolidated market-matching
+logic into vectorized operations, delivering a ~30% performance
+improvement.
 
 ## Academic Context
 
