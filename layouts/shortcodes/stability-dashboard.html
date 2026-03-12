@@ -82,6 +82,14 @@ function plotlyBg() {
   return 'rgba(0,0,0,0)';
 }
 
+function lineColor() {
+  return isDarkMode() ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)';
+}
+
+function gridColor() {
+  return isDarkMode() ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+}
+
 // ---------------------------------------------------------------------------
 // Data loading
 // ---------------------------------------------------------------------------
@@ -189,8 +197,8 @@ function renderSparkline(containerId, data) {
     x: x, y: y,
     type: 'scatter',
     mode: 'lines+markers',
-    marker: { color: colors, size: 6 },
-    line: { color: '#999', width: 1 },
+    marker: { color: colors, size: 7 },
+    line: { color: lineColor(), width: 2 },
     text: labels,
     hovertemplate: '%{text}: %{y:.1f}%<extra></extra>',
   }], {
@@ -380,8 +388,8 @@ function renderSmallChart(containerId, metricName, history) {
     x: x, y: y,
     type: 'scatter',
     mode: 'lines+markers',
-    marker: { color: colors, size: 5 },
-    line: { color: '#999', width: 1 },
+    marker: { color: colors, size: 8 },
+    line: { color: lineColor(), width: 2 },
     text: hoverTexts,
     hovertemplate: '%{text}<extra></extra>',
   }], {
@@ -389,8 +397,8 @@ function renderSmallChart(containerId, metricName, history) {
     paper_bgcolor: plotlyBg(),
     plot_bgcolor: plotlyBg(),
     margin: { l: 30, r: 10, t: 5, b: 20 },
-    xaxis: { showticklabels: false },
-    yaxis: { range: [0, 1.05], dtick: 0.25, tickfont: { size: 9 } },
+    xaxis: { showticklabels: false, showgrid: false },
+    yaxis: { range: [0, 1.05], dtick: 0.25, tickfont: { size: 9 }, gridcolor: gridColor() },
     height: 120,
     showlegend: false,
   }, {
@@ -443,8 +451,8 @@ function expandChart(metricName, history) {
     x: x, y: y,
     type: 'scatter',
     mode: 'lines+markers',
-    marker: { color: colors, size: 8 },
-    line: { color: '#999', width: 1.5 },
+    marker: { color: colors, size: 10 },
+    line: { color: lineColor(), width: 2 },
     text: hoverTexts,
     hovertemplate: '%{text}<extra></extra>',
   }], {
@@ -452,8 +460,8 @@ function expandChart(metricName, history) {
     paper_bgcolor: plotlyBg(),
     plot_bgcolor: plotlyBg(),
     title: { text: metricName, font: { size: 14 } },
-    xaxis: { title: 'Commit', tickangle: -45 },
-    yaxis: { title: 'Mean Score', range: [0, 1.05] },
+    xaxis: { title: 'Commit', tickangle: -45, gridcolor: gridColor() },
+    yaxis: { title: 'Mean Score', range: [0, 1.05], gridcolor: gridColor() },
     height: 450,
     margin: { l: 60, r: 20, t: 50, b: 80 },
     showlegend: false,
