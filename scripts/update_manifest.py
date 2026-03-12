@@ -34,13 +34,13 @@ def main() -> None:
     for filepath in result_files:
         try:
             data = json.loads(filepath.read_text())
-        except (json.JSONDecodeError, KeyError) as e:
+        except (json.JSONDecodeError, OSError) as e:
             print(f"WARNING: Skipping {filepath.name}: {e}")
             continue
 
         meta = data.get("metadata", {})
         commit_full = meta.get("commit", "")
-        commit_short = meta.get("commit_short", "")
+        commit_short = meta.get("commit_short", "") or commit_full[:7]
         timestamp = meta.get("timestamp", "")
         tag = meta.get("tag")
         scenario = data.get("scenario", "")
@@ -69,9 +69,11 @@ def main() -> None:
                 "_timestamp": timestamp,  # internal, stripped before output
             }
 
-        # Update commit-level timestamp to latest
+        # Update commit-level fields when better values are available
         if timestamp > commits[commit_full]["timestamp"]:
             commits[commit_full]["timestamp"] = timestamp
+        if commits[commit_full]["tag"] is None and tag is not None:
+            commits[commit_full]["tag"] = tag
 
     # Build manifest
     runs = []
