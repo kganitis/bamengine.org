@@ -1,0 +1,40 @@
+{
+  "runs": [
+    {
+      "commit_short": "150a847",
+      "commit": "150a847d487667efe12d709efacbed6ea2fc1b57",
+      "timestamp": "2026-03-12T10:49:04",
+      "tag": null,
+      "scenarios": {
+        "baseline": {
+          "file": "baseline_150a847_20260312T104904.json",
+          "pass_rate": 0.966,
+          "mean_score": 0.861441932471741
+        },
+        "buffer_stock": {
+          "file": "buffer_stock_150a847_20260312T104904.json",
+          "pass_rate": 0.978,
+          "mean_score": 0.878591215972121
+        },
+        "growth_plus": {
+          "file": "growth_plus_150a847_20260312T104904.json",
+          "pass_rate": 0.984,
+          "mean_score": 0.8468836576711654
+        }
+      }
+    },
+    {
+      "commit_short": "15a1bf4",
+      "commit": "15a1bf42d38fca27c173ea76dbd418f2b5a35325",
+      "timestamp": "2026-03-12T10:15:48",
+      "tag": null,
+      "scenarios": {
+        "baseline": {
+          "file": "baseline_15a1bf4_20260312T101548.json",
+          "pass_rate": 0.95,
+          "mean_score": 0.8601151547275167
+        }
+      }
+    }
+  ]
+}
