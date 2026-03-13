@@ -288,7 +288,7 @@ function findSignificantChange(idx, scenarioKey, metricName, allMetrics) {
         delta: delta,
         deltaPct: deltaPct,
         atDate: (afterRun.commit_date || afterRun.timestamp).split('T')[0],
-        commitRange: prevRun.commit_short + '...' + afterRun.commit_short,
+        commitRange: (prevRun.tag || prevRun.commit_short) + '...' + (afterRun.tag || afterRun.commit_short),
         prevRef: prevRun.tag || prevRun.commit_short,
         afterRef: afterRun.tag || afterRun.commit_short
       };

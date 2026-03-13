@@ -166,12 +166,16 @@ table.regressions-table .col-commits {
   font-size: 0.75rem;
 }
 
-table.regressions-table .col-commits a {
+table.regressions-table .col-commits a,
+table.regressions-table a.col-commits {
   color: var(--pst-color-text-muted, #6c757d);
   text-decoration: none;
+  font-family: monospace;
+  font-size: 0.75rem;
 }
 
-table.regressions-table .col-commits a:hover {
+table.regressions-table .col-commits a:hover,
+table.regressions-table a.col-commits:hover {
   text-decoration: underline;
 }
 

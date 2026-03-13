@@ -57,10 +57,12 @@
             <th data-col="scenario">Scenario <span class="sort-arrow">&#9650;</span></th>
             <th data-col="group">Group <span class="sort-arrow">&#9650;</span></th>
             <th data-col="date">Date <span class="sort-arrow">&#9650;</span></th>
-            <th data-col="commits">Commits <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="commits">Regressed In <span class="sort-arrow">&#9650;</span></th>
             <th data-col="change">Change <span class="sort-arrow">&#9650;</span></th>
             <th data-col="before">Before <span class="sort-arrow">&#9650;</span></th>
             <th data-col="after">After <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="fixed_at">Fixed At <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="latest">Latest <span class="sort-arrow">&#9650;</span></th>
             <th data-col="status">Status <span class="sort-arrow">&#9650;</span></th>
           </tr>
         </thead>
@@ -192,16 +194,22 @@ async function scanAllRegressions() {
   var groupSet = {};
   allRows = [];
 
-  // Build lookup for latest release scores: latestScores["scenarioKey:metricName"] -> mean_score
-  var latestRun = manifest.runs[0];
-  var latestScores = {};
-  for (var sk of Object.keys(latestRun.scenarios)) {
-    var ld = cachedData[latestRun.scenarios[sk].file];
-    if (!ld) continue;
-    for (var mn of Object.keys(ld.metrics)) {
-      latestScores[sk + ':' + mn] = ld.metrics[mn].mean_score;
+  // Build per-run lookup: runScores[runIndex]["scenarioKey:metricName"] -> mean_score
+  var runScores = [];
+  for (var ri = 0; ri < manifest.runs.length; ri++) {
+    var lookup = {};
+    var r = manifest.runs[ri];
+    for (var sk of Object.keys(r.scenarios)) {
+      var rd = cachedData[r.scenarios[sk].file];
+      if (!rd) continue;
+      for (var mn of Object.keys(rd.metrics)) {
+        lookup[sk + ':' + mn] = rd.metrics[mn].mean_score;
+      }
     }
+    runScores.push(lookup);
   }
+
+  var latestScores = runScores[0];
 
   // Scan consecutive pairs: runs[i] (newer) vs runs[i+1] (older)
   for (var i = 0; i < manifest.runs.length - 1; i++) {
@@ -210,7 +218,7 @@ async function scanAllRegressions() {
     var afterDate = (afterRun.commit_date || afterRun.timestamp).split('T')[0];
     var prevRef = beforeRun.tag || beforeRun.commit_short;
     var afterRef = afterRun.tag || afterRun.commit_short;
-    var commitRange = beforeRun.commit_short + '...' + afterRun.commit_short;
+    var commitRange = prevRef + '...' + afterRef;
 
     // Find scenarios present in both runs
     var scenarioKeys = Object.keys(afterRun.scenarios).filter(function(sk) {
@@ -261,6 +269,34 @@ async function scanAllRegressions() {
             status = 'active';
           }
 
+          // Find when the regression was fixed by scanning newer releases
+          // (runs are sorted newest-first, so scan from i-1 down to 0)
+          var fixedAtDate = null;
+          var fixedAtCommits = null;
+          var fixedAtPrevRef = null;
+          var fixedAtAfterRef = null;
+          if (status === 'fixed' || status === 'improved') {
+            for (var fi = i - 1; fi >= 0; fi--) {
+              var fScore = runScores[fi][latestKey];
+              var fPrevScore = runScores[fi + 1] ? runScores[fi + 1][latestKey] : undefined;
+              if (fScore === undefined || fPrevScore === undefined) continue;
+              // Check if this release crossed back above the threshold
+              var recovered = beforeMetric.mean_score === 0 ||
+                (beforeMetric.mean_score - fScore) / beforeMetric.mean_score * 100 < REGRESSION_THRESHOLD;
+              var prevRecovered = beforeMetric.mean_score === 0 ||
+                (beforeMetric.mean_score - fPrevScore) / beforeMetric.mean_score * 100 < REGRESSION_THRESHOLD;
+              if (recovered && !prevRecovered) {
+                var fRun = manifest.runs[fi];
+                var fPrevRun = manifest.runs[fi + 1];
+                fixedAtDate = (fRun.commit_date || fRun.timestamp).split('T')[0];
+                fixedAtPrevRef = fPrevRun.tag || fPrevRun.commit_short;
+                fixedAtAfterRef = fRun.tag || fRun.commit_short;
+                fixedAtCommits = fixedAtPrevRef + '...' + fixedAtAfterRef;
+                break;
+              }
+            }
+          }
+
           allRows.push({
             scenario: scenarioKey,
             scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
@@ -275,7 +311,11 @@ async function scanAllRegressions() {
             beforeScore: beforeMetric.mean_score,
             afterScore: afterMetric.mean_score,
             status: status,
-            latestScore: latestScore
+            latestScore: latestScore,
+            fixedAtDate: fixedAtDate,
+            fixedAtCommits: fixedAtCommits,
+            fixedAtPrevRef: fixedAtPrevRef,
+            fixedAtAfterRef: fixedAtAfterRef
           });
         }
       }
@@ -354,6 +394,11 @@ function sortRows(rows) {
         break;
       case 'before': va = a.beforeScore; vb = b.beforeScore; break;
       case 'after': va = a.afterScore; vb = b.afterScore; break;
+      case 'fixed_at': va = a.fixedAtDate || ''; vb = b.fixedAtDate || ''; break;
+      case 'latest':
+        va = a.latestScore !== undefined ? a.latestScore : -1;
+        vb = b.latestScore !== undefined ? b.latestScore : -1;
+        break;
       case 'status': va = a.status; vb = b.status; break;
       default: va = a.date; vb = b.date;
     }
@@ -400,7 +445,27 @@ function renderTable() {
         row.commitRange + '</a></td>' +
       '<td class="' + severityClass(row.deltaPct) + '">' + row.deltaPct.toFixed(1) + '%</td>' +
       '<td>' + row.beforeScore.toFixed(3) + '</td>' +
-      '<td class="' + afterClass + '">' + row.afterScore.toFixed(3) + '</td>' +
+      '<td class="' + afterClass + '">' + row.afterScore.toFixed(3) + '</td>';
+
+    // Fixed At cell
+    if (row.fixedAtDate && row.fixedAtPrevRef) {
+      var fixedCompareUrl = GITHUB_BASE + '/compare/' + row.fixedAtPrevRef + '...' + row.fixedAtAfterRef;
+      html += '<td class="col-date">' + row.fixedAtDate +
+        ' <a class="col-commits" href="' + fixedCompareUrl + '" target="_blank" rel="noopener">' +
+        row.fixedAtCommits + '</a></td>';
+    } else {
+      html += '<td></td>';
+    }
+
+    // Latest score cell
+    if (row.latestScore !== undefined) {
+      var latestClass = scoreStatusClass(row.latestScore);
+      html += '<td class="' + latestClass + '">' + row.latestScore.toFixed(3) + '</td>';
+    } else {
+      html += '<td></td>';
+    }
+
+    html +=
       '<td class="col-status"><span class="status-badge status-' + row.status + '">' +
         STATUS_LABELS[row.status] + '</span></td>' +
       '</tr>';
