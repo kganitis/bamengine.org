@@ -1,0 +1,5 @@
+github_base: "https://github.com/kganitis/bam-engine"
+scenario_names:
+  baseline: "Baseline"
+  growth_plus: "Growth+"
+  buffer_stock: "Buffer-Stock"

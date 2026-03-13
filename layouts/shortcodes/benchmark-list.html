@@ -69,13 +69,8 @@ var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 var COLOR_THRESHOLD = 5;   // >=5% → colored background
 var HIDE_THRESHOLD = 1;    // <1% → hidden entirely
-var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
-
-var SCENARIO_NAMES = {
-  baseline: 'Baseline',
-  growth_plus: 'Growth+',
-  buffer_stock: 'Buffer-Stock'
-};
+var GITHUB_BASE = '{{ $.Site.Data.validation_config.github_base }}';
+var SCENARIO_NAMES = {{ $.Site.Data.validation_config.scenario_names | jsonify | safeJS }};
 
 // ---------------------------------------------------------------------------
 // State
