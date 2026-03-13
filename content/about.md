@@ -25,7 +25,9 @@ the buffer-stock consumption extension (v0.3.0), robustness analysis and
 a rebuilt calibration pipeline (v0.4.0), and the Extension bundle system
 with `sim.use()` (v0.5.0). Version 0.6.0 consolidated market-matching
 logic into vectorized operations, delivering a ~30% performance
-improvement.
+improvement. Version 0.7.0 replaced the batch-sequential goods market
+with a pure sequential implementation, eliminating inventory collisions
+and improving simulation speed by another 6.5%.
 
 ## Academic Context
 
