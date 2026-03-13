@@ -2,7 +2,6 @@ baseURL: "https://bamengine.org/"
 languageCode: "en-us"
 title: "BAM Engine"
 theme: scientific-python-hugo-theme
-relativeURLs: false
 disableKinds: ["taxonomy"]
 
 markup:
@@ -17,6 +16,8 @@ params:
   colorScheme: auto
   images:
     - /images/logo.svg
+  author:
+    name: "Konstantinos Ganitis"
   search: true
 
   fonts:
@@ -25,6 +26,7 @@ params:
 
   navbarlogo:
     image: logo.svg
+    altText: BAM Engine
     text: BAM Engine
     link: /
 
@@ -36,7 +38,6 @@ params:
     buttonlink: "https://bam-engine.readthedocs.io/en/latest/quickstart.html"
 
   shell:
-    title: placeholder
     intro:
       - title: Try BAM Engine
         text: Use the interactive shell to try BAM Engine in the browser
@@ -95,7 +96,6 @@ params:
           - text: Posts
             link: /posts/
       column3:
-        title: ""
         links:
           - text: MIT License
             link: https://github.com/kganitis/bam-engine/blob/main/LICENSE
