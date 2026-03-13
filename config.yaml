@@ -15,7 +15,7 @@ params:
   description: "Agent-based macroeconomic simulation in Python"
   colorScheme: auto
   images:
-    - /images/logo.svg
+    - /images/og-image.png
   author:
     name: "Konstantinos Ganitis"
   search: true
