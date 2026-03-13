@@ -11,6 +11,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -33,7 +34,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install JupyterLite
-        run: pip install jupyterlite-core jupyterlite-pyodide-kernel jupyter-server
+        run: pip install -r requirements-deploy.txt
 
       - name: Build Hugo site
         run: hugo --minify
@@ -46,7 +47,7 @@ jobs:
             --output-dir public/try/lite
 
       - name: Build search index
-        run: npx pagefind --site public
+        run: npx pagefind@1.4.0 --site public
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e # v4
