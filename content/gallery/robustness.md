@@ -29,4 +29,15 @@ consumer matching (Section 3.10.2, Figure 3.10).*
 
 *Entry neutrality: mean unemployment across three profit tax rate levels.*
 
+**Run this yourself:**
+
+```python
+import bamengine as bam
+from extensions.rnd import RND
+
+sim = bam.Simulation.init(seed=42)
+sim.use(RND)
+results = sim.run(n_periods=1000, show=True)
+```
+
 See the [full example](https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_robustness.html).
