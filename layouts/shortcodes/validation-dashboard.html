@@ -90,6 +90,7 @@ var THRESHOLD_GREEN_PASS = parseFloat(dashEl.dataset.greenPassThreshold);
 var THRESHOLD_YELLOW_PASS = parseFloat(dashEl.dataset.yellowPassThreshold);
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 
+var SCENARIO_ORDER = {{ $.Site.Data.validation_config.scenario_order | jsonify | safeJS }};
 var SCENARIO_NAMES = {{ $.Site.Data.validation_config.scenario_names | jsonify | safeJS }};
 
 // ---------------------------------------------------------------------------
@@ -305,7 +306,7 @@ function renderCards() {
   container.style.display = '';
   container.innerHTML = '';
 
-  for (var scenario of Object.keys(SCENARIO_NAMES)) {
+  for (var scenario of SCENARIO_ORDER) {
     var card = document.createElement('div');
 
     var latest = getLatestForScenario(scenario);
@@ -447,7 +448,7 @@ async function showDrilldown(scenario) {
   // Populate compare selector (all scenarios except current)
   var compareSelect = document.getElementById('compare-selector');
   compareSelect.innerHTML = '<option value="">None</option>';
-  for (var s of Object.keys(SCENARIO_NAMES)) {
+  for (var s of SCENARIO_ORDER) {
     if (s !== scenario) {
       var copt = document.createElement('option');
       copt.value = s;

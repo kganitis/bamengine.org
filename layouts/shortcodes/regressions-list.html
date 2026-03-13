@@ -85,6 +85,7 @@ var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
 var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 var GITHUB_BASE = '{{ $.Site.Data.validation_config.github_base }}';
+var SCENARIO_ORDER = {{ $.Site.Data.validation_config.scenario_order | jsonify | safeJS }};
 var SCENARIO_NAMES = {{ $.Site.Data.validation_config.scenario_names | jsonify | safeJS }};
 
 // ---------------------------------------------------------------------------
@@ -129,7 +130,7 @@ async function loadManifest() {
 
   // Populate scenario checkboxes
   var scenarioDiv = document.getElementById('reg-scenarios');
-  for (var key of Object.keys(SCENARIO_NAMES)) {
+  for (var key of SCENARIO_ORDER) {
     checkedScenarios[key] = true;
     var lbl = document.createElement('label');
     var cb = document.createElement('input');
