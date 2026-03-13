@@ -290,7 +290,7 @@ function findSignificantChange(idx, scenarioKey, metricName, allMetrics) {
  delta: delta,
  deltaPct: deltaPct,
  atDate: (afterRun.commit_date || afterRun.timestamp).split('T')[0],
- commitRange: prevRun.commit_short + '...' + afterRun.commit_short,
+ commitRange: (prevRun.tag || prevRun.commit_short) + '...' + (afterRun.tag || afterRun.commit_short),
  prevRef: prevRun.tag || prevRun.commit_short,
  afterRef: afterRun.tag || afterRun.commit_short
  };
@@ -518,10 +518,12 @@ scenario, metric group, or severity threshold, and click column headers to sort.
  &lt;th data-col="scenario"&gt;Scenario &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="group"&gt;Group &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="date"&gt;Date &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
- &lt;th data-col="commits"&gt;Commits &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="commits"&gt;Regressed In &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="change"&gt;Change &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="before"&gt;Before &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="after"&gt;After &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="fixed_at"&gt;Fixed At &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="latest"&gt;Latest &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="status"&gt;Status &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;/tr&gt;
  &lt;/thead&gt;
@@ -654,15 +656,21 @@ async function scanAllRegressions() {
  allRows = [];
 
  
- var latestRun = manifest.runs[0];
- var latestScores = {};
- for (var sk of Object.keys(latestRun.scenarios)) {
- var ld = cachedData[latestRun.scenarios[sk].file];
- if (!ld) continue;
- for (var mn of Object.keys(ld.metrics)) {
- latestScores[sk + ':' + mn] = ld.metrics[mn].mean_score;
+ var runScores = [];
+ for (var ri = 0; ri &lt; manifest.runs.length; ri++) {
+ var lookup = {};
+ var r = manifest.runs[ri];
+ for (var sk of Object.keys(r.scenarios)) {
+ var rd = cachedData[r.scenarios[sk].file];
+ if (!rd) continue;
+ for (var mn of Object.keys(rd.metrics)) {
+ lookup[sk + ':' + mn] = rd.metrics[mn].mean_score;
  }
  }
+ runScores.push(lookup);
+ }
+
+ var latestScores = runScores[0];
 
  
  for (var i = 0; i &lt; manifest.runs.length - 1; i++) {
@@ -671,7 +679,7 @@ async function scanAllRegressions() {
  var afterDate = (afterRun.commit_date || afterRun.timestamp).split('T')[0];
  var prevRef = beforeRun.tag || beforeRun.commit_short;
  var afterRef = afterRun.tag || afterRun.commit_short;
- var commitRange = beforeRun.commit_short + '...' + afterRun.commit_short;
+ var commitRange = prevRef + '...' + afterRef;
 
  
  var scenarioKeys = Object.keys(afterRun.scenarios).filter(function(sk) {
@@ -722,6 +730,34 @@ async function scanAllRegressions() {
  status = 'active';
  }
 
+ 
+ 
+ var fixedAtDate = null;
+ var fixedAtCommits = null;
+ var fixedAtPrevRef = null;
+ var fixedAtAfterRef = null;
+ if (status === 'fixed' || status === 'improved') {
+ for (var fi = i - 1; fi &gt;= 0; fi--) {
+ var fScore = runScores[fi][latestKey];
+ var fPrevScore = runScores[fi + 1] ? runScores[fi + 1][latestKey] : undefined;
+ if (fScore === undefined || fPrevScore === undefined) continue;
+ 
+ var recovered = beforeMetric.mean_score === 0 ||
+ (beforeMetric.mean_score - fScore) / beforeMetric.mean_score * 100 &lt; REGRESSION_THRESHOLD;
+ var prevRecovered = beforeMetric.mean_score === 0 ||
+ (beforeMetric.mean_score - fPrevScore) / beforeMetric.mean_score * 100 &lt; REGRESSION_THRESHOLD;
+ if (recovered &amp;&amp; !prevRecovered) {
+ var fRun = manifest.runs[fi];
+ var fPrevRun = manifest.runs[fi + 1];
+ fixedAtDate = (fRun.commit_date || fRun.timestamp).split('T')[0];
+ fixedAtPrevRef = fPrevRun.tag || fPrevRun.commit_short;
+ fixedAtAfterRef = fRun.tag || fRun.commit_short;
+ fixedAtCommits = fixedAtPrevRef + '...' + fixedAtAfterRef;
+ break;
+ }
+ }
+ }
+
  allRows.push({
  scenario: scenarioKey,
  scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
@@ -736,7 +772,11 @@ async function scanAllRegressions() {
  beforeScore: beforeMetric.mean_score,
  afterScore: afterMetric.mean_score,
  status: status,
- latestScore: latestScore
+ latestScore: latestScore,
+ fixedAtDate: fixedAtDate,
+ fixedAtCommits: fixedAtCommits,
+ fixedAtPrevRef: fixedAtPrevRef,
+ fixedAtAfterRef: fixedAtAfterRef
  });
  }
  }
@@ -815,6 +855,11 @@ function sortRows(rows) {
  break;
  case 'before': va = a.beforeScore; vb = b.beforeScore; break;
  case 'after': va = a.afterScore; vb = b.afterScore; break;
+ case 'fixed_at': va = a.fixedAtDate || ''; vb = b.fixedAtDate || ''; break;
+ case 'latest':
+ va = a.latestScore !== undefined ? a.latestScore : -1;
+ vb = b.latestScore !== undefined ? b.latestScore : -1;
+ break;
  case 'status': va = a.status; vb = b.status; break;
  default: va = a.date; vb = b.date;
  }
@@ -861,7 +906,27 @@ function renderTable() {
  row.commitRange + '&lt;/a&gt;&lt;/td&gt;' +
  '&lt;td class="' + severityClass(row.deltaPct) + '"&gt;' + row.deltaPct.toFixed(1) + '%&lt;/td&gt;' +
  '&lt;td&gt;' + row.beforeScore.toFixed(3) + '&lt;/td&gt;' +
- '&lt;td class="' + afterClass + '"&gt;' + row.afterScore.toFixed(3) + '&lt;/td&gt;' +
+ '&lt;td class="' + afterClass + '"&gt;' + row.afterScore.toFixed(3) + '&lt;/td&gt;';
+
+ 
+ if (row.fixedAtDate &amp;&amp; row.fixedAtPrevRef) {
+ var fixedCompareUrl = GITHUB_BASE + '/compare/' + row.fixedAtPrevRef + '...' + row.fixedAtAfterRef;
+ html += '&lt;td class="col-date"&gt;' + row.fixedAtDate +
+ ' &lt;a class="col-commits" href="' + fixedCompareUrl + '" target="_blank" rel="noopener"&gt;' +
+ row.fixedAtCommits + '&lt;/a&gt;&lt;/td&gt;';
+ } else {
+ html += '&lt;td&gt;&lt;/td&gt;';
+ }
+
+ 
+ if (row.latestScore !== undefined) {
+ var latestClass = scoreStatusClass(row.latestScore);
+ html += '&lt;td class="' + latestClass + '"&gt;' + row.latestScore.toFixed(3) + '&lt;/td&gt;';
+ } else {
+ html += '&lt;td&gt;&lt;/td&gt;';
+ }
+
+ html +=
  '&lt;td class="col-status"&gt;&lt;span class="status-badge status-' + row.status + '"&gt;' +
  STATUS_LABELS[row.status] + '&lt;/span&gt;&lt;/td&gt;' +
  '&lt;/tr&gt;';
