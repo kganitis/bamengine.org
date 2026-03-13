@@ -99,13 +99,8 @@ var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
 var DATA_BASE = '\/data\/validation\/';
 var COLOR_THRESHOLD = 5; 
 var HIDE_THRESHOLD = 1; 
-var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
-
-var SCENARIO_NAMES = {
- baseline: 'Baseline',
- growth_plus: 'Growth+',
- buffer_stock: 'Buffer-Stock'
-};
+var GITHUB_BASE = 'https:\/\/github.com\/kganitis\/bam-engine';
+var SCENARIO_NAMES = {"baseline":"Baseline","buffer_stock":"Buffer-Stock","growth_plus":"Growth+"};
 
 
 
@@ -687,13 +682,8 @@ var REGRESSION_THRESHOLD = parseFloat(root.dataset.regressionThreshold);
 var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
 var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
 var DATA_BASE = '\/data\/validation\/';
-var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
-
-var SCENARIO_NAMES = {
- baseline: 'Baseline',
- growth_plus: 'Growth+',
- buffer_stock: 'Buffer-Stock'
-};
+var GITHUB_BASE = 'https:\/\/github.com\/kganitis\/bam-engine';
+var SCENARIO_NAMES = {"baseline":"Baseline","buffer_stock":"Buffer-Stock","growth_plus":"Growth+"};
 
 
 
