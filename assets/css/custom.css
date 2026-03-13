@@ -1,8 +1,8 @@
 /* Dark mode: swap logos */
-body.theme-switch-dark .hero-title img {
+[data-theme="dark"] .hero-title img {
   content: url("/images/logo-icon-dark.svg");
 }
-body.theme-switch-dark .navbar-logo img {
+[data-theme="dark"] .navbar-logo img {
   content: url("/images/logo-dark.svg");
 }
 
