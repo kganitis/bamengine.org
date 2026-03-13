@@ -599,7 +599,471 @@ Agent-Based Macroeconomic Model&lt;/em&gt; [Computer software].
 &lt;blockquote&gt;
 &lt;p&gt;Delli Gatti, D., Desiderio, S., Gaffeo, E., Cirillo, P., &amp;amp; Gallegati, M.
 (2011). &lt;em&gt;Macroeconomics from the Bottom-up&lt;/em&gt;. Springer Milano.
-&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;Robustness analysis inspired by Section 3.10, using the Growth+ model for
+&lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Regressions</title><link>https://bamengine.org/benchmarks/regressions/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/regressions/</guid><description>&lt;p&gt;All detected score regressions across releases. Use the toolbar to filter by
+scenario, metric group, or severity threshold, and click column headers to sort.&lt;/p&gt;
+&lt;div class="regressions-list" id="regressions-list"
+ data-regression-threshold="1"
+ data-green-score-threshold="0.85"
+ data-yellow-score-threshold="0.8"&gt;
+ &lt;div class="regressions-loading" id="reg-loading"&gt;Loading benchmark data...&lt;/div&gt;
+ &lt;div class="regressions-empty" id="reg-empty" style="display:none;"&gt;
+ No regressions detected.
+ &lt;/div&gt;
+
+ &lt;div id="reg-content" style="display:none;"&gt;
+ 
+ &lt;div class="regressions-summary" id="reg-summary"&gt;&lt;/div&gt;
+
+ 
+ &lt;div class="regressions-toolbar"&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Scenarios:&lt;/label&gt;
+ &lt;div class="checkbox-group" id="reg-scenarios"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Groups:&lt;/label&gt;
+ &lt;div class="checkbox-group" id="reg-groups"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Status:&lt;/label&gt;
+ &lt;select id="reg-status"&gt;
+ &lt;option value="active"&gt;Active only&lt;/option&gt;
+ &lt;option value="all"&gt;All&lt;/option&gt;
+ &lt;option value="fixed"&gt;Fixed only&lt;/option&gt;
+ &lt;option value="improved"&gt;Improved only&lt;/option&gt;
+ &lt;/select&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Min Severity:&lt;/label&gt;
+ &lt;select id="reg-severity"&gt;
+ &lt;option value="1"&gt;&amp;ge; 1%&lt;/option&gt;
+ &lt;option value="2"&gt;&amp;ge; 2%&lt;/option&gt;
+ &lt;option value="5"&gt;&amp;ge; 5%&lt;/option&gt;
+ &lt;option value="10"&gt;&amp;ge; 10%&lt;/option&gt;
+ &lt;/select&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Search:&lt;/label&gt;
+ &lt;input type="text" id="reg-search" placeholder="Filter metrics..."&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+
+ 
+ &lt;div class="regressions-row-count" id="reg-row-count"&gt;&lt;/div&gt;
+
+ 
+ &lt;div class="regressions-table-wrap"&gt;
+ &lt;table class="regressions-table"&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th data-col="metric"&gt;Metric &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="scenario"&gt;Scenario &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="group"&gt;Group &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="date"&gt;Date &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="commits"&gt;Commits &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="change"&gt;Change &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="before"&gt;Before &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="after"&gt;After &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="status"&gt;Status &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody id="reg-tbody"&gt;&lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function() {
+'use strict';
+
+
+
+
+var root = document.getElementById('regressions-list');
+var REGRESSION_THRESHOLD = parseFloat(root.dataset.regressionThreshold);
+var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
+var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var DATA_BASE = '\/data\/validation\/';
+var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
+
+var SCENARIO_NAMES = {
+ baseline: 'Baseline',
+ growth_plus: 'Growth+',
+ buffer_stock: 'Buffer-Stock'
+};
+
+
+
+
+var manifest = null;
+var cachedData = {};
+var allRows = [];
+var sortCol = 'date';
+var sortAsc = false;
+var checkedScenarios = {};
+var checkedGroups = {};
+
+
+
+
+function scoreStatusClass(score) {
+ if (score &gt;= THRESHOLD_GREEN_SCORE) return 'status-green';
+ if (score &gt;= THRESHOLD_YELLOW_SCORE) return 'status-yellow';
+ return 'status-red';
+}
+
+
+
+
+async function loadManifest() {
+ try {
+ var resp = await fetch(DATA_BASE + 'manifest.json');
+ if (!resp.ok) throw new Error('No manifest found');
+ manifest = await resp.json();
+ } catch (e) {
+ document.getElementById('reg-loading').style.display = 'none';
+ document.getElementById('reg-empty').style.display = 'block';
+ return;
+ }
+
+ if (!manifest.runs || manifest.runs.length &lt; 2) {
+ document.getElementById('reg-loading').style.display = 'none';
+ document.getElementById('reg-empty').style.display = 'block';
+ return;
+ }
+
+ 
+ var scenarioDiv = document.getElementById('reg-scenarios');
+ for (var key of Object.keys(SCENARIO_NAMES)) {
+ checkedScenarios[key] = true;
+ var lbl = document.createElement('label');
+ var cb = document.createElement('input');
+ cb.type = 'checkbox';
+ cb.checked = true;
+ cb.value = key;
+ cb.addEventListener('change', function() {
+ checkedScenarios[this.value] = this.checked;
+ renderTable();
+ });
+ lbl.appendChild(cb);
+ lbl.appendChild(document.createTextNode(' ' + SCENARIO_NAMES[key]));
+ scenarioDiv.appendChild(lbl);
+ }
+
+ await scanAllRegressions();
+
+ document.getElementById('reg-loading').style.display = 'none';
+
+ if (allRows.length === 0) {
+ document.getElementById('reg-empty').style.display = 'block';
+ return;
+ }
+
+ document.getElementById('reg-content').style.display = '';
+ renderTable();
+}
+
+async function loadResultFile(filename) {
+ if (cachedData[filename]) return cachedData[filename];
+ try {
+ var resp = await fetch(DATA_BASE + filename);
+ if (!resp.ok) throw new Error('Failed to load ' + filename);
+ var data = await resp.json();
+ cachedData[filename] = data;
+ return data;
+ } catch (e) {
+ console.error('Failed to load result file:', filename, e);
+ return null;
+ }
+}
+
+
+
+
+async function scanAllRegressions() {
+ 
+ var filesToFetch = [];
+ for (var ri = 0; ri &lt; manifest.runs.length; ri++) {
+ var r = manifest.runs[ri];
+ for (var sk of Object.keys(r.scenarios)) {
+ filesToFetch.push(r.scenarios[sk].file);
+ }
+ }
+ await Promise.all(filesToFetch.map(loadResultFile));
+
+ var groupSet = {};
+ allRows = [];
+
+ 
+ var latestRun = manifest.runs[0];
+ var latestScores = {};
+ for (var sk of Object.keys(latestRun.scenarios)) {
+ var ld = cachedData[latestRun.scenarios[sk].file];
+ if (!ld) continue;
+ for (var mn of Object.keys(ld.metrics)) {
+ latestScores[sk + ':' + mn] = ld.metrics[mn].mean_score;
+ }
+ }
+
+ 
+ for (var i = 0; i &lt; manifest.runs.length - 1; i++) {
+ var afterRun = manifest.runs[i];
+ var beforeRun = manifest.runs[i + 1];
+ var afterDate = (afterRun.commit_date || afterRun.timestamp).split('T')[0];
+ var prevRef = beforeRun.tag || beforeRun.commit_short;
+ var afterRef = afterRun.tag || afterRun.commit_short;
+ var commitRange = beforeRun.commit_short + '...' + afterRun.commit_short;
+
+ 
+ var scenarioKeys = Object.keys(afterRun.scenarios).filter(function(sk) {
+ return beforeRun.scenarios &amp;&amp; beforeRun.scenarios[sk];
+ });
+
+ for (var si = 0; si &lt; scenarioKeys.length; si++) {
+ var scenarioKey = scenarioKeys[si];
+ var afterData = cachedData[afterRun.scenarios[scenarioKey].file];
+ var beforeData = cachedData[beforeRun.scenarios[scenarioKey].file];
+ if (!afterData || !beforeData) continue;
+
+ var groupNames = afterData.group_display_names || {};
+
+ 
+ var metricNames = Object.keys(afterData.metrics).filter(function(mn) {
+ return beforeData.metrics &amp;&amp; beforeData.metrics[mn];
+ });
+
+ for (var mi = 0; mi &lt; metricNames.length; mi++) {
+ var metricName = metricNames[mi];
+ var afterMetric = afterData.metrics[metricName];
+ var beforeMetric = beforeData.metrics[metricName];
+
+ if (beforeMetric.mean_score === 0) continue;
+
+ var delta = afterMetric.mean_score - beforeMetric.mean_score;
+ var deltaPct = delta / beforeMetric.mean_score * 100;
+
+ 
+ if (delta &lt; 0 &amp;&amp; Math.abs(deltaPct) &gt;= REGRESSION_THRESHOLD) {
+ var groupKey = afterMetric.group || 'OTHER';
+ var groupDisplay = groupNames[groupKey] || groupKey;
+ groupSet[groupKey] = groupDisplay;
+
+ 
+ var latestKey = scenarioKey + ':' + metricName;
+ var latestScore = latestScores[latestKey];
+ var status;
+ if (latestScore === undefined) {
+ status = 'active'; 
+ } else if (latestScore &gt; beforeMetric.mean_score) {
+ status = 'improved';
+ } else if (latestScore &gt;= beforeMetric.mean_score) {
+ status = 'fixed';
+ } else {
+ status = 'active';
+ }
+
+ allRows.push({
+ scenario: scenarioKey,
+ scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
+ group: groupKey,
+ groupDisplay: groupDisplay,
+ metric: metricName,
+ date: afterDate,
+ commitRange: commitRange,
+ prevRef: prevRef,
+ afterRef: afterRef,
+ deltaPct: deltaPct,
+ beforeScore: beforeMetric.mean_score,
+ afterScore: afterMetric.mean_score,
+ status: status,
+ latestScore: latestScore
+ });
+ }
+ }
+ }
+ }
+
+ 
+ var groupDiv = document.getElementById('reg-groups');
+ groupDiv.innerHTML = '';
+ checkedGroups = {};
+ var sortedGroups = Object.keys(groupSet).sort();
+ for (var gk of sortedGroups) {
+ checkedGroups[gk] = true;
+ var lbl = document.createElement('label');
+ var cb = document.createElement('input');
+ cb.type = 'checkbox';
+ cb.checked = true;
+ cb.value = gk;
+ cb.addEventListener('change', function() {
+ checkedGroups[this.value] = this.checked;
+ renderTable();
+ });
+ lbl.appendChild(cb);
+ lbl.appendChild(document.createTextNode(' ' + groupSet[gk]));
+ groupDiv.appendChild(lbl);
+ }
+
+ 
+ var releaseCount = manifest.runs.length;
+ var activeCount = allRows.filter(function(r) { return r.status === 'active'; }).length;
+ var summaryText = allRows.length + ' regression' + (allRows.length !== 1 ? 's' : '') +
+ ' detected across ' + releaseCount + ' releases';
+ if (activeCount &lt; allRows.length) {
+ summaryText += ' (' + activeCount + ' still active)';
+ }
+ document.getElementById('reg-summary').textContent = summaryText;
+}
+
+
+
+
+function getFilteredRows() {
+ var search = document.getElementById('reg-search').value.toLowerCase();
+ var minSeverity = parseFloat(document.getElementById('reg-severity').value);
+ var statusFilter = document.getElementById('reg-status').value;
+ return allRows.filter(function(row) {
+ if (!checkedScenarios[row.scenario]) return false;
+ if (!checkedGroups[row.group]) return false;
+ if (Math.abs(row.deltaPct) &lt; minSeverity) return false;
+ if (search &amp;&amp; row.metric.toLowerCase().indexOf(search) === -1) return false;
+ if (statusFilter !== 'all' &amp;&amp; row.status !== statusFilter) return false;
+ return true;
+ });
+}
+
+function compareValues(a, b) {
+ if (a &lt; b) return -1;
+ if (a &gt; b) return 1;
+ return 0;
+}
+
+function sortRows(rows) {
+ var col = sortCol;
+ var asc = sortAsc;
+ rows.sort(function(a, b) {
+ var va, vb;
+ switch (col) {
+ case 'metric': va = a.metric; vb = b.metric; break;
+ case 'scenario': va = a.scenarioDisplay; vb = b.scenarioDisplay; break;
+ case 'group': va = a.groupDisplay; vb = b.groupDisplay; break;
+ case 'date': va = a.date; vb = b.date; break;
+ case 'commits': va = a.commitRange; vb = b.commitRange; break;
+ case 'change':
+ va = Math.abs(a.deltaPct);
+ vb = Math.abs(b.deltaPct);
+ break;
+ case 'before': va = a.beforeScore; vb = b.beforeScore; break;
+ case 'after': va = a.afterScore; vb = b.afterScore; break;
+ case 'status': va = a.status; vb = b.status; break;
+ default: va = a.date; vb = b.date;
+ }
+ var cmp = compareValues(va, vb);
+ return asc ? cmp : -cmp;
+ });
+ return rows;
+}
+
+
+
+
+function severityClass(deltaPct) {
+ var abs = Math.abs(deltaPct);
+ if (abs &gt;= 10) return 'severity-high';
+ if (abs &gt;= 5) return 'severity-medium';
+ return 'severity-low';
+}
+
+function renderTable() {
+ var filtered = getFilteredRows();
+ var sorted = sortRows(filtered);
+
+ document.getElementById('reg-row-count').textContent =
+ 'Showing ' + sorted.length + ' of ' + allRows.length + ' regressions';
+
+ var tbody = document.getElementById('reg-tbody');
+ var html = '';
+ var STATUS_LABELS = { active: 'Active', fixed: 'Fixed', improved: 'Improved' };
+ for (var row of sorted) {
+ var metricLink = '\/benchmarks\/validation\/?scenario=' +
+ encodeURIComponent(row.scenario) + '&amp;metric=' + encodeURIComponent(row.metric);
+ var compareUrl = GITHUB_BASE + '/compare/' + row.prevRef + '...' + row.afterRef;
+ var afterClass = scoreStatusClass(row.afterScore);
+ var rowClass = row.status !== 'active' ? ' class="resolved-row"' : '';
+
+ html +=
+ '&lt;tr' + rowClass + '&gt;' +
+ '&lt;td class="col-metric"&gt;&lt;a href="' + metricLink + '"&gt;' + row.metric + '&lt;/a&gt;&lt;/td&gt;' +
+ '&lt;td class="col-scenario"&gt;' + row.scenarioDisplay + '&lt;/td&gt;' +
+ '&lt;td&gt;' + row.groupDisplay + '&lt;/td&gt;' +
+ '&lt;td class="col-date"&gt;' + row.date + '&lt;/td&gt;' +
+ '&lt;td class="col-commits"&gt;&lt;a href="' + compareUrl + '" target="_blank" rel="noopener"&gt;' +
+ row.commitRange + '&lt;/a&gt;&lt;/td&gt;' +
+ '&lt;td class="' + severityClass(row.deltaPct) + '"&gt;' + row.deltaPct.toFixed(1) + '%&lt;/td&gt;' +
+ '&lt;td&gt;' + row.beforeScore.toFixed(3) + '&lt;/td&gt;' +
+ '&lt;td class="' + afterClass + '"&gt;' + row.afterScore.toFixed(3) + '&lt;/td&gt;' +
+ '&lt;td class="col-status"&gt;&lt;span class="status-badge status-' + row.status + '"&gt;' +
+ STATUS_LABELS[row.status] + '&lt;/span&gt;&lt;/td&gt;' +
+ '&lt;/tr&gt;';
+ }
+ tbody.innerHTML = html;
+
+ 
+ var ths = root.querySelectorAll('.regressions-table th');
+ for (var th of ths) {
+ var col = th.dataset.col;
+ var arrow = th.querySelector('.sort-arrow');
+ if (col === sortCol) {
+ th.classList.add('sorted');
+ arrow.innerHTML = sortAsc ? '&amp;#9650;' : '&amp;#9660;';
+ } else {
+ th.classList.remove('sorted');
+ arrow.innerHTML = '&amp;#9650;';
+ }
+ }
+}
+
+function sortBy(col) {
+ if (sortCol === col) {
+ sortAsc = !sortAsc;
+ } else {
+ sortCol = col;
+ sortAsc = (col === 'date' || col === 'change') ? false : true;
+ }
+ renderTable();
+}
+
+
+
+
+document.getElementById('reg-search').addEventListener('input', function() {
+ renderTable();
+});
+
+document.getElementById('reg-severity').addEventListener('change', function() {
+ renderTable();
+});
+
+document.getElementById('reg-status').addEventListener('change', function() {
+ renderTable();
+});
+
+
+var ths = root.querySelectorAll('.regressions-table th[data-col]');
+for (var th of ths) {
+ th.addEventListener('click', function() {
+ sortBy(this.dataset.col);
+ });
+}
+
+
+
+
+loadManifest();
+
+})();
+&lt;/script&gt;</description></item><item><title>Robustness Analysis</title><link>https://bamengine.org/gallery/robustness/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/robustness/</guid><description>&lt;p&gt;Robustness analysis inspired by Section 3.10, using the Growth+ model for
 internal validity and sensitivity experiments.&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-1.png" alt="Co-movements at leads and lags"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Internal validity: cross-correlations of unemployment, productivity, price
