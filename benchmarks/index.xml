@@ -708,14 +708,15 @@ async function scanAllRegressions() {
  groupSet[groupKey] = groupDisplay;
 
  
+ 
  var latestKey = scenarioKey + ':' + metricName;
  var latestScore = latestScores[latestKey];
  var status;
  if (latestScore === undefined) {
- status = 'active'; 
+ status = 'active';
  } else if (latestScore &gt; beforeMetric.mean_score) {
  status = 'improved';
- } else if (latestScore &gt;= beforeMetric.mean_score) {
+ } else if (beforeMetric.mean_score === 0 || (beforeMetric.mean_score - latestScore) / beforeMetric.mean_score * 100 &lt; REGRESSION_THRESHOLD) {
  status = 'fixed';
  } else {
  status = 'active';
