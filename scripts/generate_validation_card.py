@@ -5,7 +5,7 @@ Reads static/data/validation/manifest.json and produces two SVG files:
   - static/images/validation-card-dark.svg  (GitHub dark mode)
   - static/images/validation-card-light.svg (GitHub light mode)
 
-Each card shows three scenario sub-cards with mean score, stability,
+Each card shows three scenario sub-cards with accuracy, stability,
 and color-coded status indicators.
 
 Usage:
@@ -162,7 +162,7 @@ def generate_card(scenarios: dict, tag: str, theme_name: str) -> str:
         )
         inner_y += 14
         card_parts.append(
-            _text(cx + 10, cy + inner_y, theme["muted"], 10, "mean score")
+            _text(cx + 10, cy + inner_y, theme["muted"], 10, "accuracy")
         )
 
         # Pass rate (smaller, color-coded)
