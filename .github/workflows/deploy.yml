@@ -42,6 +42,7 @@ jobs:
         run: |
           jupyter lite build \
             --apps repl \
+            --contents content/try/notebooks \
             --output-dir public/try/lite
 
       - name: Build search index
