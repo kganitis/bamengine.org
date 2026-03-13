@@ -100,6 +100,7 @@ var DATA_BASE = '\/data\/validation\/';
 var COLOR_THRESHOLD = 5; 
 var HIDE_THRESHOLD = 1; 
 var GITHUB_BASE = 'https:\/\/github.com\/kganitis\/bam-engine';
+var SCENARIO_ORDER = ["baseline","growth_plus","buffer_stock"];
 var SCENARIO_NAMES = {"baseline":"Baseline","buffer_stock":"Buffer-Stock","growth_plus":"Growth+"};
 
 
@@ -162,7 +163,7 @@ async function loadManifest() {
 
  
  var scenarioDiv = document.getElementById('bl-scenarios');
- for (var key of Object.keys(SCENARIO_NAMES)) {
+ for (var key of SCENARIO_ORDER) {
  checkedScenarios[key] = true;
  var lbl = document.createElement('label');
  var cb = document.createElement('input');
@@ -683,6 +684,7 @@ var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
 var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
 var DATA_BASE = '\/data\/validation\/';
 var GITHUB_BASE = 'https:\/\/github.com\/kganitis\/bam-engine';
+var SCENARIO_ORDER = ["baseline","growth_plus","buffer_stock"];
 var SCENARIO_NAMES = {"baseline":"Baseline","buffer_stock":"Buffer-Stock","growth_plus":"Growth+"};
 
 
@@ -727,7 +729,7 @@ async function loadManifest() {
 
  
  var scenarioDiv = document.getElementById('reg-scenarios');
- for (var key of Object.keys(SCENARIO_NAMES)) {
+ for (var key of SCENARIO_ORDER) {
  checkedScenarios[key] = true;
  var lbl = document.createElement('label');
  var cb = document.createElement('input');
