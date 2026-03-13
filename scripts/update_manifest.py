@@ -114,6 +114,10 @@ def main() -> None:
     if len(runs) > 5:
         print(f"  ... and {len(runs) - 5} more")
 
+    # Regenerate validation card SVGs
+    from generate_validation_card import main as generate_cards
+    generate_cards()
+
 
 if __name__ == "__main__":
     main()
