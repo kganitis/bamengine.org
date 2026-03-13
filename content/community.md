@@ -1,5 +1,6 @@
 ---
 title: Community
+description: "Join the BAM Engine community — contribute, report issues, and connect on GitHub."
 ---
 
 ## Contributing

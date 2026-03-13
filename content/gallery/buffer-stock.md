@@ -1,5 +1,6 @@
 ---
 title: "Buffer-Stock Consumption"
+description: "Buffer-stock consumption extension — household savings behavior under uncertainty."
 ---
 
 The buffer-stock extension (section 3.9.4) replaces the baseline mean-field

@@ -1,5 +1,6 @@
 ---
 title: BAM Engine
+description: "BAM Engine — a Python framework for agent-based macroeconomic simulation using the BAM model."
 ---
 
 {{< grid columns="1 2 2 3" >}}

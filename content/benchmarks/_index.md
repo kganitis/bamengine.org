@@ -1,5 +1,6 @@
 ---
 title: Benchmarks
+description: "Validation and regression benchmarks for BAM Engine across releases."
 ---
 
 ## [Validation Dashboard](/benchmarks/validation/)

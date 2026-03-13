@@ -1,5 +1,6 @@
 ---
 title: "Baseline Scenario"
+description: "Baseline scenario output — GDP, unemployment, inflation, and stylized facts from default parameters."
 ---
 
 The baseline scenario reproduces section 3.9.1 of Delli Gatti et al. (2011)

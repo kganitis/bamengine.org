@@ -1,5 +1,6 @@
 ---
 title: "Growth+ Extension"
+description: "Growth+ extension — macro and financial dynamics with R&D and firm growth."
 ---
 
 The Growth+ extension adds R&D investment and endogenous productivity growth

@@ -1,5 +1,6 @@
 ---
 title: "Robustness Analysis"
+description: "Robustness analysis — cross-correlations, impulse-response, and sensitivity experiments."
 ---
 
 Robustness analysis inspired by Section 3.10, using the Growth+ model for

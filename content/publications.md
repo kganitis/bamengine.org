@@ -1,5 +1,6 @@
 ---
 title: Publications & Citations
+description: "Academic publications, citation information, and DOI for BAM Engine."
 ---
 
 If you use BAM Engine in your research, please cite both the software

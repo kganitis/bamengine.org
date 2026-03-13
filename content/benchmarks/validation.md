@@ -1,5 +1,6 @@
 ---
 title: Validation Dashboard
+description: "Validation dashboard — accuracy and stability metrics across scenarios and releases."
 url: /benchmarks/validation/
 green_score_threshold: 0.85
 yellow_score_threshold: 0.80

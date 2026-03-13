@@ -1,5 +1,6 @@
 ---
 title: Benchmark List
+description: "Per-metric benchmark list — detailed accuracy and stability for every validation metric."
 url: /benchmarks/list/
 green_score_threshold: 0.85
 yellow_score_threshold: 0.80

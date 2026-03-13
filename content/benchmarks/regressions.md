@@ -1,5 +1,6 @@
 ---
 title: Regressions
+description: "Regression tracker — metrics that degraded or recovered across BAM Engine releases."
 url: /benchmarks/regressions/
 regression_threshold: 1
 green_score_threshold: 0.85

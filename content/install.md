@@ -1,5 +1,6 @@
 ---
 title: Installation
+description: "Install BAM Engine from PyPI with pip. Requires Python 3.11+."
 ---
 
 ## Requirements

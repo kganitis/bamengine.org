@@ -1,5 +1,6 @@
 ---
 title: About
+description: "History, academic context, and acknowledgments for the BAM Engine project."
 ---
 
 BAM Engine is a high-performance Python implementation of the BAM
