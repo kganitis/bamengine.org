@@ -19,7 +19,7 @@ hugo --minify                  # Build to public/
 
 # Full build with JupyterLite + search
 hugo --minify && \
-  jupyter lite build --contents content/try/notebooks --output-dir public/try/repl && \
+  jupyter lite build --contents content/try/notebooks --output-dir public/try/lite && \
   npx pagefind --site public
 ```
 
@@ -49,7 +49,7 @@ hugo --minify && \
 2. **Theme submodule**: The theme is a Git submodule. After cloning, run `git submodule update --init --recursive`
 3. **Blog section**: Must use `content/posts/` (the `{{</* blog */>}}` shortcode hardcodes `"posts"`)
 4. **Front matter**: Use YAML front matter. Blog posts need `authors` (list), not `author`
-5. **JupyterLite**: Built in CI to `public/try/repl/`, embedded via iframe shortcode. Will 404 in local dev — that's expected
+5. **JupyterLite**: Built in CI to `public/try/lite/`, embedded via iframe shortcode. Will 404 in local dev — that's expected
 6. **Gallery images**: Generated from bam-engine simulation runs, committed to `static/images/`
 
 ## Critical Gotchas
@@ -70,7 +70,7 @@ hugo --minify && \
 
 Push to `main` triggers GitHub Actions:
 1. Hugo builds to `public/`
-2. JupyterLite builds to `public/try/repl/`
+2. JupyterLite builds to `public/try/lite/`
 3. Pagefind indexes `public/`
 4. `peaceiris/actions-gh-pages` deploys to `gh-pages` branch
 5. GitHub Pages serves from `gh-pages` with custom domain `bamengine.org`
