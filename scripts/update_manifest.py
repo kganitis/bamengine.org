@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Regenerate data/stability/manifest.json from result JSON files.
+"""Regenerate data/validation/manifest.json from result JSON files.
 
-Scans data/stability/*.json (excluding manifest.json), groups by commit,
+Scans data/validation/*.json (excluding manifest.json), groups by commit,
 deduplicates (latest timestamp wins per scenario+commit), and writes a
 sorted manifest with inlined summary stats.
 
@@ -12,7 +12,7 @@ Usage:
 import json
 from pathlib import Path
 
-DATA_DIR = Path(__file__).parent.parent / "static" / "data" / "stability"
+DATA_DIR = Path(__file__).parent.parent / "static" / "data" / "validation"
 MANIFEST_PATH = DATA_DIR / "manifest.json"
 
 
@@ -22,14 +22,16 @@ def main() -> None:
     result_files = [f for f in result_files if f.name != "manifest.json"]
 
     if not result_files:
-        print("No result files found in data/stability/")
+        print("No result files found in data/validation/")
         MANIFEST_PATH.write_text(json.dumps({"runs": []}, indent=2) + "\n")
         print(f"Wrote empty manifest to {MANIFEST_PATH}")
         return
 
     # Parse files and group by commit
-    # Key: commit_full -> {timestamp, tag, scenarios: {scenario -> (file, summary)}}
+    # Key: commit_full -> {timestamp, tag, scenarios: {scenario -> {file, pass_rate, mean_score}}}
     commits: dict[str, dict] = {}
+    # Track latest timestamp per scenario+commit for deduplication
+    scenario_timestamps: dict[tuple[str, str], str] = {}
 
     for filepath in result_files:
         try:
@@ -50,23 +52,29 @@ def main() -> None:
             print(f"WARNING: Skipping {filepath.name}: missing commit or scenario")
             continue
 
+        commit_date = meta.get("commit_date")
+
         if commit_full not in commits:
             commits[commit_full] = {
                 "commit_short": commit_short,
                 "commit": commit_full,
+                "commit_date": commit_date,
                 "timestamp": timestamp,
                 "tag": tag,
                 "scenarios": {},
             }
 
         # Deduplication: latest timestamp wins per scenario+commit
-        existing = commits[commit_full]["scenarios"].get(scenario)
-        if existing is None or timestamp > existing.get("_timestamp", ""):
+        dedup_key = (commit_full, scenario)
+        prev_ts = scenario_timestamps.get(dedup_key, "")
+        if timestamp > prev_ts:
+            scenario_timestamps[dedup_key] = timestamp
+            failing_seeds = data.get("failing_seeds", [])
             commits[commit_full]["scenarios"][scenario] = {
                 "file": filepath.name,
                 "pass_rate": summary.get("pass_rate", 0),
                 "mean_score": summary.get("mean_score", 0),
-                "_timestamp": timestamp,  # internal, stripped before output
+                "n_failing": len(failing_seeds),
             }
 
         # Update commit-level fields when better values are available
@@ -74,25 +82,19 @@ def main() -> None:
             commits[commit_full]["timestamp"] = timestamp
         if commits[commit_full]["tag"] is None and tag is not None:
             commits[commit_full]["tag"] = tag
+        if commits[commit_full]["commit_date"] is None and commit_date is not None:
+            commits[commit_full]["commit_date"] = commit_date
 
     # Build manifest
     runs = []
     for commit_data in commits.values():
-        # Strip internal _timestamp from scenarios
-        scenarios = {}
-        for name, info in commit_data["scenarios"].items():
-            scenarios[name] = {
-                "file": info["file"],
-                "pass_rate": info["pass_rate"],
-                "mean_score": info["mean_score"],
-            }
-
         runs.append({
             "commit_short": commit_data["commit_short"],
             "commit": commit_data["commit"],
+            "commit_date": commit_data["commit_date"],
             "timestamp": commit_data["timestamp"],
             "tag": commit_data["tag"],
-            "scenarios": scenarios,
+            "scenarios": commit_data["scenarios"],
         })
 
     # Sort by timestamp (newest first)

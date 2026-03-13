@@ -1,0 +1,1070 @@
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"
+        integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7"
+        crossorigin="anonymous"></script>
+
+<div class="validation-dashboard" id="validation-dashboard"
+     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
+     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}"
+     data-green-pass-threshold="{{ with .Page.Params.green_pass_threshold }}{{ . }}{{ else }}0.97{{ end }}"
+     data-yellow-pass-threshold="{{ with .Page.Params.yellow_pass_threshold }}{{ . }}{{ else }}0.96{{ end }}">
+  <div class="validation-loading" id="loading">Loading validation data...</div>
+  <div class="validation-empty" id="empty-state" style="display:none;">
+    No validation benchmark data available yet.
+  </div>
+
+  <!-- Landing: Scenario Cards -->
+  <div class="validation-cards" id="cards-view" style="display:none;"></div>
+
+  <!-- Drill-Down View -->
+  <div class="validation-drilldown" id="drilldown-view">
+    <div class="drilldown-header">
+      <button class="back-btn" id="back-btn">&larr; Back</button>
+      <h2 id="drilldown-title"></h2>
+    </div>
+    <div class="drilldown-toolbar" id="drilldown-toolbar">
+      <div class="toolbar-group">
+        <label>Release:</label>
+        <select id="commit-selector"></select>
+      </div>
+      <div class="toolbar-group">
+        <label>Y-Axis:</label>
+        <select id="yaxis-selector">
+          <option value="mean_score">Mean Score</option>
+          <option value="pass_rate">Pass Rate</option>
+          <option value="std_score">Std Score</option>
+          <option value="std_value">Std Value</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label><input type="checkbox" id="zoom-toggle"> Zoom</label>
+      </div>
+      <div class="toolbar-group">
+        <label>Compare:</label>
+        <select id="compare-selector">
+          <option value="">None</option>
+        </select>
+      </div>
+    </div>
+    <div class="summary-stats" id="drilldown-summary"></div>
+    <div class="scenario-chart-section" id="scenario-chart-section">
+      <div id="scenario-chart"></div>
+    </div>
+    <div class="failing-seeds-section" id="failing-seeds-section" style="display:none;">
+      <div class="failing-seeds-header" id="failing-seeds-toggle">
+        <span class="toggle">&#9654;</span>
+        <span>Failing Seeds</span>
+        <span class="failing-count" id="failing-count">0</span>
+      </div>
+      <div class="failing-seeds-body collapsed" id="failing-seeds-body">
+        <table id="failing-seeds-table">
+          <thead><tr><th>Seed</th><th>Failed Metrics</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div id="metric-groups"></div>
+  </div>
+
+  <!-- Expanded Chart Modal -->
+  <div class="chart-modal-overlay" id="chart-modal">
+    <div class="chart-modal">
+      <button class="close-btn" id="modal-close-btn">&times;</button>
+      <h3 class="modal-title" id="modal-title"></h3>
+      <div class="modal-stats" id="modal-stats"></div>
+      <div id="modal-chart"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Configuration (thresholds from Hugo front matter)
+// ---------------------------------------------------------------------------
+var dashEl = document.getElementById('validation-dashboard');
+var THRESHOLD_GREEN_SCORE = parseFloat(dashEl.dataset.greenScoreThreshold);
+var THRESHOLD_YELLOW_SCORE = parseFloat(dashEl.dataset.yellowScoreThreshold);
+var THRESHOLD_GREEN_PASS = parseFloat(dashEl.dataset.greenPassThreshold);
+var THRESHOLD_YELLOW_PASS = parseFloat(dashEl.dataset.yellowPassThreshold);
+var DATA_BASE = '{{ "data/validation/" | relURL }}';
+
+var SCENARIO_NAMES = {
+  baseline: 'Baseline',
+  growth_plus: 'Growth+',
+  buffer_stock: 'Buffer-Stock'
+};
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+var manifest = null;
+var cachedData = {};
+var currentScenario = null;
+var currentHistory = null;
+var currentYAxis = 'mean_score';
+var currentCompare = null;
+var compareHistory = null;
+var currentModalMetric = null;
+var currentZoom = false;
+
+// ---------------------------------------------------------------------------
+// Color helpers
+// ---------------------------------------------------------------------------
+function scoreStatusClass(score) {
+  if (score >= THRESHOLD_GREEN_SCORE) return 'green';
+  if (score >= THRESHOLD_YELLOW_SCORE) return 'yellow';
+  return 'red';
+}
+
+function scoreStatusColor(score) {
+  if (score >= THRESHOLD_GREEN_SCORE) return '#28a745';
+  if (score >= THRESHOLD_YELLOW_SCORE) return '#ffc107';
+  return '#dc3545';
+}
+
+function passStatusClass(passRate) {
+  if (passRate >= THRESHOLD_GREEN_PASS) return 'green';
+  if (passRate >= THRESHOLD_YELLOW_PASS) return 'yellow';
+  return 'red';
+}
+
+function passStatusColor(passRate) {
+  if (passRate >= THRESHOLD_GREEN_PASS) return '#28a745';
+  if (passRate >= THRESHOLD_YELLOW_PASS) return '#ffc107';
+  return '#dc3545';
+}
+
+function isDarkMode() {
+  return document.body.dataset.theme === 'dark' ||
+    document.documentElement.dataset.theme === 'dark' ||
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function plotlyTemplate() {
+  return isDarkMode() ? 'plotly_dark' : 'plotly_white';
+}
+
+function plotlyBg() {
+  return 'rgba(0,0,0,0)';
+}
+
+function fontColor() {
+  return isDarkMode() ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.7)';
+}
+
+function lineColor() {
+  return isDarkMode() ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)';
+}
+
+function gridColor() {
+  return isDarkMode() ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+}
+
+// ---------------------------------------------------------------------------
+// Y-axis helpers
+// ---------------------------------------------------------------------------
+function getMetricYValue(metricData, yAxis) {
+  switch (yAxis) {
+    case 'pass_rate': return metricData.pass_rate * 100;
+    case 'std_score': return metricData.std_score;
+    case 'std_value': return metricData.std_value;
+    default: return metricData.mean_score;
+  }
+}
+
+function getYAxisConfig(yAxis) {
+  if (currentZoom) {
+    switch (yAxis) {
+      case 'pass_rate':
+        return { range: null, title: 'Pass Rate (%)', dtick: null };
+      case 'std_score':
+        return { range: null, title: 'Std Score', dtick: null };
+      case 'std_value':
+        return { range: null, title: 'Std Value', dtick: null };
+      default:
+        return { range: null, title: 'Mean Score', dtick: null };
+    }
+  }
+  switch (yAxis) {
+    case 'pass_rate':
+      return { range: [0, 105], title: 'Pass Rate (%)', dtick: 25 };
+    case 'std_score':
+      return { range: null, title: 'Std Score', dtick: null };
+    case 'std_value':
+      return { range: null, title: 'Std Value', dtick: null };
+    default:
+      return { range: [0, 1.05], title: 'Mean Score', dtick: 0.25 };
+  }
+}
+
+function getThresholdShapes() {
+  return [];
+}
+
+function markerColor(metricData, yAxis) {
+  if (yAxis === 'pass_rate') return passStatusColor(metricData.pass_rate);
+  return scoreStatusColor(metricData.mean_score);
+}
+
+// ---------------------------------------------------------------------------
+// Unified X-axis for comparison alignment
+// ---------------------------------------------------------------------------
+function buildUnifiedXAxis(primaryHistory, compareHistory) {
+  // Build ordered union of commit labels, preserving chronological order.
+  // Primary history drives the base order; comparison entries are inserted
+  // at matching positions or appended where they have no primary match.
+  var labels = [];
+  var seen = {};
+  for (var entry of primaryHistory) {
+    var label = entry.tag || entry.commit;
+    if (!seen[label]) {
+      labels.push(label);
+      seen[label] = true;
+    }
+  }
+  if (compareHistory) {
+    for (var cEntry of compareHistory) {
+      var cLabel = cEntry.tag || cEntry.commit;
+      if (!seen[cLabel]) {
+        // Insert in chronological position based on timestamp
+        var inserted = false;
+        for (var i = 0; i < labels.length; i++) {
+          // Find first existing label with a later timestamp
+          var existingEntry = primaryHistory.find(function(e) {
+            return (e.tag || e.commit) === labels[i];
+          });
+          if (existingEntry && cEntry.timestamp < existingEntry.timestamp) {
+            labels.splice(i, 0, cLabel);
+            inserted = true;
+            break;
+          }
+        }
+        if (!inserted) labels.push(cLabel);
+        seen[cLabel] = true;
+      }
+    }
+  }
+  return labels;
+}
+
+// ---------------------------------------------------------------------------
+// Data loading
+// ---------------------------------------------------------------------------
+async function loadManifest() {
+  try {
+    var resp = await fetch(DATA_BASE + 'manifest.json');
+    if (!resp.ok) throw new Error('No manifest found');
+    manifest = await resp.json();
+  } catch (e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+
+  if (!manifest.runs || manifest.runs.length === 0) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('loading').style.display = 'none';
+  renderCards();
+
+  // Deep-link: open scenario drilldown and metric chart from URL params
+  var params = new URLSearchParams(window.location.search);
+  var paramScenario = params.get('scenario');
+  var paramMetric = params.get('metric');
+  if (paramScenario && SCENARIO_NAMES[paramScenario]) {
+    showDrilldown(paramScenario).then(function() {
+      if (paramMetric) {
+        expandChart(paramMetric, currentHistory);
+        var chartEl = document.querySelector('[data-metric="' + paramMetric + '"]');
+        if (chartEl) chartEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+}
+
+async function loadResultFile(filename) {
+  if (cachedData[filename]) return cachedData[filename];
+  try {
+    var resp = await fetch(DATA_BASE + filename);
+    if (!resp.ok) throw new Error('Failed to load ' + filename);
+    var data = await resp.json();
+    cachedData[filename] = data;
+    return data;
+  } catch (e) {
+    console.error('Failed to load result file:', filename, e);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Landing: Scenario Cards
+// ---------------------------------------------------------------------------
+function renderCards() {
+  var container = document.getElementById('cards-view');
+  container.style.display = '';
+  container.innerHTML = '';
+
+  for (var scenario of Object.keys(SCENARIO_NAMES)) {
+    var card = document.createElement('div');
+
+    var latest = getLatestForScenario(scenario);
+    if (!latest) continue;
+
+    var scoreStatus = scoreStatusClass(latest.mean_score);
+    var passStatus = passStatusClass(latest.pass_rate);
+    card.className = 'validation-card card-' + scoreStatus;
+    card.dataset.scenario = scenario;
+
+    var sparkData = getSparklineData(scenario, 10);
+
+    var releaseLabel = latest.tag || latest.commit_short;
+    var failingHtml = latest.n_failing > 0
+      ? '<div class="failing-seeds-info">' + latest.n_failing + ' failing seeds</div>'
+      : '';
+
+    card.innerHTML =
+      '<div class="card-top-row">' +
+        '<h3>' + SCENARIO_NAMES[scenario] + '</h3>' +
+        '<span class="release-tag">' + releaseLabel + '</span>' +
+      '</div>' +
+      '<div class="card-score status-' + scoreStatus + '">' + latest.mean_score.toFixed(3) + '</div>' +
+      '<div class="card-pass-rate">Pass Rate: <span class="status-' + passStatus + '">' + (latest.pass_rate * 100).toFixed(1) + '%</span></div>' +
+      failingHtml +
+      '<div class="sparkline" id="spark-' + scenario + '"></div>';
+
+    container.appendChild(card);
+
+    if (sparkData.length > 1) {
+      setTimeout(renderSparkline.bind(null, 'spark-' + scenario, sparkData), 0);
+    }
+  }
+}
+
+function getLatestForScenario(scenario) {
+  for (var run of manifest.runs) {
+    if (run.scenarios[scenario]) {
+      var s = run.scenarios[scenario];
+      return {
+        pass_rate: s.pass_rate,
+        mean_score: s.mean_score,
+        n_failing: s.n_failing || 0,
+        tag: run.tag,
+        commit_short: run.commit_short,
+      };
+    }
+  }
+  return null;
+}
+
+function getSparklineData(scenario, n) {
+  var data = [];
+  for (var run of manifest.runs) {
+    if (run.scenarios[scenario]) {
+      data.push({
+        commit: run.commit_short,
+        tag: run.tag,
+        pass_rate: run.scenarios[scenario].pass_rate,
+        mean_score: run.scenarios[scenario].mean_score,
+      });
+      if (data.length >= n) break;
+    }
+  }
+  return data.reverse();
+}
+
+function renderSparkline(containerId, data) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+
+  var x = data.map(function(_, i) { return i; });
+  var y = data.map(function(d) { return d.mean_score; });
+  var colors = data.map(function(d) { return scoreStatusColor(d.mean_score); });
+  var labels = data.map(function(d) { return d.tag || d.commit; });
+
+  Plotly.newPlot(el, [{
+    x: x, y: y,
+    type: 'scatter',
+    mode: 'lines+markers',
+    marker: { color: colors, size: 7 },
+    line: { color: lineColor(), width: 2 },
+    text: labels,
+    hovertemplate: '%{text}: %{y:.3f}<extra></extra>',
+  }], {
+    template: plotlyTemplate(),
+    paper_bgcolor: plotlyBg(),
+    plot_bgcolor: plotlyBg(),
+    margin: { l: 0, r: 0, t: 0, b: 0 },
+    xaxis: { visible: false },
+    yaxis: { visible: false, range: [Math.min.apply(null, y) - 0.02, Math.max.apply(null, y) + 0.02] },
+    height: 50,
+    showlegend: false,
+  }, {
+    displayModeBar: false,
+    staticPlot: true,
+    responsive: true,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Drill-Down View
+// ---------------------------------------------------------------------------
+function showCards() {
+  document.getElementById('cards-view').style.display = '';
+  document.getElementById('drilldown-view').classList.remove('active');
+  currentScenario = null;
+  currentHistory = null;
+  currentYAxis = 'mean_score';
+  currentCompare = null;
+  compareHistory = null;
+  currentModalMetric = null;
+  currentZoom = false;
+  document.getElementById('yaxis-selector').value = 'mean_score';
+  document.getElementById('zoom-toggle').checked = false;
+  document.getElementById('compare-selector').value = '';
+}
+
+async function showDrilldown(scenario) {
+  currentScenario = scenario;
+  document.getElementById('cards-view').style.display = 'none';
+  document.getElementById('drilldown-view').classList.add('active');
+  document.getElementById('drilldown-title').textContent = SCENARIO_NAMES[scenario];
+
+  // Populate commit selector
+  var select = document.getElementById('commit-selector');
+  select.innerHTML = '';
+  for (var run of manifest.runs) {
+    if (run.scenarios[scenario]) {
+      var opt = document.createElement('option');
+      opt.value = run.scenarios[scenario].file;
+      var label = run.tag || run.commit_short;
+      var date = (run.commit_date || run.timestamp).split('T')[0];
+      opt.textContent = label + ' (' + date + ')';
+      select.appendChild(opt);
+    }
+  }
+
+  // Populate compare selector (all scenarios except current)
+  var compareSelect = document.getElementById('compare-selector');
+  compareSelect.innerHTML = '<option value="">None</option>';
+  for (var s of Object.keys(SCENARIO_NAMES)) {
+    if (s !== scenario) {
+      var copt = document.createElement('option');
+      copt.value = s;
+      copt.textContent = SCENARIO_NAMES[s];
+      compareSelect.appendChild(copt);
+    }
+  }
+
+  await renderDrilldownData(select.value);
+}
+
+async function renderDrilldownData(filename) {
+  var data = await loadResultFile(filename);
+  if (!data) return;
+
+  var summary = document.getElementById('drilldown-summary');
+  var s = data.summary;
+  var sScoreStatus = scoreStatusClass(s.mean_score);
+  var sPassStatus = passStatusClass(s.pass_rate);
+  summary.innerHTML =
+    '<div class="summary-stat">' +
+      '<div class="value status-' + sScoreStatus + '">' + s.mean_score.toFixed(3) + '</div>' +
+      '<div class="label">Mean Score</div>' +
+    '</div>' +
+    '<div class="summary-stat">' +
+      '<div class="value status-' + sPassStatus + '">' + (s.pass_rate * 100).toFixed(1) + '%</div>' +
+      '<div class="label">Pass Rate</div>' +
+    '</div>' +
+    '<div class="summary-stat">' +
+      '<div class="value">' + s.std_score.toFixed(3) + '</div>' +
+      '<div class="label">Std Score</div>' +
+    '</div>' +
+    '<div class="summary-stat">' +
+      '<div class="value">' + s.min_score.toFixed(3) + ' - ' + s.max_score.toFixed(3) + '</div>' +
+      '<div class="label">Score Range</div>' +
+    '</div>';
+
+  renderFailingSeeds(data);
+  await renderMetricGroups(data);
+  renderScenarioChart(currentHistory);
+}
+
+// ---------------------------------------------------------------------------
+// Failing Seeds
+// ---------------------------------------------------------------------------
+function renderFailingSeeds(data) {
+  var section = document.getElementById('failing-seeds-section');
+  var seeds = data.failing_seeds || [];
+
+  if (seeds.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  section.style.display = '';
+  document.getElementById('failing-count').textContent = seeds.length;
+
+  // Reset collapsed state
+  var body = document.getElementById('failing-seeds-body');
+  body.classList.add('collapsed');
+  var toggle = document.getElementById('failing-seeds-toggle');
+  toggle.querySelector('.toggle').innerHTML = '&#9654;';
+
+  var tbody = document.querySelector('#failing-seeds-table tbody');
+  tbody.innerHTML = '';
+
+  for (var entry of seeds) {
+    var tr = document.createElement('tr');
+    var metricCodes = entry.failed_metrics.map(function(m) {
+      return '<code>' + m + '</code>';
+    }).join(' ');
+    tr.innerHTML = '<td class="seed-number">' + entry.seed + '</td><td>' + metricCodes + '</td>';
+    tbody.appendChild(tr);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Metric Groups
+// ---------------------------------------------------------------------------
+async function renderMetricGroups(currentData) {
+  var container = document.getElementById('metric-groups');
+  container.innerHTML = '';
+
+  var groupNames = currentData.group_display_names || {};
+  var metrics = currentData.metrics;
+
+  var groups = {};
+  for (var [name, info] of Object.entries(metrics)) {
+    var group = info.group || 'OTHER';
+    if (!groups[group]) groups[group] = [];
+    groups[group].push({ name: name, ...info });
+  }
+
+  var history = await loadScenarioHistory(currentScenario);
+  currentHistory = history;
+
+  for (var [groupKey, groupMetrics] of Object.entries(groups)) {
+    var displayName = groupNames[groupKey] || groupKey;
+
+    var groupDiv = document.createElement('div');
+    groupDiv.className = 'metric-group';
+
+    var header = document.createElement('div');
+    header.className = 'metric-group-header';
+    header.innerHTML = '<span class="toggle">&#9660;</span> <h3>' + displayName + ' (' + groupMetrics.length + ')</h3>';
+    header.addEventListener('click', function() {
+      this.classList.toggle('collapsed');
+      this.nextElementSibling.classList.toggle('collapsed');
+    });
+
+    var body = document.createElement('div');
+    body.className = 'metric-group-body';
+
+    for (var metric of groupMetrics) {
+      var chartDiv = document.createElement('div');
+      chartDiv.className = 'metric-chart';
+      chartDiv.dataset.metric = metric.name;
+      chartDiv.innerHTML =
+        '<div class="chart-title" title="' + metric.name + '">' + metric.name + '</div>' +
+        '<div id="chart-' + metric.name.replace(/[^a-zA-Z0-9]/g, '_') + '"></div>';
+      body.appendChild(chartDiv);
+    }
+
+    groupDiv.appendChild(header);
+    groupDiv.appendChild(body);
+    container.appendChild(groupDiv);
+
+    for (var m of groupMetrics) {
+      var chartId = 'chart-' + m.name.replace(/[^a-zA-Z0-9]/g, '_');
+      setTimeout(renderSmallChart.bind(null, chartId, m.name, history), 0);
+    }
+  }
+}
+
+async function loadScenarioHistory(scenario) {
+  var runs = manifest.runs.slice().reverse().filter(function(r) {
+    return r.scenarios[scenario];
+  });
+  var results = await Promise.all(
+    runs.map(function(run) { return loadResultFile(run.scenarios[scenario].file); })
+  );
+  return runs.map(function(run, i) {
+    return {
+      commit: run.commit_short,
+      tag: run.tag,
+      timestamp: run.timestamp,
+      data: results[i],
+    };
+  }).filter(function(entry) { return entry.data !== null; });
+}
+
+function renderSmallChart(containerId, metricName, history) {
+  var el = document.getElementById(containerId);
+  if (!el) return;
+
+  var x = [];
+  var y = [];
+  var colors = [];
+
+  for (var entry of history) {
+    var m = entry.data.metrics[metricName];
+    if (!m) continue;
+    var label = entry.tag || entry.commit;
+    x.push(label);
+    y.push(getMetricYValue(m, currentYAxis));
+    colors.push(markerColor(m, currentYAxis));
+  }
+
+  var yConfig = getYAxisConfig(currentYAxis);
+
+  Plotly.react(el, [{
+    x: x, y: y,
+    type: 'scatter',
+    mode: 'lines+markers',
+    marker: { color: colors, size: 8 },
+    line: { color: lineColor(), width: 2 },
+  }], {
+    template: plotlyTemplate(),
+    paper_bgcolor: plotlyBg(),
+    plot_bgcolor: plotlyBg(),
+    margin: { l: 30, r: 10, t: 5, b: 20 },
+    xaxis: { showticklabels: false, showgrid: false },
+    yaxis: {
+      range: yConfig.range,
+      dtick: yConfig.dtick,
+      tickfont: { size: 9 },
+      gridcolor: gridColor(),
+      autorange: yConfig.range === null,
+    },
+    height: 120,
+    showlegend: false,
+  }, {
+    displayModeBar: false,
+    staticPlot: true,
+    responsive: true,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Scenario Overview Chart
+// ---------------------------------------------------------------------------
+function getSummaryYValue(summary, yAxis) {
+  switch (yAxis) {
+    case 'pass_rate': return summary.pass_rate * 100;
+    case 'std_score': return summary.std_score;
+    case 'std_value': return summary.std_score; // fallback: no std_value at summary level
+    default: return summary.mean_score;
+  }
+}
+
+function renderScenarioChart(history) {
+  var el = document.getElementById('scenario-chart');
+  if (!el || !history || history.length === 0) return;
+
+  var useComparison = currentCompare && compareHistory && compareHistory.length > 0;
+  var unifiedLabels = buildUnifiedXAxis(history, useComparison ? compareHistory : null);
+
+  // Build primary data aligned to unified X-axis
+  var primaryMap = {};
+  for (var entry of history) {
+    var label = entry.tag || entry.commit;
+    primaryMap[label] = entry.data.summary;
+  }
+
+  var x = [];
+  var y = [];
+  var colors = [];
+  var hoverTexts = [];
+  for (var pLabel of unifiedLabels) {
+    x.push(pLabel);
+    var s = primaryMap[pLabel];
+    if (s) {
+      y.push(getSummaryYValue(s, currentYAxis));
+      colors.push(markerColor(s, currentYAxis));
+      hoverTexts.push(
+        '<b>' + (SCENARIO_NAMES[currentScenario] || currentScenario) + '</b><br>' +
+        'Score: ' + s.mean_score.toFixed(3) + '<br>' +
+        'Pass Rate: ' + (s.pass_rate * 100).toFixed(1) + '%<br>' +
+        'Std Score: ' + s.std_score.toFixed(3) + '<br>' +
+        pLabel
+      );
+    } else {
+      y.push(null);
+      colors.push(lineColor());
+      hoverTexts.push('');
+    }
+  }
+
+  var yConfig = getYAxisConfig(currentYAxis);
+  var shapes = getThresholdShapes();
+
+  var traces = [{
+    x: x, y: y,
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: SCENARIO_NAMES[currentScenario] || currentScenario,
+    connectgaps: false,
+    marker: { color: colors, size: 10 },
+    line: { color: lineColor(), width: 2 },
+    text: hoverTexts,
+    hovertemplate: '%{text}<extra></extra>',
+  }];
+
+  var showLegend = false;
+  if (useComparison) {
+    var compareMap = {};
+    for (var cEntry of compareHistory) {
+      var cLabel = cEntry.tag || cEntry.commit;
+      compareMap[cLabel] = cEntry.data.summary;
+    }
+
+    var cy = [];
+    var cHovers = [];
+    var hasCompareData = false;
+    for (var uLabel of unifiedLabels) {
+      var cs = compareMap[uLabel];
+      if (cs) {
+        cy.push(getSummaryYValue(cs, currentYAxis));
+        cHovers.push(
+          '<b>' + (SCENARIO_NAMES[currentCompare] || currentCompare) + '</b><br>' +
+          'Pass Rate: ' + (cs.pass_rate * 100).toFixed(1) + '%<br>' +
+          'Mean Score: ' + cs.mean_score.toFixed(3) + '<br>' +
+          'Std Score: ' + cs.std_score.toFixed(3) + '<br>' +
+          uLabel
+        );
+        hasCompareData = true;
+      } else {
+        cy.push(null);
+        cHovers.push('');
+      }
+    }
+
+    if (hasCompareData) {
+      traces.push({
+        x: unifiedLabels.slice(), y: cy,
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: SCENARIO_NAMES[currentCompare] || currentCompare,
+        connectgaps: false,
+        marker: { color: '#ff7f0e', size: 8 },
+        line: { color: '#ff7f0e', width: 2, dash: 'dash' },
+        text: cHovers,
+        hovertemplate: '%{text}<extra></extra>',
+      });
+      showLegend = true;
+    }
+  }
+
+  Plotly.react('scenario-chart', traces, {
+    template: plotlyTemplate(),
+    font: { color: fontColor() },
+    paper_bgcolor: plotlyBg(),
+    plot_bgcolor: plotlyBg(),
+    xaxis: { title: 'Release', tickangle: -45, gridcolor: gridColor() },
+    yaxis: {
+      title: yConfig.title,
+      range: yConfig.range,
+      dtick: yConfig.dtick,
+      gridcolor: gridColor(),
+      autorange: yConfig.range === null,
+    },
+    shapes: shapes,
+    height: 250,
+    margin: { l: 60, r: 20, t: 10, b: 80 },
+    showlegend: showLegend,
+    transition: { duration: 300 },
+  }, {
+    responsive: true,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Expanded chart modal
+// ---------------------------------------------------------------------------
+function expandChart(metricName, history) {
+  var modal = document.getElementById('chart-modal');
+  modal.classList.add('active');
+  currentModalMetric = metricName;
+
+  // Modal title
+  document.getElementById('modal-title').textContent = metricName;
+
+  // Modal stats bar
+  renderModalStats(metricName);
+
+  // Build unified X-axis from primary + comparison histories
+  var useComparison = currentCompare && compareHistory && compareHistory.length > 0;
+  var unifiedLabels = buildUnifiedXAxis(history, useComparison ? compareHistory : null);
+
+  // Build primary trace aligned to unified X-axis
+  var primaryMap = {};
+  for (var entry of history) {
+    var m = entry.data.metrics[metricName];
+    if (!m) continue;
+    var label = entry.tag || entry.commit;
+    primaryMap[label] = m;
+  }
+
+  var x = [];
+  var y = [];
+  var colors = [];
+  var hoverTexts = [];
+  for (var pLabel of unifiedLabels) {
+    x.push(pLabel);
+    var pm = primaryMap[pLabel];
+    if (pm) {
+      y.push(getMetricYValue(pm, currentYAxis));
+      colors.push(markerColor(pm, currentYAxis));
+      hoverTexts.push(
+        '<b>' + metricName + '</b><br>' +
+        'Score: ' + pm.mean_score.toFixed(3) + '<br>' +
+        'Value: ' + pm.mean_value.toFixed(4) + ' (std: ' + pm.std_value.toFixed(4) + ')<br>' +
+        'Pass Rate: ' + (pm.pass_rate * 100).toFixed(1) + '%<br>' +
+        'Std Score: ' + pm.std_score.toFixed(3) + '<br>' +
+        'Weight: ' + pm.weight + '<br>' +
+        pLabel
+      );
+    } else {
+      y.push(null);
+      colors.push(lineColor());
+      hoverTexts.push('');
+    }
+  }
+
+  var yConfig = getYAxisConfig(currentYAxis);
+  var shapes = getThresholdShapes();
+
+  var traces = [{
+    x: x, y: y,
+    type: 'scatter',
+    mode: 'lines+markers',
+    name: SCENARIO_NAMES[currentScenario] || currentScenario,
+    connectgaps: false,
+    marker: { color: colors, size: 10 },
+    line: { color: lineColor(), width: 2 },
+    text: hoverTexts,
+    hovertemplate: '%{text}<extra></extra>',
+  }];
+
+  // Comparison trace aligned to same unified X-axis
+  var showLegend = false;
+  if (useComparison) {
+    var compareMap = {};
+    for (var cEntry of compareHistory) {
+      var cm = cEntry.data.metrics[metricName];
+      if (!cm) continue;
+      var cLabel = cEntry.tag || cEntry.commit;
+      compareMap[cLabel] = cm;
+    }
+
+    var cy = [];
+    var cHovers = [];
+    var hasCompareData = false;
+    for (var uLabel of unifiedLabels) {
+      var cMetric = compareMap[uLabel];
+      if (cMetric) {
+        cy.push(getMetricYValue(cMetric, currentYAxis));
+        cHovers.push(
+          '<b>' + metricName + ' (' + SCENARIO_NAMES[currentCompare] + ')</b><br>' +
+          'Score: ' + cMetric.mean_score.toFixed(3) + '<br>' +
+          'Pass Rate: ' + (cMetric.pass_rate * 100).toFixed(1) + '%<br>' +
+          uLabel
+        );
+        hasCompareData = true;
+      } else {
+        cy.push(null);
+        cHovers.push('');
+      }
+    }
+
+    if (hasCompareData) {
+      traces.push({
+        x: unifiedLabels.slice(), y: cy,
+        type: 'scatter',
+        mode: 'lines+markers',
+        name: SCENARIO_NAMES[currentCompare] || currentCompare,
+        connectgaps: false,
+        marker: { color: '#ff7f0e', size: 8 },
+        line: { color: '#ff7f0e', width: 2, dash: 'dash' },
+        text: cHovers,
+        hovertemplate: '%{text}<extra></extra>',
+      });
+      showLegend = true;
+    }
+  }
+
+  Plotly.react('modal-chart', traces, {
+    template: plotlyTemplate(),
+    font: { color: fontColor() },
+    paper_bgcolor: plotlyBg(),
+    plot_bgcolor: plotlyBg(),
+    xaxis: { title: 'Commit', tickangle: -45, gridcolor: gridColor() },
+    yaxis: {
+      title: yConfig.title,
+      range: yConfig.range,
+      gridcolor: gridColor(),
+      autorange: yConfig.range === null,
+    },
+    shapes: shapes,
+    height: 450,
+    margin: { l: 60, r: 20, t: 20, b: 80 },
+    showlegend: showLegend,
+    transition: { duration: 300 },
+  }, {
+    responsive: true,
+  });
+}
+
+function renderModalStats(metricName) {
+  var statsEl = document.getElementById('modal-stats');
+  var select = document.getElementById('commit-selector');
+  var data = cachedData[select.value];
+  if (!data || !data.metrics[metricName]) {
+    statsEl.innerHTML = '';
+    return;
+  }
+  var m = data.metrics[metricName];
+  var status = passStatusClass(m.pass_rate);
+  statsEl.innerHTML =
+    '<span>Score: <strong>' + m.mean_score.toFixed(3) + '</strong></span>' +
+    '<span>Value: <strong>' + m.mean_value.toFixed(4) + ' &plusmn; ' + m.std_value.toFixed(4) + '</strong></span>' +
+    '<span>Pass Rate: <strong class="status-' + status + '">' + (m.pass_rate * 100).toFixed(1) + '%</strong></span>' +
+    '<span>Weight: <strong>' + m.weight + '</strong></span>';
+}
+
+function closeModal(event) {
+  if (event && event.target !== event.currentTarget) return;
+  document.getElementById('chart-modal').classList.remove('active');
+  currentModalMetric = null;
+}
+
+// ---------------------------------------------------------------------------
+// Event listeners
+// ---------------------------------------------------------------------------
+document.getElementById('back-btn').addEventListener('click', showCards);
+
+document.getElementById('commit-selector').addEventListener('change', function() {
+  // Close modal on commit change since data is reloading
+  document.getElementById('chart-modal').classList.remove('active');
+  currentModalMetric = null;
+  renderDrilldownData(this.value);
+});
+
+document.getElementById('yaxis-selector').addEventListener('change', function() {
+  currentYAxis = this.value;
+  // Re-render all small charts
+  if (currentHistory) {
+    var chartEls = document.querySelectorAll('.metric-chart');
+    for (var chartEl of chartEls) {
+      var metricName = chartEl.dataset.metric;
+      var chartId = 'chart-' + metricName.replace(/[^a-zA-Z0-9]/g, '_');
+      renderSmallChart(chartId, metricName, currentHistory);
+    }
+  }
+  // Re-render scenario chart
+  if (currentHistory) {
+    renderScenarioChart(currentHistory);
+  }
+  // Re-render modal if open
+  if (currentModalMetric && currentHistory) {
+    expandChart(currentModalMetric, currentHistory);
+  }
+});
+
+document.getElementById('zoom-toggle').addEventListener('change', function() {
+  currentZoom = this.checked;
+  if (currentHistory) {
+    var chartEls = document.querySelectorAll('.metric-chart');
+    for (var chartEl of chartEls) {
+      var metricName = chartEl.dataset.metric;
+      var chartId = 'chart-' + metricName.replace(/[^a-zA-Z0-9]/g, '_');
+      renderSmallChart(chartId, metricName, currentHistory);
+    }
+    renderScenarioChart(currentHistory);
+  }
+  if (currentModalMetric && currentHistory) {
+    expandChart(currentModalMetric, currentHistory);
+  }
+});
+
+document.getElementById('compare-selector').addEventListener('change', async function() {
+  var val = this.value;
+  if (val) {
+    currentCompare = val;
+    compareHistory = await loadScenarioHistory(val);
+  } else {
+    currentCompare = null;
+    compareHistory = null;
+  }
+  // Re-render scenario chart
+  if (currentHistory) {
+    renderScenarioChart(currentHistory);
+  }
+  // Re-render modal if open
+  if (currentModalMetric && currentHistory) {
+    expandChart(currentModalMetric, currentHistory);
+  }
+});
+
+document.getElementById('failing-seeds-toggle').addEventListener('click', function() {
+  var body = document.getElementById('failing-seeds-body');
+  var arrow = this.querySelector('.toggle');
+  body.classList.toggle('collapsed');
+  arrow.innerHTML = body.classList.contains('collapsed') ? '&#9654;' : '&#9660;';
+});
+
+document.getElementById('chart-modal').addEventListener('click', closeModal);
+document.getElementById('modal-close-btn').addEventListener('click', function() {
+  document.getElementById('chart-modal').classList.remove('active');
+  currentModalMetric = null;
+});
+
+document.getElementById('cards-view').addEventListener('click', function(e) {
+  var card = e.target.closest('.validation-card');
+  if (card && card.dataset.scenario) {
+    showDrilldown(card.dataset.scenario);
+  }
+});
+
+document.getElementById('metric-groups').addEventListener('click', function(e) {
+  var chart = e.target.closest('.metric-chart');
+  if (chart && chart.dataset.metric && currentHistory) {
+    expandChart(chart.dataset.metric, currentHistory);
+  }
+});
+
+// ESC key closes modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    var modal = document.getElementById('chart-modal');
+    if (modal.classList.contains('active')) {
+      modal.classList.remove('active');
+      currentModalMetric = null;
+    }
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+loadManifest();
+
+// Re-render on theme change (for dark mode)
+var observer = new MutationObserver(function() {
+  if (currentScenario) {
+    var select = document.getElementById('commit-selector');
+    if (select && select.value) renderDrilldownData(select.value);
+  } else if (manifest) {
+    renderCards();
+  }
+});
+observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+observer.observe(document.body, { attributes: true, attributeFilter: ['data-theme'] });
+
+})();
+</script>

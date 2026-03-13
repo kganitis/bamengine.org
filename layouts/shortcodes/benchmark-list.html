@@ -1,0 +1,458 @@
+<div class="benchmark-list" id="benchmark-list"
+     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
+     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}"
+     data-green-pass-threshold="{{ with .Page.Params.green_pass_threshold }}{{ . }}{{ else }}0.97{{ end }}"
+     data-yellow-pass-threshold="{{ with .Page.Params.yellow_pass_threshold }}{{ . }}{{ else }}0.96{{ end }}">
+  <div class="benchmark-loading" id="bl-loading">Loading benchmark data...</div>
+  <div class="benchmark-empty" id="bl-empty" style="display:none;">
+    No benchmark data available yet.
+  </div>
+
+  <div id="bl-content" style="display:none;">
+    <!-- Toolbar -->
+    <div class="benchmark-toolbar">
+      <div class="toolbar-group">
+        <label>Release:</label>
+        <select id="bl-release"></select>
+      </div>
+      <div class="toolbar-group">
+        <label>Scenarios:</label>
+        <div class="checkbox-group" id="bl-scenarios"></div>
+      </div>
+      <div class="toolbar-group">
+        <label>Groups:</label>
+        <div class="checkbox-group" id="bl-groups"></div>
+      </div>
+      <div class="toolbar-group">
+        <label>Search:</label>
+        <input type="text" id="bl-search" placeholder="Filter metrics...">
+      </div>
+    </div>
+
+    <!-- Row count -->
+    <div class="benchmark-row-count" id="bl-row-count"></div>
+
+    <!-- Table -->
+    <div class="benchmark-table-wrap">
+      <table class="benchmark-table">
+        <thead>
+          <tr>
+            <th data-col="scenario">Scenario <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="group">Group <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="metric">Metric <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="mean_score">Score <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="pass_rate">Pass Rate <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="mean_value">Value &plusmn; Std <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="weight">Weight <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="score_delta">Recent Change <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="changed_at">Changed At <span class="sort-arrow">&#9650;</span></th>
+          </tr>
+        </thead>
+        <tbody id="bl-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Configuration
+// ---------------------------------------------------------------------------
+var root = document.getElementById('benchmark-list');
+var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
+var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var THRESHOLD_GREEN_PASS = parseFloat(root.dataset.greenPassThreshold);
+var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
+var DATA_BASE = '{{ "data/validation/" | relURL }}';
+var COLOR_THRESHOLD = 5;   // >=5% → colored background
+var HIDE_THRESHOLD = 1;    // <1% → hidden entirely
+var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
+
+var SCENARIO_NAMES = {
+  baseline: 'Baseline',
+  growth_plus: 'Growth+',
+  buffer_stock: 'Buffer-Stock'
+};
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+var manifest = null;
+var cachedData = {};
+var allRows = [];
+var sortCol = 'scenario';
+var sortAsc = true;
+var checkedScenarios = {};
+var checkedGroups = {};
+
+// ---------------------------------------------------------------------------
+// Color helpers
+// ---------------------------------------------------------------------------
+function scoreStatusClass(score) {
+  if (score >= THRESHOLD_GREEN_SCORE) return 'status-green';
+  if (score >= THRESHOLD_YELLOW_SCORE) return 'status-yellow';
+  return 'status-red';
+}
+
+function passStatusClass(passRate) {
+  if (passRate >= THRESHOLD_GREEN_PASS) return 'status-green';
+  if (passRate >= THRESHOLD_YELLOW_PASS) return 'status-yellow';
+  return 'status-red';
+}
+
+// ---------------------------------------------------------------------------
+// Data loading
+// ---------------------------------------------------------------------------
+async function loadManifest() {
+  try {
+    var resp = await fetch(DATA_BASE + 'manifest.json');
+    if (!resp.ok) throw new Error('No manifest found');
+    manifest = await resp.json();
+  } catch (e) {
+    document.getElementById('bl-loading').style.display = 'none';
+    document.getElementById('bl-empty').style.display = 'block';
+    return;
+  }
+
+  if (!manifest.runs || manifest.runs.length === 0) {
+    document.getElementById('bl-loading').style.display = 'none';
+    document.getElementById('bl-empty').style.display = 'block';
+    return;
+  }
+
+  // Populate release selector
+  var select = document.getElementById('bl-release');
+  for (var i = 0; i < manifest.runs.length; i++) {
+    var run = manifest.runs[i];
+    var opt = document.createElement('option');
+    opt.value = i;
+    var label = run.tag || run.commit_short;
+    var date = (run.commit_date || run.timestamp).split('T')[0];
+    opt.textContent = label + ' (' + date + ')';
+    select.appendChild(opt);
+  }
+
+  // Populate scenario checkboxes
+  var scenarioDiv = document.getElementById('bl-scenarios');
+  for (var key of Object.keys(SCENARIO_NAMES)) {
+    checkedScenarios[key] = true;
+    var lbl = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = true;
+    cb.value = key;
+    cb.addEventListener('change', function() {
+      checkedScenarios[this.value] = this.checked;
+      renderTable();
+    });
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + SCENARIO_NAMES[key]));
+    scenarioDiv.appendChild(lbl);
+  }
+
+  document.getElementById('bl-loading').style.display = 'none';
+  document.getElementById('bl-content').style.display = '';
+
+  await loadRelease();
+}
+
+async function loadResultFile(filename) {
+  if (cachedData[filename]) return cachedData[filename];
+  try {
+    var resp = await fetch(DATA_BASE + filename);
+    if (!resp.ok) throw new Error('Failed to load ' + filename);
+    var data = await resp.json();
+    cachedData[filename] = data;
+    return data;
+  } catch (e) {
+    console.error('Failed to load result file:', filename, e);
+    return null;
+  }
+}
+
+async function loadRelease() {
+  var select = document.getElementById('bl-release');
+  var idx = parseInt(select.value, 10);
+  var run = manifest.runs[idx];
+  allRows = [];
+
+  // Fetch scenario files for ALL runs (cached after first call)
+  var allFilesToFetch = [];
+  for (var ri = 0; ri < manifest.runs.length; ri++) {
+    var r = manifest.runs[ri];
+    for (var sk of Object.keys(r.scenarios)) {
+      allFilesToFetch.push(r.scenarios[sk].file);
+    }
+  }
+  await Promise.all(allFilesToFetch.map(loadResultFile));
+
+  // Build lookup: allMetrics[runIndex]["scenarioKey:metricName"] -> metric data
+  var allMetrics = [];
+  for (var ri = 0; ri < manifest.runs.length; ri++) {
+    var lookup = {};
+    var r = manifest.runs[ri];
+    for (var sk of Object.keys(r.scenarios)) {
+      var d = cachedData[r.scenarios[sk].file];
+      if (!d) continue;
+      for (var mn of Object.keys(d.metrics)) {
+        lookup[sk + ':' + mn] = d.metrics[mn];
+      }
+    }
+    allMetrics.push(lookup);
+  }
+
+  // Collect all group names and build rows for the selected release
+  var scenarioKeys = Object.keys(run.scenarios);
+  var groupSet = {};
+
+  for (var i = 0; i < scenarioKeys.length; i++) {
+    var scenarioKey = scenarioKeys[i];
+    var data = cachedData[run.scenarios[scenarioKey].file];
+    if (!data) continue;
+
+    var groupNames = data.group_display_names || {};
+
+    for (var metricName of Object.keys(data.metrics)) {
+      var m = data.metrics[metricName];
+      var groupKey = m.group || 'OTHER';
+      var groupDisplay = groupNames[groupKey] || groupKey;
+      groupSet[groupKey] = groupDisplay;
+
+      // Find the most recent significant change by scanning backward
+      var change = findSignificantChange(idx, scenarioKey, metricName, allMetrics);
+
+      allRows.push({
+        scenario: scenarioKey,
+        scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
+        group: groupKey,
+        groupDisplay: groupDisplay,
+        metric: metricName,
+        mean_score: m.mean_score,
+        pass_rate: m.pass_rate,
+        mean_value: m.mean_value,
+        std_value: m.std_value,
+        weight: m.weight,
+        scoreDelta: change ? change.delta : null,
+        scoreDeltaPct: change ? change.deltaPct : null,
+        changedAtDate: change ? change.atDate : null,
+        changedAtCommits: change ? change.commitRange : null,
+        prevRef: change ? change.prevRef : null,
+        afterRef: change ? change.afterRef : null
+      });
+    }
+  }
+
+  // Populate group checkboxes
+  var groupDiv = document.getElementById('bl-groups');
+  groupDiv.innerHTML = '';
+  checkedGroups = {};
+  var sortedGroups = Object.keys(groupSet).sort();
+  for (var gk of sortedGroups) {
+    checkedGroups[gk] = true;
+    var lbl = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = true;
+    cb.value = gk;
+    cb.addEventListener('change', function() {
+      checkedGroups[this.value] = this.checked;
+      renderTable();
+    });
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + groupSet[gk]));
+    groupDiv.appendChild(lbl);
+  }
+
+  renderTable();
+}
+
+// ---------------------------------------------------------------------------
+// Backward-scanning significant change detection
+// ---------------------------------------------------------------------------
+function findSignificantChange(idx, scenarioKey, metricName, allMetrics) {
+  var key = scenarioKey + ':' + metricName;
+  for (var i = idx; i < manifest.runs.length - 1; i++) {
+    var current = allMetrics[i][key];
+    var prev = allMetrics[i + 1][key];
+    if (!current || !prev) continue;
+    if (prev.mean_score === 0) continue;
+    var delta = current.mean_score - prev.mean_score;
+    var deltaPct = delta / prev.mean_score * 100;
+    if (Math.abs(deltaPct) >= HIDE_THRESHOLD) {
+      var afterRun = manifest.runs[i];
+      var prevRun = manifest.runs[i + 1];
+      return {
+        delta: delta,
+        deltaPct: deltaPct,
+        atDate: (afterRun.commit_date || afterRun.timestamp).split('T')[0],
+        commitRange: prevRun.commit_short + '...' + afterRun.commit_short,
+        prevRef: prevRun.tag || prevRun.commit_short,
+        afterRef: afterRun.tag || afterRun.commit_short
+      };
+    }
+  }
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// Filtering and sorting
+// ---------------------------------------------------------------------------
+function getFilteredRows() {
+  var search = document.getElementById('bl-search').value.toLowerCase();
+  return allRows.filter(function(row) {
+    if (!checkedScenarios[row.scenario]) return false;
+    if (!checkedGroups[row.group]) return false;
+    if (search && row.metric.toLowerCase().indexOf(search) === -1) return false;
+    return true;
+  });
+}
+
+function compareValues(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
+function sortRows(rows) {
+  var col = sortCol;
+  var asc = sortAsc;
+  rows.sort(function(a, b) {
+    var va, vb;
+    switch (col) {
+      case 'scenario': va = a.scenarioDisplay; vb = b.scenarioDisplay; break;
+      case 'group': va = a.groupDisplay; vb = b.groupDisplay; break;
+      case 'metric': va = a.metric; vb = b.metric; break;
+      case 'mean_score': va = a.mean_score; vb = b.mean_score; break;
+      case 'pass_rate': va = a.pass_rate; vb = b.pass_rate; break;
+      case 'mean_value': va = a.mean_value; vb = b.mean_value; break;
+      case 'weight': va = a.weight; vb = b.weight; break;
+      case 'score_delta':
+        va = a.scoreDeltaPct !== null ? Math.abs(a.scoreDeltaPct) : -1;
+        vb = b.scoreDeltaPct !== null ? Math.abs(b.scoreDeltaPct) : -1;
+        break;
+      case 'changed_at': va = a.changedAtDate || ''; vb = b.changedAtDate || ''; break;
+      default: va = a.metric; vb = b.metric;
+    }
+    var cmp = compareValues(va, vb);
+    return asc ? cmp : -cmp;
+  });
+  return rows;
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+function renderTable() {
+  var filtered = getFilteredRows();
+  var sorted = sortRows(filtered);
+
+  document.getElementById('bl-row-count').textContent =
+    'Showing ' + sorted.length + ' of ' + allRows.length + ' metrics';
+
+  var tbody = document.getElementById('bl-tbody');
+  var html = '';
+  for (var row of sorted) {
+    var scoreClass = scoreStatusClass(row.mean_score);
+    var passClass = passStatusClass(row.pass_rate);
+    // Recent Change cell
+    var deltaCell;
+    if (row.scoreDeltaPct !== null) {
+      var sign = row.scoreDelta >= 0 ? '+' : '';
+      var absPct = Math.abs(row.scoreDeltaPct);
+      var deltaClass;
+      if (absPct >= COLOR_THRESHOLD) {
+        deltaClass = row.scoreDelta >= 0 ? 'change-positive' : 'change-negative';
+      } else {
+        deltaClass = 'change-neutral';
+      }
+      deltaCell = '<td class="' + deltaClass + '">' +
+        sign + row.scoreDeltaPct.toFixed(1) + '% (' +
+        sign + row.scoreDelta.toFixed(3) + ')</td>';
+    } else {
+      deltaCell = '<td></td>';
+    }
+
+    // Changed At cell with GitHub compare link
+    var changedCell;
+    if (row.changedAtDate && row.prevRef) {
+      var compareUrl = GITHUB_BASE + '/compare/' + row.prevRef + '...' + row.afterRef;
+      changedCell = '<td class="col-changed-at">' + row.changedAtDate +
+        ' <a class="commit-range" href="' + compareUrl + '" target="_blank" rel="noopener">' +
+        row.changedAtCommits + '</a></td>';
+    } else {
+      changedCell = '<td></td>';
+    }
+
+    // Metric link to dashboard drilldown
+    var metricLink = '{{ "benchmarks/validation/" | relURL }}?scenario=' +
+      encodeURIComponent(row.scenario) + '&metric=' + encodeURIComponent(row.metric);
+
+    html +=
+      '<tr>' +
+      '<td class="col-scenario">' + row.scenarioDisplay + '</td>' +
+      '<td>' + row.groupDisplay + '</td>' +
+      '<td class="col-metric"><a href="' + metricLink + '">' + row.metric + '</a></td>' +
+      '<td class="' + scoreClass + '">' + row.mean_score.toFixed(3) + '</td>' +
+      '<td class="' + passClass + '">' + (row.pass_rate * 100).toFixed(1) + '%</td>' +
+      '<td>' + row.mean_value.toFixed(4) + ' &plusmn; ' + row.std_value.toFixed(4) + '</td>' +
+      '<td>' + row.weight + '</td>' +
+      deltaCell +
+      changedCell +
+      '</tr>';
+  }
+  tbody.innerHTML = html;
+
+  // Update sort arrows
+  var ths = document.querySelectorAll('.benchmark-table th');
+  for (var th of ths) {
+    var col = th.dataset.col;
+    var arrow = th.querySelector('.sort-arrow');
+    if (col === sortCol) {
+      th.classList.add('sorted');
+      arrow.innerHTML = sortAsc ? '&#9650;' : '&#9660;';
+    } else {
+      th.classList.remove('sorted');
+      arrow.innerHTML = '&#9650;';
+    }
+  }
+}
+
+function sortBy(col) {
+  if (sortCol === col) {
+    sortAsc = !sortAsc;
+  } else {
+    sortCol = col;
+    sortAsc = true;
+  }
+  renderTable();
+}
+
+// ---------------------------------------------------------------------------
+// Event listeners
+// ---------------------------------------------------------------------------
+document.getElementById('bl-release').addEventListener('change', function() {
+  loadRelease();
+});
+
+document.getElementById('bl-search').addEventListener('input', function() {
+  renderTable();
+});
+
+// Sort on header click
+var ths = document.querySelectorAll('.benchmark-table th[data-col]');
+for (var th of ths) {
+  th.addEventListener('click', function() {
+    sortBy(this.dataset.col);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+loadManifest();
+
+})();
+</script>
