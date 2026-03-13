@@ -24,25 +24,466 @@ wage, Phillips curve, Okun curve, Beveridge curve, and firm size distribution.&l
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;sim&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;bam&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;Simulation&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;init&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="n"&gt;results&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;sim&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;run&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;n_periods&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;show&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="kc"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Benchmarks</title><link>https://bamengine.org/benchmarks/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/</guid><description>&lt;p&gt;Performance benchmarks tracked with
-&lt;a href="https://asv.readthedocs.io/"&gt;ASV (Airspeed Velocity)&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;View the &lt;a href="https://kganitis.github.io/bam-engine/"&gt;latest benchmark results&lt;/a&gt;.&lt;/p&gt;
-&lt;h2 id="what-is-benchmarked"&gt;What is Benchmarked&lt;a class="headerlink" href="#what-is-benchmarked" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
-&lt;ul&gt;
-&lt;li&gt;Baseline simulation throughput (periods/second)&lt;/li&gt;
-&lt;li&gt;Economy scaling (100–500 firms)&lt;/li&gt;
-&lt;li&gt;Extension overhead (Growth+, Buffer-Stock, Taxation)&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h2 id="running-locally"&gt;Running Locally&lt;a class="headerlink" href="#running-locally" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
+&lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Benchmark List</title><link>https://bamengine.org/benchmarks/list/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/list/</guid><description>&lt;p&gt;Flat table of all validation metrics across scenarios. Use the toolbar to
+filter by release, scenario, or metric group, and click column headers to sort.&lt;/p&gt;
+&lt;div class="benchmark-list" id="benchmark-list"
+ data-green-score-threshold="0.85"
+ data-yellow-score-threshold="0.8"
+ data-green-pass-threshold="0.97"
+ data-yellow-pass-threshold="0.96"&gt;
+ &lt;div class="benchmark-loading" id="bl-loading"&gt;Loading benchmark data...&lt;/div&gt;
+ &lt;div class="benchmark-empty" id="bl-empty" style="display:none;"&gt;
+ No benchmark data available yet.
+ &lt;/div&gt;
+
+ &lt;div id="bl-content" style="display:none;"&gt;
+ 
+ &lt;div class="benchmark-toolbar"&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Release:&lt;/label&gt;
+ &lt;select id="bl-release"&gt;&lt;/select&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Scenarios:&lt;/label&gt;
+ &lt;div class="checkbox-group" id="bl-scenarios"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Groups:&lt;/label&gt;
+ &lt;div class="checkbox-group" id="bl-groups"&gt;&lt;/div&gt;
+ &lt;/div&gt;
+ &lt;div class="toolbar-group"&gt;
+ &lt;label&gt;Search:&lt;/label&gt;
+ &lt;input type="text" id="bl-search" placeholder="Filter metrics..."&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+
+ 
+ &lt;div class="benchmark-row-count" id="bl-row-count"&gt;&lt;/div&gt;
+
+ 
+ &lt;div class="benchmark-table-wrap"&gt;
+ &lt;table class="benchmark-table"&gt;
+ &lt;thead&gt;
+ &lt;tr&gt;
+ &lt;th data-col="scenario"&gt;Scenario &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="group"&gt;Group &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="metric"&gt;Metric &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="mean_score"&gt;Score &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="pass_rate"&gt;Pass Rate &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="mean_value"&gt;Value &amp;plusmn; Std &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="weight"&gt;Weight &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="score_delta"&gt;Recent Change &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="changed_at"&gt;Changed At &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;/tr&gt;
+ &lt;/thead&gt;
+ &lt;tbody id="bl-tbody"&gt;&lt;/tbody&gt;
+ &lt;/table&gt;
+ &lt;/div&gt;
+ &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+(function() {
+'use strict';
 
 
-&lt;div class="highlight"&gt;
- &lt;pre class="chroma"&gt;&lt;code&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;git clone https://github.com/kganitis/bam-engine.git
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; bam-engine/asv_benchmarks
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv run
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv publish
-&lt;/span&gt;&lt;/span&gt;&lt;span class="line"&gt;&lt;span class="cl"&gt;asv preview&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;</description></item><item><title>Buffer-Stock Consumption</title><link>https://bamengine.org/gallery/buffer-stock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/buffer-stock/</guid><description>&lt;p&gt;The buffer-stock extension (section 3.9.4) replaces the baseline mean-field
+
+
+var root = document.getElementById('benchmark-list');
+var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
+var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var THRESHOLD_GREEN_PASS = parseFloat(root.dataset.greenPassThreshold);
+var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
+var DATA_BASE = '\/data\/validation\/';
+var COLOR_THRESHOLD = 5; 
+var HIDE_THRESHOLD = 1; 
+var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
+
+var SCENARIO_NAMES = {
+ baseline: 'Baseline',
+ growth_plus: 'Growth+',
+ buffer_stock: 'Buffer-Stock'
+};
+
+
+
+
+var manifest = null;
+var cachedData = {};
+var allRows = [];
+var sortCol = 'scenario';
+var sortAsc = true;
+var checkedScenarios = {};
+var checkedGroups = {};
+
+
+
+
+function scoreStatusClass(score) {
+ if (score &gt;= THRESHOLD_GREEN_SCORE) return 'status-green';
+ if (score &gt;= THRESHOLD_YELLOW_SCORE) return 'status-yellow';
+ return 'status-red';
+}
+
+function passStatusClass(passRate) {
+ if (passRate &gt;= THRESHOLD_GREEN_PASS) return 'status-green';
+ if (passRate &gt;= THRESHOLD_YELLOW_PASS) return 'status-yellow';
+ return 'status-red';
+}
+
+
+
+
+async function loadManifest() {
+ try {
+ var resp = await fetch(DATA_BASE + 'manifest.json');
+ if (!resp.ok) throw new Error('No manifest found');
+ manifest = await resp.json();
+ } catch (e) {
+ document.getElementById('bl-loading').style.display = 'none';
+ document.getElementById('bl-empty').style.display = 'block';
+ return;
+ }
+
+ if (!manifest.runs || manifest.runs.length === 0) {
+ document.getElementById('bl-loading').style.display = 'none';
+ document.getElementById('bl-empty').style.display = 'block';
+ return;
+ }
+
+ 
+ var select = document.getElementById('bl-release');
+ for (var i = 0; i &lt; manifest.runs.length; i++) {
+ var run = manifest.runs[i];
+ var opt = document.createElement('option');
+ opt.value = i;
+ var label = run.tag || run.commit_short;
+ var date = (run.commit_date || run.timestamp).split('T')[0];
+ opt.textContent = label + ' (' + date + ')';
+ select.appendChild(opt);
+ }
+
+ 
+ var scenarioDiv = document.getElementById('bl-scenarios');
+ for (var key of Object.keys(SCENARIO_NAMES)) {
+ checkedScenarios[key] = true;
+ var lbl = document.createElement('label');
+ var cb = document.createElement('input');
+ cb.type = 'checkbox';
+ cb.checked = true;
+ cb.value = key;
+ cb.addEventListener('change', function() {
+ checkedScenarios[this.value] = this.checked;
+ renderTable();
+ });
+ lbl.appendChild(cb);
+ lbl.appendChild(document.createTextNode(' ' + SCENARIO_NAMES[key]));
+ scenarioDiv.appendChild(lbl);
+ }
+
+ document.getElementById('bl-loading').style.display = 'none';
+ document.getElementById('bl-content').style.display = '';
+
+ await loadRelease();
+}
+
+async function loadResultFile(filename) {
+ if (cachedData[filename]) return cachedData[filename];
+ try {
+ var resp = await fetch(DATA_BASE + filename);
+ if (!resp.ok) throw new Error('Failed to load ' + filename);
+ var data = await resp.json();
+ cachedData[filename] = data;
+ return data;
+ } catch (e) {
+ console.error('Failed to load result file:', filename, e);
+ return null;
+ }
+}
+
+async function loadRelease() {
+ var select = document.getElementById('bl-release');
+ var idx = parseInt(select.value, 10);
+ var run = manifest.runs[idx];
+ allRows = [];
+
+ 
+ var allFilesToFetch = [];
+ for (var ri = 0; ri &lt; manifest.runs.length; ri++) {
+ var r = manifest.runs[ri];
+ for (var sk of Object.keys(r.scenarios)) {
+ allFilesToFetch.push(r.scenarios[sk].file);
+ }
+ }
+ await Promise.all(allFilesToFetch.map(loadResultFile));
+
+ 
+ var allMetrics = [];
+ for (var ri = 0; ri &lt; manifest.runs.length; ri++) {
+ var lookup = {};
+ var r = manifest.runs[ri];
+ for (var sk of Object.keys(r.scenarios)) {
+ var d = cachedData[r.scenarios[sk].file];
+ if (!d) continue;
+ for (var mn of Object.keys(d.metrics)) {
+ lookup[sk + ':' + mn] = d.metrics[mn];
+ }
+ }
+ allMetrics.push(lookup);
+ }
+
+ 
+ var scenarioKeys = Object.keys(run.scenarios);
+ var groupSet = {};
+
+ for (var i = 0; i &lt; scenarioKeys.length; i++) {
+ var scenarioKey = scenarioKeys[i];
+ var data = cachedData[run.scenarios[scenarioKey].file];
+ if (!data) continue;
+
+ var groupNames = data.group_display_names || {};
+
+ for (var metricName of Object.keys(data.metrics)) {
+ var m = data.metrics[metricName];
+ var groupKey = m.group || 'OTHER';
+ var groupDisplay = groupNames[groupKey] || groupKey;
+ groupSet[groupKey] = groupDisplay;
+
+ 
+ var change = findSignificantChange(idx, scenarioKey, metricName, allMetrics);
+
+ allRows.push({
+ scenario: scenarioKey,
+ scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
+ group: groupKey,
+ groupDisplay: groupDisplay,
+ metric: metricName,
+ mean_score: m.mean_score,
+ pass_rate: m.pass_rate,
+ mean_value: m.mean_value,
+ std_value: m.std_value,
+ weight: m.weight,
+ scoreDelta: change ? change.delta : null,
+ scoreDeltaPct: change ? change.deltaPct : null,
+ changedAtDate: change ? change.atDate : null,
+ changedAtCommits: change ? change.commitRange : null,
+ prevRef: change ? change.prevRef : null,
+ afterRef: change ? change.afterRef : null
+ });
+ }
+ }
+
+ 
+ var groupDiv = document.getElementById('bl-groups');
+ groupDiv.innerHTML = '';
+ checkedGroups = {};
+ var sortedGroups = Object.keys(groupSet).sort();
+ for (var gk of sortedGroups) {
+ checkedGroups[gk] = true;
+ var lbl = document.createElement('label');
+ var cb = document.createElement('input');
+ cb.type = 'checkbox';
+ cb.checked = true;
+ cb.value = gk;
+ cb.addEventListener('change', function() {
+ checkedGroups[this.value] = this.checked;
+ renderTable();
+ });
+ lbl.appendChild(cb);
+ lbl.appendChild(document.createTextNode(' ' + groupSet[gk]));
+ groupDiv.appendChild(lbl);
+ }
+
+ renderTable();
+}
+
+
+
+
+function findSignificantChange(idx, scenarioKey, metricName, allMetrics) {
+ var key = scenarioKey + ':' + metricName;
+ for (var i = idx; i &lt; manifest.runs.length - 1; i++) {
+ var current = allMetrics[i][key];
+ var prev = allMetrics[i + 1][key];
+ if (!current || !prev) continue;
+ if (prev.mean_score === 0) continue;
+ var delta = current.mean_score - prev.mean_score;
+ var deltaPct = delta / prev.mean_score * 100;
+ if (Math.abs(deltaPct) &gt;= HIDE_THRESHOLD) {
+ var afterRun = manifest.runs[i];
+ var prevRun = manifest.runs[i + 1];
+ return {
+ delta: delta,
+ deltaPct: deltaPct,
+ atDate: (afterRun.commit_date || afterRun.timestamp).split('T')[0],
+ commitRange: prevRun.commit_short + '...' + afterRun.commit_short,
+ prevRef: prevRun.tag || prevRun.commit_short,
+ afterRef: afterRun.tag || afterRun.commit_short
+ };
+ }
+ }
+ return null;
+}
+
+
+
+
+function getFilteredRows() {
+ var search = document.getElementById('bl-search').value.toLowerCase();
+ return allRows.filter(function(row) {
+ if (!checkedScenarios[row.scenario]) return false;
+ if (!checkedGroups[row.group]) return false;
+ if (search &amp;&amp; row.metric.toLowerCase().indexOf(search) === -1) return false;
+ return true;
+ });
+}
+
+function compareValues(a, b) {
+ if (a &lt; b) return -1;
+ if (a &gt; b) return 1;
+ return 0;
+}
+
+function sortRows(rows) {
+ var col = sortCol;
+ var asc = sortAsc;
+ rows.sort(function(a, b) {
+ var va, vb;
+ switch (col) {
+ case 'scenario': va = a.scenarioDisplay; vb = b.scenarioDisplay; break;
+ case 'group': va = a.groupDisplay; vb = b.groupDisplay; break;
+ case 'metric': va = a.metric; vb = b.metric; break;
+ case 'mean_score': va = a.mean_score; vb = b.mean_score; break;
+ case 'pass_rate': va = a.pass_rate; vb = b.pass_rate; break;
+ case 'mean_value': va = a.mean_value; vb = b.mean_value; break;
+ case 'weight': va = a.weight; vb = b.weight; break;
+ case 'score_delta':
+ va = a.scoreDeltaPct !== null ? Math.abs(a.scoreDeltaPct) : -1;
+ vb = b.scoreDeltaPct !== null ? Math.abs(b.scoreDeltaPct) : -1;
+ break;
+ case 'changed_at': va = a.changedAtDate || ''; vb = b.changedAtDate || ''; break;
+ default: va = a.metric; vb = b.metric;
+ }
+ var cmp = compareValues(va, vb);
+ return asc ? cmp : -cmp;
+ });
+ return rows;
+}
+
+
+
+
+function renderTable() {
+ var filtered = getFilteredRows();
+ var sorted = sortRows(filtered);
+
+ document.getElementById('bl-row-count').textContent =
+ 'Showing ' + sorted.length + ' of ' + allRows.length + ' metrics';
+
+ var tbody = document.getElementById('bl-tbody');
+ var html = '';
+ for (var row of sorted) {
+ var scoreClass = scoreStatusClass(row.mean_score);
+ var passClass = passStatusClass(row.pass_rate);
+ 
+ var deltaCell;
+ if (row.scoreDeltaPct !== null) {
+ var sign = row.scoreDelta &gt;= 0 ? '+' : '';
+ var absPct = Math.abs(row.scoreDeltaPct);
+ var deltaClass;
+ if (absPct &gt;= COLOR_THRESHOLD) {
+ deltaClass = row.scoreDelta &gt;= 0 ? 'change-positive' : 'change-negative';
+ } else {
+ deltaClass = 'change-neutral';
+ }
+ deltaCell = '&lt;td class="' + deltaClass + '"&gt;' +
+ sign + row.scoreDeltaPct.toFixed(1) + '% (' +
+ sign + row.scoreDelta.toFixed(3) + ')&lt;/td&gt;';
+ } else {
+ deltaCell = '&lt;td&gt;&lt;/td&gt;';
+ }
+
+ 
+ var changedCell;
+ if (row.changedAtDate &amp;&amp; row.prevRef) {
+ var compareUrl = GITHUB_BASE + '/compare/' + row.prevRef + '...' + row.afterRef;
+ changedCell = '&lt;td class="col-changed-at"&gt;' + row.changedAtDate +
+ ' &lt;a class="commit-range" href="' + compareUrl + '" target="_blank" rel="noopener"&gt;' +
+ row.changedAtCommits + '&lt;/a&gt;&lt;/td&gt;';
+ } else {
+ changedCell = '&lt;td&gt;&lt;/td&gt;';
+ }
+
+ 
+ var metricLink = '\/benchmarks\/validation\/?scenario=' +
+ encodeURIComponent(row.scenario) + '&amp;metric=' + encodeURIComponent(row.metric);
+
+ html +=
+ '&lt;tr&gt;' +
+ '&lt;td class="col-scenario"&gt;' + row.scenarioDisplay + '&lt;/td&gt;' +
+ '&lt;td&gt;' + row.groupDisplay + '&lt;/td&gt;' +
+ '&lt;td class="col-metric"&gt;&lt;a href="' + metricLink + '"&gt;' + row.metric + '&lt;/a&gt;&lt;/td&gt;' +
+ '&lt;td class="' + scoreClass + '"&gt;' + row.mean_score.toFixed(3) + '&lt;/td&gt;' +
+ '&lt;td class="' + passClass + '"&gt;' + (row.pass_rate * 100).toFixed(1) + '%&lt;/td&gt;' +
+ '&lt;td&gt;' + row.mean_value.toFixed(4) + ' &amp;plusmn; ' + row.std_value.toFixed(4) + '&lt;/td&gt;' +
+ '&lt;td&gt;' + row.weight + '&lt;/td&gt;' +
+ deltaCell +
+ changedCell +
+ '&lt;/tr&gt;';
+ }
+ tbody.innerHTML = html;
+
+ 
+ var ths = document.querySelectorAll('.benchmark-table th');
+ for (var th of ths) {
+ var col = th.dataset.col;
+ var arrow = th.querySelector('.sort-arrow');
+ if (col === sortCol) {
+ th.classList.add('sorted');
+ arrow.innerHTML = sortAsc ? '&amp;#9650;' : '&amp;#9660;';
+ } else {
+ th.classList.remove('sorted');
+ arrow.innerHTML = '&amp;#9650;';
+ }
+ }
+}
+
+function sortBy(col) {
+ if (sortCol === col) {
+ sortAsc = !sortAsc;
+ } else {
+ sortCol = col;
+ sortAsc = true;
+ }
+ renderTable();
+}
+
+
+
+
+document.getElementById('bl-release').addEventListener('change', function() {
+ loadRelease();
+});
+
+document.getElementById('bl-search').addEventListener('input', function() {
+ renderTable();
+});
+
+
+var ths = document.querySelectorAll('.benchmark-table th[data-col]');
+for (var th of ths) {
+ th.addEventListener('click', function() {
+ sortBy(this.dataset.col);
+ });
+}
+
+
+
+
+loadManifest();
+
+})();
+&lt;/script&gt;</description></item><item><title>Buffer-Stock Consumption</title><link>https://bamengine.org/gallery/buffer-stock/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/gallery/buffer-stock/</guid><description>&lt;p&gt;The buffer-stock extension (section 3.9.4) replaces the baseline mean-field
 MPC with an individual adaptive rule based on buffer-stock saving theory.&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-buffer-stock-1.png" alt="Buffer-stock wealth CCDF"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Complementary CDF of household wealth on log-log axes, fitted against
@@ -166,4 +607,17 @@ index, and real wage with GDP across multiple seeds.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-3.png" alt="Sensitivity to credit market reach"&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Sensitivity analysis: co-movement structure under different values of the
 credit market reach parameter H.&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-4.png" alt="Preferential attachment experiment"&gt;&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;&lt;img src="https://bamengine.org/images/gallery-robustness-4.png" alt="Preferential attachment experiment"&gt;&lt;/p&gt;</description></item><item><title>Validation Dashboard</title><link>https://bamengine.org/benchmarks/validation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/validation/</guid><description>&lt;p&gt;The validation dashboard tracks two complementary metrics across releases:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Score&lt;/strong&gt; (0–1) — how closely simulation results match calibration targets
+from the original BAM model (Delli Gatti et al., 2011). Higher is better.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pass rate&lt;/strong&gt; (%) — how consistently random seeds produce valid results.
+A seed &amp;ldquo;passes&amp;rdquo; when all its metric scores exceed the tolerance threshold.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Card border colors reflect the &lt;strong&gt;score&lt;/strong&gt;:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Green&lt;/strong&gt;: score ≥ 0.85 — accurate&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Yellow&lt;/strong&gt;: score 0.80–0.85 — marginal&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Red&lt;/strong&gt;: score &amp;lt; 0.80 — regression&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Pass rate is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).&lt;/p&gt;</description></item></channel></rss>
