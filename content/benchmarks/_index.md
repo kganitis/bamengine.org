@@ -13,6 +13,11 @@ consistently random seeds produce valid outcomes.
 Flat table of all validation metrics across scenarios. Sortable by score,
 pass rate, or weight — filterable by scenario and metric group.
 
+## [Regressions](/benchmarks/regressions/)
+
+All detected score regressions across releases. Filterable by scenario,
+metric group, and severity threshold.
+
 ## Performance (ASV)
 
 Performance benchmarks tracked with

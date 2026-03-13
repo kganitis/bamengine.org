@@ -1,0 +1,463 @@
+<div class="regressions-list" id="regressions-list"
+     data-regression-threshold="{{ with .Page.Params.regression_threshold }}{{ . }}{{ else }}1{{ end }}"
+     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
+     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}">
+  <div class="regressions-loading" id="reg-loading">Loading benchmark data...</div>
+  <div class="regressions-empty" id="reg-empty" style="display:none;">
+    No regressions detected.
+  </div>
+
+  <div id="reg-content" style="display:none;">
+    <!-- Summary banner -->
+    <div class="regressions-summary" id="reg-summary"></div>
+
+    <!-- Toolbar -->
+    <div class="regressions-toolbar">
+      <div class="toolbar-group">
+        <label>Scenarios:</label>
+        <div class="checkbox-group" id="reg-scenarios"></div>
+      </div>
+      <div class="toolbar-group">
+        <label>Groups:</label>
+        <div class="checkbox-group" id="reg-groups"></div>
+      </div>
+      <div class="toolbar-group">
+        <label>Status:</label>
+        <select id="reg-status">
+          <option value="active">Active only</option>
+          <option value="all">All</option>
+          <option value="fixed">Fixed only</option>
+          <option value="improved">Improved only</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label>Min Severity:</label>
+        <select id="reg-severity">
+          <option value="1">&ge; 1%</option>
+          <option value="2">&ge; 2%</option>
+          <option value="5">&ge; 5%</option>
+          <option value="10">&ge; 10%</option>
+        </select>
+      </div>
+      <div class="toolbar-group">
+        <label>Search:</label>
+        <input type="text" id="reg-search" placeholder="Filter metrics...">
+      </div>
+    </div>
+
+    <!-- Row count -->
+    <div class="regressions-row-count" id="reg-row-count"></div>
+
+    <!-- Table -->
+    <div class="regressions-table-wrap">
+      <table class="regressions-table">
+        <thead>
+          <tr>
+            <th data-col="metric">Metric <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="scenario">Scenario <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="group">Group <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="date">Date <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="commits">Commits <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="change">Change <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="before">Before <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="after">After <span class="sort-arrow">&#9650;</span></th>
+            <th data-col="status">Status <span class="sort-arrow">&#9650;</span></th>
+          </tr>
+        </thead>
+        <tbody id="reg-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Configuration
+// ---------------------------------------------------------------------------
+var root = document.getElementById('regressions-list');
+var REGRESSION_THRESHOLD = parseFloat(root.dataset.regressionThreshold);
+var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
+var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var DATA_BASE = '{{ "data/validation/" | relURL }}';
+var GITHUB_BASE = 'https://github.com/kganitis/bam-engine';
+
+var SCENARIO_NAMES = {
+  baseline: 'Baseline',
+  growth_plus: 'Growth+',
+  buffer_stock: 'Buffer-Stock'
+};
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+var manifest = null;
+var cachedData = {};
+var allRows = [];
+var sortCol = 'date';
+var sortAsc = false;
+var checkedScenarios = {};
+var checkedGroups = {};
+
+// ---------------------------------------------------------------------------
+// Score status helper
+// ---------------------------------------------------------------------------
+function scoreStatusClass(score) {
+  if (score >= THRESHOLD_GREEN_SCORE) return 'status-green';
+  if (score >= THRESHOLD_YELLOW_SCORE) return 'status-yellow';
+  return 'status-red';
+}
+
+// ---------------------------------------------------------------------------
+// Data loading (mirrors benchmark-list pattern)
+// ---------------------------------------------------------------------------
+async function loadManifest() {
+  try {
+    var resp = await fetch(DATA_BASE + 'manifest.json');
+    if (!resp.ok) throw new Error('No manifest found');
+    manifest = await resp.json();
+  } catch (e) {
+    document.getElementById('reg-loading').style.display = 'none';
+    document.getElementById('reg-empty').style.display = 'block';
+    return;
+  }
+
+  if (!manifest.runs || manifest.runs.length < 2) {
+    document.getElementById('reg-loading').style.display = 'none';
+    document.getElementById('reg-empty').style.display = 'block';
+    return;
+  }
+
+  // Populate scenario checkboxes
+  var scenarioDiv = document.getElementById('reg-scenarios');
+  for (var key of Object.keys(SCENARIO_NAMES)) {
+    checkedScenarios[key] = true;
+    var lbl = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = true;
+    cb.value = key;
+    cb.addEventListener('change', function() {
+      checkedScenarios[this.value] = this.checked;
+      renderTable();
+    });
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + SCENARIO_NAMES[key]));
+    scenarioDiv.appendChild(lbl);
+  }
+
+  await scanAllRegressions();
+
+  document.getElementById('reg-loading').style.display = 'none';
+
+  if (allRows.length === 0) {
+    document.getElementById('reg-empty').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('reg-content').style.display = '';
+  renderTable();
+}
+
+async function loadResultFile(filename) {
+  if (cachedData[filename]) return cachedData[filename];
+  try {
+    var resp = await fetch(DATA_BASE + filename);
+    if (!resp.ok) throw new Error('Failed to load ' + filename);
+    var data = await resp.json();
+    cachedData[filename] = data;
+    return data;
+  } catch (e) {
+    console.error('Failed to load result file:', filename, e);
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Scan all consecutive release pairs for regressions
+// ---------------------------------------------------------------------------
+async function scanAllRegressions() {
+  // Fetch all result files up front
+  var filesToFetch = [];
+  for (var ri = 0; ri < manifest.runs.length; ri++) {
+    var r = manifest.runs[ri];
+    for (var sk of Object.keys(r.scenarios)) {
+      filesToFetch.push(r.scenarios[sk].file);
+    }
+  }
+  await Promise.all(filesToFetch.map(loadResultFile));
+
+  var groupSet = {};
+  allRows = [];
+
+  // Build lookup for latest release scores: latestScores["scenarioKey:metricName"] -> mean_score
+  var latestRun = manifest.runs[0];
+  var latestScores = {};
+  for (var sk of Object.keys(latestRun.scenarios)) {
+    var ld = cachedData[latestRun.scenarios[sk].file];
+    if (!ld) continue;
+    for (var mn of Object.keys(ld.metrics)) {
+      latestScores[sk + ':' + mn] = ld.metrics[mn].mean_score;
+    }
+  }
+
+  // Scan consecutive pairs: runs[i] (newer) vs runs[i+1] (older)
+  for (var i = 0; i < manifest.runs.length - 1; i++) {
+    var afterRun = manifest.runs[i];
+    var beforeRun = manifest.runs[i + 1];
+    var afterDate = (afterRun.commit_date || afterRun.timestamp).split('T')[0];
+    var prevRef = beforeRun.tag || beforeRun.commit_short;
+    var afterRef = afterRun.tag || afterRun.commit_short;
+    var commitRange = beforeRun.commit_short + '...' + afterRun.commit_short;
+
+    // Find scenarios present in both runs
+    var scenarioKeys = Object.keys(afterRun.scenarios).filter(function(sk) {
+      return beforeRun.scenarios && beforeRun.scenarios[sk];
+    });
+
+    for (var si = 0; si < scenarioKeys.length; si++) {
+      var scenarioKey = scenarioKeys[si];
+      var afterData = cachedData[afterRun.scenarios[scenarioKey].file];
+      var beforeData = cachedData[beforeRun.scenarios[scenarioKey].file];
+      if (!afterData || !beforeData) continue;
+
+      var groupNames = afterData.group_display_names || {};
+
+      // Find metrics present in both
+      var metricNames = Object.keys(afterData.metrics).filter(function(mn) {
+        return beforeData.metrics && beforeData.metrics[mn];
+      });
+
+      for (var mi = 0; mi < metricNames.length; mi++) {
+        var metricName = metricNames[mi];
+        var afterMetric = afterData.metrics[metricName];
+        var beforeMetric = beforeData.metrics[metricName];
+
+        if (beforeMetric.mean_score === 0) continue;
+
+        var delta = afterMetric.mean_score - beforeMetric.mean_score;
+        var deltaPct = delta / beforeMetric.mean_score * 100;
+
+        // Only negative changes that exceed the threshold
+        if (delta < 0 && Math.abs(deltaPct) >= REGRESSION_THRESHOLD) {
+          var groupKey = afterMetric.group || 'OTHER';
+          var groupDisplay = groupNames[groupKey] || groupKey;
+          groupSet[groupKey] = groupDisplay;
+
+          // Determine status by comparing latest score to the pre-regression score
+          var latestKey = scenarioKey + ':' + metricName;
+          var latestScore = latestScores[latestKey];
+          var status;
+          if (latestScore === undefined) {
+            status = 'active'; // metric no longer exists — treat as unresolved
+          } else if (latestScore > beforeMetric.mean_score) {
+            status = 'improved';
+          } else if (latestScore >= beforeMetric.mean_score) {
+            status = 'fixed';
+          } else {
+            status = 'active';
+          }
+
+          allRows.push({
+            scenario: scenarioKey,
+            scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
+            group: groupKey,
+            groupDisplay: groupDisplay,
+            metric: metricName,
+            date: afterDate,
+            commitRange: commitRange,
+            prevRef: prevRef,
+            afterRef: afterRef,
+            deltaPct: deltaPct,
+            beforeScore: beforeMetric.mean_score,
+            afterScore: afterMetric.mean_score,
+            status: status,
+            latestScore: latestScore
+          });
+        }
+      }
+    }
+  }
+
+  // Populate group checkboxes
+  var groupDiv = document.getElementById('reg-groups');
+  groupDiv.innerHTML = '';
+  checkedGroups = {};
+  var sortedGroups = Object.keys(groupSet).sort();
+  for (var gk of sortedGroups) {
+    checkedGroups[gk] = true;
+    var lbl = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.checked = true;
+    cb.value = gk;
+    cb.addEventListener('change', function() {
+      checkedGroups[this.value] = this.checked;
+      renderTable();
+    });
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(' ' + groupSet[gk]));
+    groupDiv.appendChild(lbl);
+  }
+
+  // Update summary banner
+  var releaseCount = manifest.runs.length;
+  var activeCount = allRows.filter(function(r) { return r.status === 'active'; }).length;
+  var summaryText = allRows.length + ' regression' + (allRows.length !== 1 ? 's' : '') +
+    ' detected across ' + releaseCount + ' releases';
+  if (activeCount < allRows.length) {
+    summaryText += ' (' + activeCount + ' still active)';
+  }
+  document.getElementById('reg-summary').textContent = summaryText;
+}
+
+// ---------------------------------------------------------------------------
+// Filtering and sorting
+// ---------------------------------------------------------------------------
+function getFilteredRows() {
+  var search = document.getElementById('reg-search').value.toLowerCase();
+  var minSeverity = parseFloat(document.getElementById('reg-severity').value);
+  var statusFilter = document.getElementById('reg-status').value;
+  return allRows.filter(function(row) {
+    if (!checkedScenarios[row.scenario]) return false;
+    if (!checkedGroups[row.group]) return false;
+    if (Math.abs(row.deltaPct) < minSeverity) return false;
+    if (search && row.metric.toLowerCase().indexOf(search) === -1) return false;
+    if (statusFilter !== 'all' && row.status !== statusFilter) return false;
+    return true;
+  });
+}
+
+function compareValues(a, b) {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+}
+
+function sortRows(rows) {
+  var col = sortCol;
+  var asc = sortAsc;
+  rows.sort(function(a, b) {
+    var va, vb;
+    switch (col) {
+      case 'metric': va = a.metric; vb = b.metric; break;
+      case 'scenario': va = a.scenarioDisplay; vb = b.scenarioDisplay; break;
+      case 'group': va = a.groupDisplay; vb = b.groupDisplay; break;
+      case 'date': va = a.date; vb = b.date; break;
+      case 'commits': va = a.commitRange; vb = b.commitRange; break;
+      case 'change':
+        va = Math.abs(a.deltaPct);
+        vb = Math.abs(b.deltaPct);
+        break;
+      case 'before': va = a.beforeScore; vb = b.beforeScore; break;
+      case 'after': va = a.afterScore; vb = b.afterScore; break;
+      case 'status': va = a.status; vb = b.status; break;
+      default: va = a.date; vb = b.date;
+    }
+    var cmp = compareValues(va, vb);
+    return asc ? cmp : -cmp;
+  });
+  return rows;
+}
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+function severityClass(deltaPct) {
+  var abs = Math.abs(deltaPct);
+  if (abs >= 10) return 'severity-high';
+  if (abs >= 5) return 'severity-medium';
+  return 'severity-low';
+}
+
+function renderTable() {
+  var filtered = getFilteredRows();
+  var sorted = sortRows(filtered);
+
+  document.getElementById('reg-row-count').textContent =
+    'Showing ' + sorted.length + ' of ' + allRows.length + ' regressions';
+
+  var tbody = document.getElementById('reg-tbody');
+  var html = '';
+  var STATUS_LABELS = { active: 'Active', fixed: 'Fixed', improved: 'Improved' };
+  for (var row of sorted) {
+    var metricLink = '{{ "benchmarks/validation/" | relURL }}?scenario=' +
+      encodeURIComponent(row.scenario) + '&metric=' + encodeURIComponent(row.metric);
+    var compareUrl = GITHUB_BASE + '/compare/' + row.prevRef + '...' + row.afterRef;
+    var afterClass = scoreStatusClass(row.afterScore);
+    var rowClass = row.status !== 'active' ? ' class="resolved-row"' : '';
+
+    html +=
+      '<tr' + rowClass + '>' +
+      '<td class="col-metric"><a href="' + metricLink + '">' + row.metric + '</a></td>' +
+      '<td class="col-scenario">' + row.scenarioDisplay + '</td>' +
+      '<td>' + row.groupDisplay + '</td>' +
+      '<td class="col-date">' + row.date + '</td>' +
+      '<td class="col-commits"><a href="' + compareUrl + '" target="_blank" rel="noopener">' +
+        row.commitRange + '</a></td>' +
+      '<td class="' + severityClass(row.deltaPct) + '">' + row.deltaPct.toFixed(1) + '%</td>' +
+      '<td>' + row.beforeScore.toFixed(3) + '</td>' +
+      '<td class="' + afterClass + '">' + row.afterScore.toFixed(3) + '</td>' +
+      '<td class="col-status"><span class="status-badge status-' + row.status + '">' +
+        STATUS_LABELS[row.status] + '</span></td>' +
+      '</tr>';
+  }
+  tbody.innerHTML = html;
+
+  // Update sort arrows
+  var ths = root.querySelectorAll('.regressions-table th');
+  for (var th of ths) {
+    var col = th.dataset.col;
+    var arrow = th.querySelector('.sort-arrow');
+    if (col === sortCol) {
+      th.classList.add('sorted');
+      arrow.innerHTML = sortAsc ? '&#9650;' : '&#9660;';
+    } else {
+      th.classList.remove('sorted');
+      arrow.innerHTML = '&#9650;';
+    }
+  }
+}
+
+function sortBy(col) {
+  if (sortCol === col) {
+    sortAsc = !sortAsc;
+  } else {
+    sortCol = col;
+    sortAsc = (col === 'date' || col === 'change') ? false : true;
+  }
+  renderTable();
+}
+
+// ---------------------------------------------------------------------------
+// Event listeners
+// ---------------------------------------------------------------------------
+document.getElementById('reg-search').addEventListener('input', function() {
+  renderTable();
+});
+
+document.getElementById('reg-severity').addEventListener('change', function() {
+  renderTable();
+});
+
+document.getElementById('reg-status').addEventListener('change', function() {
+  renderTable();
+});
+
+// Sort on header click
+var ths = root.querySelectorAll('.regressions-table th[data-col]');
+for (var th of ths) {
+  th.addEventListener('click', function() {
+    sortBy(this.dataset.col);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+loadManifest();
+
+})();
+</script>
