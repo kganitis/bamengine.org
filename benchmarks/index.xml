@@ -42,8 +42,8 @@ filter by release, scenario, or metric group, and click column headers to sort.&
  &lt;th data-col="scenario"&gt;Scenario &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="group"&gt;Group &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="metric"&gt;Metric &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
- &lt;th data-col="mean_score"&gt;Score &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
- &lt;th data-col="pass_rate"&gt;Pass Rate &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="mean_score"&gt;Accuracy &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
+ &lt;th data-col="pass_rate"&gt;Stability &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="mean_value"&gt;Value &amp;plusmn; Std &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="weight"&gt;Weight &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
  &lt;th data-col="score_delta"&gt;Recent Change &lt;span class="sort-arrow"&gt;&amp;#9650;&lt;/span&gt;&lt;/th&gt;
@@ -457,7 +457,7 @@ for (var th of ths) {
 loadManifest();
 
 })();
-&lt;/script&gt;</description></item><item><title>Regressions</title><link>https://bamengine.org/benchmarks/regressions/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/regressions/</guid><description>&lt;p&gt;All detected score regressions across releases. Use the toolbar to filter by
+&lt;/script&gt;</description></item><item><title>Regressions</title><link>https://bamengine.org/benchmarks/regressions/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/regressions/</guid><description>&lt;p&gt;All detected accuracy regressions across releases. Use the toolbar to filter by
 scenario, metric group, or severity threshold, and click column headers to sort.&lt;/p&gt;
 &lt;div class="regressions-list" id="regressions-list"
  data-regression-threshold="1"
@@ -989,15 +989,15 @@ loadManifest();
 })();
 &lt;/script&gt;</description></item><item><title>Validation Dashboard</title><link>https://bamengine.org/benchmarks/validation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/validation/</guid><description>&lt;p&gt;The validation dashboard tracks two complementary metrics across releases:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Score&lt;/strong&gt; (0–1) — how closely simulation results match calibration targets
+&lt;li&gt;&lt;strong&gt;Accuracy&lt;/strong&gt; (0–1) — how closely simulation results match calibration targets
 from the original BAM model (Delli Gatti et al., 2011). Higher is better.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Pass rate&lt;/strong&gt; (%) — how consistently random seeds produce valid results.
+&lt;li&gt;&lt;strong&gt;Stability&lt;/strong&gt; (%) — how consistently random seeds produce valid results.
 A seed &amp;ldquo;passes&amp;rdquo; when all its metric scores exceed the tolerance threshold.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Card border colors reflect the &lt;strong&gt;score&lt;/strong&gt;:&lt;/p&gt;
+&lt;p&gt;Card border colors reflect the &lt;strong&gt;accuracy&lt;/strong&gt;:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Green&lt;/strong&gt;: score ≥ 0.85 — accurate&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Yellow&lt;/strong&gt;: score 0.80–0.85 — marginal&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Red&lt;/strong&gt;: score &amp;lt; 0.80 — regression&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Green&lt;/strong&gt;: accuracy ≥ 0.85&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Yellow&lt;/strong&gt;: accuracy 0.80–0.85 — marginal&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Red&lt;/strong&gt;: accuracy &amp;lt; 0.80 — regression&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Pass rate is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).&lt;/p&gt;</description></item></channel></rss>
+&lt;p&gt;Stability is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).&lt;/p&gt;</description></item></channel></rss>
