@@ -29,9 +29,9 @@
       <div class="toolbar-group">
         <label>Y-Axis:</label>
         <select id="yaxis-selector">
-          <option value="mean_score">Mean Score</option>
-          <option value="pass_rate">Pass Rate</option>
-          <option value="std_score">Std Score</option>
+          <option value="mean_score">Accuracy</option>
+          <option value="pass_rate">Stability</option>
+          <option value="std_score">Std Accuracy Score</option>
           <option value="std_value">Std Value</option>
         </select>
       </div>
@@ -178,24 +178,24 @@ function getYAxisConfig(yAxis) {
   if (currentZoom) {
     switch (yAxis) {
       case 'pass_rate':
-        return { range: null, title: 'Pass Rate (%)', dtick: null };
+        return { range: null, title: 'Stability (%)', dtick: null };
       case 'std_score':
-        return { range: null, title: 'Std Score', dtick: null };
+        return { range: null, title: 'Std Accuracy Score', dtick: null };
       case 'std_value':
         return { range: null, title: 'Std Value', dtick: null };
       default:
-        return { range: null, title: 'Mean Score', dtick: null };
+        return { range: null, title: 'Accuracy', dtick: null };
     }
   }
   switch (yAxis) {
     case 'pass_rate':
-      return { range: [0, 105], title: 'Pass Rate (%)', dtick: 25 };
+      return { range: [0, 105], title: 'Stability (%)', dtick: 25 };
     case 'std_score':
-      return { range: null, title: 'Std Score', dtick: null };
+      return { range: null, title: 'Std Accuracy Score', dtick: null };
     case 'std_value':
       return { range: null, title: 'Std Value', dtick: null };
     default:
-      return { range: [0, 1.05], title: 'Mean Score', dtick: 0.25 };
+      return { range: [0, 1.05], title: 'Accuracy', dtick: 0.25 };
   }
 }
 
@@ -333,7 +333,7 @@ function renderCards() {
         '<span class="release-tag">' + releaseLabel + '</span>' +
       '</div>' +
       '<div class="card-score status-' + scoreStatus + '">' + latest.mean_score.toFixed(3) + '</div>' +
-      '<div class="card-pass-rate">Pass Rate: <span class="status-' + passStatus + '">' + (latest.pass_rate * 100).toFixed(1) + '%</span></div>' +
+      '<div class="card-pass-rate">Stability: <span class="status-' + passStatus + '">' + (latest.pass_rate * 100).toFixed(1) + '%</span></div>' +
       failingHtml +
       '<div class="sparkline" id="spark-' + scenario + '"></div>';
 
@@ -474,19 +474,19 @@ async function renderDrilldownData(filename) {
   summary.innerHTML =
     '<div class="summary-stat">' +
       '<div class="value status-' + sScoreStatus + '">' + s.mean_score.toFixed(3) + '</div>' +
-      '<div class="label">Mean Score</div>' +
+      '<div class="label">Accuracy</div>' +
     '</div>' +
     '<div class="summary-stat">' +
       '<div class="value status-' + sPassStatus + '">' + (s.pass_rate * 100).toFixed(1) + '%</div>' +
-      '<div class="label">Pass Rate</div>' +
+      '<div class="label">Stability</div>' +
     '</div>' +
     '<div class="summary-stat">' +
       '<div class="value">' + s.std_score.toFixed(3) + '</div>' +
-      '<div class="label">Std Score</div>' +
+      '<div class="label">Std Accuracy Score</div>' +
     '</div>' +
     '<div class="summary-stat">' +
       '<div class="value">' + s.min_score.toFixed(3) + ' - ' + s.max_score.toFixed(3) + '</div>' +
-      '<div class="label">Score Range</div>' +
+      '<div class="label">Accuracy Score Range</div>' +
     '</div>';
 
   renderFailingSeeds(data);
@@ -688,9 +688,9 @@ function renderScenarioChart(history) {
       colors.push(markerColor(s, currentYAxis));
       hoverTexts.push(
         '<b>' + (SCENARIO_NAMES[currentScenario] || currentScenario) + '</b><br>' +
-        'Score: ' + s.mean_score.toFixed(3) + '<br>' +
-        'Pass Rate: ' + (s.pass_rate * 100).toFixed(1) + '%<br>' +
-        'Std Score: ' + s.std_score.toFixed(3) + '<br>' +
+        'Accuracy: ' + s.mean_score.toFixed(3) + '<br>' +
+        'Stability: ' + (s.pass_rate * 100).toFixed(1) + '%<br>' +
+        'Std Accuracy Score: ' + s.std_score.toFixed(3) + '<br>' +
         pLabel
       );
     } else {
@@ -732,9 +732,9 @@ function renderScenarioChart(history) {
         cy.push(getSummaryYValue(cs, currentYAxis));
         cHovers.push(
           '<b>' + (SCENARIO_NAMES[currentCompare] || currentCompare) + '</b><br>' +
-          'Pass Rate: ' + (cs.pass_rate * 100).toFixed(1) + '%<br>' +
-          'Mean Score: ' + cs.mean_score.toFixed(3) + '<br>' +
-          'Std Score: ' + cs.std_score.toFixed(3) + '<br>' +
+          'Stability: ' + (cs.pass_rate * 100).toFixed(1) + '%<br>' +
+          'Accuracy: ' + cs.mean_score.toFixed(3) + '<br>' +
+          'Std Accuracy Score: ' + cs.std_score.toFixed(3) + '<br>' +
           uLabel
         );
         hasCompareData = true;
@@ -822,10 +822,10 @@ function expandChart(metricName, history) {
       colors.push(markerColor(pm, currentYAxis));
       hoverTexts.push(
         '<b>' + metricName + '</b><br>' +
-        'Score: ' + pm.mean_score.toFixed(3) + '<br>' +
+        'Accuracy: ' + pm.mean_score.toFixed(3) + '<br>' +
         'Value: ' + pm.mean_value.toFixed(4) + ' (std: ' + pm.std_value.toFixed(4) + ')<br>' +
-        'Pass Rate: ' + (pm.pass_rate * 100).toFixed(1) + '%<br>' +
-        'Std Score: ' + pm.std_score.toFixed(3) + '<br>' +
+        'Stability: ' + (pm.pass_rate * 100).toFixed(1) + '%<br>' +
+        'Std Accuracy Score: ' + pm.std_score.toFixed(3) + '<br>' +
         'Weight: ' + pm.weight + '<br>' +
         pLabel
       );
@@ -871,8 +871,8 @@ function expandChart(metricName, history) {
         cy.push(getMetricYValue(cMetric, currentYAxis));
         cHovers.push(
           '<b>' + metricName + ' (' + SCENARIO_NAMES[currentCompare] + ')</b><br>' +
-          'Score: ' + cMetric.mean_score.toFixed(3) + '<br>' +
-          'Pass Rate: ' + (cMetric.pass_rate * 100).toFixed(1) + '%<br>' +
+          'Accuracy: ' + cMetric.mean_score.toFixed(3) + '<br>' +
+          'Stability: ' + (cMetric.pass_rate * 100).toFixed(1) + '%<br>' +
           uLabel
         );
         hasCompareData = true;
@@ -931,9 +931,9 @@ function renderModalStats(metricName) {
   var m = data.metrics[metricName];
   var status = passStatusClass(m.pass_rate);
   statsEl.innerHTML =
-    '<span>Score: <strong>' + m.mean_score.toFixed(3) + '</strong></span>' +
+    '<span>Accuracy: <strong>' + m.mean_score.toFixed(3) + '</strong></span>' +
     '<span>Value: <strong>' + m.mean_value.toFixed(4) + ' &plusmn; ' + m.std_value.toFixed(4) + '</strong></span>' +
-    '<span>Pass Rate: <strong class="status-' + status + '">' + (m.pass_rate * 100).toFixed(1) + '%</strong></span>' +
+    '<span>Stability: <strong class="status-' + status + '">' + (m.pass_rate * 100).toFixed(1) + '%</strong></span>' +
     '<span>Weight: <strong>' + m.weight + '</strong></span>';
 }
 

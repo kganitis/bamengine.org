@@ -4,18 +4,18 @@ title: Benchmarks
 
 ## [Validation Dashboard](/benchmarks/validation/)
 
-Track score accuracy and seed stability across releases. Per-metric charts
+Track accuracy and seed stability across releases. Per-metric charts
 show how closely simulation results match calibration targets and how
 consistently random seeds produce valid outcomes.
 
 ## [Benchmark List](/benchmarks/list/)
 
 Flat table of all validation metrics across scenarios. Sortable by score,
-pass rate, or weight — filterable by scenario and metric group.
+stability, or weight — filterable by scenario and metric group.
 
 ## [Regressions](/benchmarks/regressions/)
 
-All detected score regressions across releases. Filterable by scenario,
+All detected accuracy regressions across releases. Filterable by scenario,
 metric group, and severity threshold.
 
 ## Performance (ASV)
