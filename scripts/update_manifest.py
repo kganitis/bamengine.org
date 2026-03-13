@@ -115,6 +115,8 @@ def main() -> None:
         print(f"  ... and {len(runs) - 5} more")
 
     # Regenerate validation card SVGs
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent))
     from generate_validation_card import main as generate_cards
     generate_cards()
 
