@@ -13,25 +13,76 @@ Usage:
 """
 
 import json
+import re
 from pathlib import Path
 
-MANIFEST_PATH = (
-    Path(__file__).parent.parent / "static" / "data" / "validation" / "manifest.json"
-)
-OUTPUT_DIR = Path(__file__).parent.parent / "static" / "images"
+ROOT = Path(__file__).parent.parent
+MANIFEST_PATH = ROOT / "static" / "data" / "validation" / "manifest.json"
+CONFIG_PATH = ROOT / "data" / "validation_config.yaml"
+OUTPUT_DIR = ROOT / "static" / "images"
 
-SCENARIOS = ["baseline", "growth_plus", "buffer_stock"]
-SCENARIO_NAMES = {
+
+def _load_config(path: Path) -> dict:
+    """Minimal YAML loader for validation_config.yaml (stdlib only).
+
+    Handles the single-level nesting used in our config: top-level scalars,
+    one-deep mappings, and one-deep lists.  No PyYAML dependency required.
+    """
+    config: dict = {}
+    section = None
+    for line in path.read_text().splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        indent = len(line) - len(line.lstrip())
+        if indent == 0:
+            # Top-level key
+            m = re.match(r"^(\w+):\s*(.*)", line)
+            if not m:
+                continue
+            key, val = m.group(1), m.group(2).strip()
+            if val:
+                config[key] = val.strip('"')
+            else:
+                section = key
+                config[section] = {}
+        elif section is not None:
+            # Nested item
+            m_list = re.match(r"^\s+-\s+(.+)", line)
+            m_kv = re.match(r"^\s+(\w+):\s+(.+)", line)
+            if m_list:
+                if not isinstance(config[section], list):
+                    config[section] = []
+                config[section].append(m_list.group(1).strip().strip('"'))
+            elif m_kv:
+                if isinstance(config[section], list):
+                    config[section] = {}
+                val = m_kv.group(2).strip().strip('"')
+                try:
+                    val = float(val)
+                    if val == int(val):
+                        val = int(val)
+                except ValueError:
+                    pass
+                config[section][m_kv.group(1)] = val
+    return config
+
+
+_config = _load_config(CONFIG_PATH)
+_thresholds = _config["thresholds"]
+
+SCENARIOS = _config.get("scenario_order", ["baseline", "growth_plus", "buffer_stock"])
+SCENARIO_NAMES = _config.get("scenario_names", {
     "baseline": "Baseline",
     "growth_plus": "Growth+",
     "buffer_stock": "Buffer-Stock",
-}
+})
 
-# Thresholds
-PASS_GREEN = 97  # pass_rate * 100
-PASS_YELLOW = 96
-SCORE_GREEN = 0.85
-SCORE_YELLOW = 0.80
+# Thresholds (from data/validation_config.yaml)
+PASS_GREEN = _thresholds["green_pass"] * 100  # pass_rate * 100
+PASS_YELLOW = _thresholds["yellow_pass"] * 100
+SCORE_GREEN = _thresholds["green_score"]
+SCORE_YELLOW = _thresholds["yellow_score"]
 
 # Theme colors
 THEMES = {
