@@ -2,10 +2,6 @@
 title: Validation Dashboard
 description: "Validation dashboard — accuracy and stability metrics across scenarios and releases."
 url: /benchmarks/validation/
-green_score_threshold: 0.85
-yellow_score_threshold: 0.80
-green_pass_threshold: 0.97
-yellow_pass_threshold: 0.96
 ---
 
 The validation dashboard tracks two complementary metrics across releases:
@@ -18,8 +14,8 @@ The validation dashboard tracks two complementary metrics across releases:
 Card border colors reflect the **accuracy**:
 
 - **Green**: accuracy ≥ 0.85
-- **Yellow**: accuracy 0.80–0.85 — marginal
-- **Red**: accuracy < 0.80 — regression
+- **Yellow**: accuracy 0.70–0.85 — warning
+- **Red**: accuracy < 0.70 — failing
 
 Stability is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).
 

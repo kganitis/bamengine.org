@@ -2,11 +2,7 @@
         integrity="sha384-cCVCZkAjYNxaYKbM8lsArLznDF/SvMFr1jcZrvOpSTCa0W40ZAdLzHCEulnUa5i7"
         crossorigin="anonymous"></script>
 
-<div class="validation-dashboard" id="validation-dashboard"
-     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
-     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}"
-     data-green-pass-threshold="{{ with .Page.Params.green_pass_threshold }}{{ . }}{{ else }}0.97{{ end }}"
-     data-yellow-pass-threshold="{{ with .Page.Params.yellow_pass_threshold }}{{ . }}{{ else }}0.96{{ end }}">
+<div class="validation-dashboard" id="validation-dashboard">
   <div class="validation-loading" id="loading">Loading validation data...</div>
   <div class="validation-empty" id="empty-state" style="display:none;">
     No validation benchmark data available yet.
@@ -81,13 +77,12 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Configuration (thresholds from Hugo front matter)
+// Configuration (thresholds from data/validation_config.yaml)
 // ---------------------------------------------------------------------------
-var dashEl = document.getElementById('validation-dashboard');
-var THRESHOLD_GREEN_SCORE = parseFloat(dashEl.dataset.greenScoreThreshold);
-var THRESHOLD_YELLOW_SCORE = parseFloat(dashEl.dataset.yellowScoreThreshold);
-var THRESHOLD_GREEN_PASS = parseFloat(dashEl.dataset.greenPassThreshold);
-var THRESHOLD_YELLOW_PASS = parseFloat(dashEl.dataset.yellowPassThreshold);
+var THRESHOLD_GREEN_SCORE = {{ $.Site.Data.validation_config.thresholds.green_score }};
+var THRESHOLD_YELLOW_SCORE = {{ $.Site.Data.validation_config.thresholds.yellow_score }};
+var THRESHOLD_GREEN_PASS = {{ $.Site.Data.validation_config.thresholds.green_pass }};
+var THRESHOLD_YELLOW_PASS = {{ $.Site.Data.validation_config.thresholds.yellow_pass }};
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 
 var SCENARIO_ORDER = {{ $.Site.Data.validation_config.scenario_order | jsonify | safeJS }};

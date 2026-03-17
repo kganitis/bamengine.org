@@ -1,7 +1,4 @@
-<div class="regressions-list" id="regressions-list"
-     data-regression-threshold="{{ with .Page.Params.regression_threshold }}{{ . }}{{ else }}1{{ end }}"
-     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
-     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}">
+<div class="regressions-list" id="regressions-list">
   <div class="regressions-loading" id="reg-loading">Loading benchmark data...</div>
   <div class="regressions-empty" id="reg-empty" style="display:none;">
     No regressions detected.
@@ -80,9 +77,9 @@
 // Configuration
 // ---------------------------------------------------------------------------
 var root = document.getElementById('regressions-list');
-var REGRESSION_THRESHOLD = parseFloat(root.dataset.regressionThreshold);
-var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
-var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var REGRESSION_THRESHOLD = {{ $.Site.Data.validation_config.thresholds.regression }};
+var THRESHOLD_GREEN_SCORE = {{ $.Site.Data.validation_config.thresholds.green_score }};
+var THRESHOLD_YELLOW_SCORE = {{ $.Site.Data.validation_config.thresholds.yellow_score }};
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 var GITHUB_BASE = '{{ $.Site.Data.validation_config.github_base }}';
 var SCENARIO_ORDER = {{ $.Site.Data.validation_config.scenario_order | jsonify | safeJS }};

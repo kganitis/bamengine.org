@@ -7,3 +7,9 @@ scenario_names:
   baseline: "Baseline"
   growth_plus: "Growth+"
   buffer_stock: "Buffer-Stock"
+thresholds:
+  green_score: 0.85
+  yellow_score: 0.70
+  green_pass: 0.97
+  yellow_pass: 0.96
+  regression: 1

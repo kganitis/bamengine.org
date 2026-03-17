@@ -1,8 +1,4 @@
-<div class="benchmark-list" id="benchmark-list"
-     data-green-score-threshold="{{ with .Page.Params.green_score_threshold }}{{ . }}{{ else }}0.85{{ end }}"
-     data-yellow-score-threshold="{{ with .Page.Params.yellow_score_threshold }}{{ . }}{{ else }}0.80{{ end }}"
-     data-green-pass-threshold="{{ with .Page.Params.green_pass_threshold }}{{ . }}{{ else }}0.97{{ end }}"
-     data-yellow-pass-threshold="{{ with .Page.Params.yellow_pass_threshold }}{{ . }}{{ else }}0.96{{ end }}">
+<div class="benchmark-list" id="benchmark-list">
   <div class="benchmark-loading" id="bl-loading">Loading benchmark data...</div>
   <div class="benchmark-empty" id="bl-empty" style="display:none;">
     No benchmark data available yet.
@@ -61,11 +57,10 @@
 // ---------------------------------------------------------------------------
 // Configuration
 // ---------------------------------------------------------------------------
-var root = document.getElementById('benchmark-list');
-var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
-var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
-var THRESHOLD_GREEN_PASS = parseFloat(root.dataset.greenPassThreshold);
-var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
+var THRESHOLD_GREEN_SCORE = {{ $.Site.Data.validation_config.thresholds.green_score }};
+var THRESHOLD_YELLOW_SCORE = {{ $.Site.Data.validation_config.thresholds.yellow_score }};
+var THRESHOLD_GREEN_PASS = {{ $.Site.Data.validation_config.thresholds.green_pass }};
+var THRESHOLD_YELLOW_PASS = {{ $.Site.Data.validation_config.thresholds.yellow_pass }};
 var DATA_BASE = '{{ "data/validation/" | relURL }}';
 var COLOR_THRESHOLD = 5;   // >=5% → colored background
 var HIDE_THRESHOLD = 1;    // <1% → hidden entirely
