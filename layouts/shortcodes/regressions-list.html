@@ -32,7 +32,7 @@
         <select id="reg-severity">
           <option value="1">&ge; 1%</option>
           <option value="2">&ge; 2%</option>
-          <option value="5">&ge; 5%</option>
+          <option value="5" selected>&ge; 5%</option>
           <option value="10">&ge; 10%</option>
         </select>
       </div>
@@ -290,6 +290,11 @@ async function scanAllRegressions() {
             }
           }
 
+          // Residual severity: how far the latest score still is from pre-regression
+          var residualPct = (latestScore !== undefined && beforeMetric.mean_score !== 0)
+            ? (latestScore - beforeMetric.mean_score) / beforeMetric.mean_score * 100
+            : deltaPct;
+
           allRows.push({
             scenario: scenarioKey,
             scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
@@ -301,6 +306,7 @@ async function scanAllRegressions() {
             prevRef: prevRef,
             afterRef: afterRef,
             deltaPct: deltaPct,
+            residualPct: residualPct,
             beforeScore: beforeMetric.mean_score,
             afterScore: afterMetric.mean_score,
             status: status,
@@ -357,7 +363,8 @@ function getFilteredRows() {
   return allRows.filter(function(row) {
     if (!checkedScenarios[row.scenario]) return false;
     if (!checkedGroups[row.group]) return false;
-    if (Math.abs(row.deltaPct) < minSeverity) return false;
+    var effectiveSeverity = (row.status === 'active') ? Math.abs(row.residualPct) : Math.abs(row.deltaPct);
+    if (effectiveSeverity < minSeverity) return false;
     if (search && row.metric.toLowerCase().indexOf(search) === -1) return false;
     if (statusFilter !== 'all' && row.status !== statusFilter) return false;
     return true;
