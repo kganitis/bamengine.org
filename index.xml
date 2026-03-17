@@ -628,7 +628,7 @@ scenario, metric group, or severity threshold, and click column headers to sort.
  &lt;select id="reg-severity"&gt;
  &lt;option value="1"&gt;&amp;ge; 1%&lt;/option&gt;
  &lt;option value="2"&gt;&amp;ge; 2%&lt;/option&gt;
- &lt;option value="5"&gt;&amp;ge; 5%&lt;/option&gt;
+ &lt;option value="5" selected&gt;&amp;ge; 5%&lt;/option&gt;
  &lt;option value="10"&gt;&amp;ge; 10%&lt;/option&gt;
  &lt;/select&gt;
  &lt;/div&gt;
@@ -886,6 +886,11 @@ async function scanAllRegressions() {
  }
  }
 
+ 
+ var residualPct = (latestScore !== undefined &amp;&amp; beforeMetric.mean_score !== 0)
+ ? (latestScore - beforeMetric.mean_score) / beforeMetric.mean_score * 100
+ : deltaPct;
+
  allRows.push({
  scenario: scenarioKey,
  scenarioDisplay: SCENARIO_NAMES[scenarioKey] || scenarioKey,
@@ -897,6 +902,7 @@ async function scanAllRegressions() {
  prevRef: prevRef,
  afterRef: afterRef,
  deltaPct: deltaPct,
+ residualPct: residualPct,
  beforeScore: beforeMetric.mean_score,
  afterScore: afterMetric.mean_score,
  status: status,
@@ -953,7 +959,8 @@ function getFilteredRows() {
  return allRows.filter(function(row) {
  if (!checkedScenarios[row.scenario]) return false;
  if (!checkedGroups[row.group]) return false;
- if (Math.abs(row.deltaPct) &lt; minSeverity) return false;
+ var effectiveSeverity = (row.status === 'active') ? Math.abs(row.residualPct) : Math.abs(row.deltaPct);
+ if (effectiveSeverity &lt; minSeverity) return false;
  if (search &amp;&amp; row.metric.toLowerCase().indexOf(search) === -1) return false;
  if (statusFilter !== 'all' &amp;&amp; row.status !== statusFilter) return false;
  return true;
