@@ -28,11 +28,7 @@ wage, Phillips curve, Okun curve, Beveridge curve, and firm size distribution.&l
 &lt;/div&gt;
 &lt;p&gt;See the &lt;a href="https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html"&gt;full example&lt;/a&gt;.&lt;/p&gt;</description></item><item><title>Benchmark List</title><link>https://bamengine.org/benchmarks/list/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/list/</guid><description>&lt;p&gt;Flat table of all validation metrics across scenarios. Use the toolbar to
 filter by release, scenario, or metric group, and click column headers to sort.&lt;/p&gt;
-&lt;div class="benchmark-list" id="benchmark-list"
- data-green-score-threshold="0.85"
- data-yellow-score-threshold="0.8"
- data-green-pass-threshold="0.97"
- data-yellow-pass-threshold="0.96"&gt;
+&lt;div class="benchmark-list" id="benchmark-list"&gt;
  &lt;div class="benchmark-loading" id="bl-loading"&gt;Loading benchmark data...&lt;/div&gt;
  &lt;div class="benchmark-empty" id="bl-empty" style="display:none;"&gt;
  No benchmark data available yet.
@@ -91,11 +87,10 @@ filter by release, scenario, or metric group, and click column headers to sort.&
 
 
 
-var root = document.getElementById('benchmark-list');
-var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
-var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
-var THRESHOLD_GREEN_PASS = parseFloat(root.dataset.greenPassThreshold);
-var THRESHOLD_YELLOW_PASS = parseFloat(root.dataset.yellowPassThreshold);
+var THRESHOLD_GREEN_SCORE = 0.85 ;
+var THRESHOLD_YELLOW_SCORE = 0.7 ;
+var THRESHOLD_GREEN_PASS = 0.97 ;
+var THRESHOLD_YELLOW_PASS = 0.96 ;
 var DATA_BASE = '\/data\/validation\/';
 var COLOR_THRESHOLD = 5; 
 var HIDE_THRESHOLD = 1; 
@@ -597,10 +592,7 @@ Agent-Based Macroeconomic Model&lt;/em&gt; [Computer software].
 (2011). &lt;em&gt;Macroeconomics from the Bottom-up&lt;/em&gt;. Springer Milano.
 &lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Regressions</title><link>https://bamengine.org/benchmarks/regressions/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/benchmarks/regressions/</guid><description>&lt;p&gt;All detected accuracy regressions across releases. Use the toolbar to filter by
 scenario, metric group, or severity threshold, and click column headers to sort.&lt;/p&gt;
-&lt;div class="regressions-list" id="regressions-list"
- data-regression-threshold="1"
- data-green-score-threshold="0.85"
- data-yellow-score-threshold="0.8"&gt;
+&lt;div class="regressions-list" id="regressions-list"&gt;
  &lt;div class="regressions-loading" id="reg-loading"&gt;Loading benchmark data...&lt;/div&gt;
  &lt;div class="regressions-empty" id="reg-empty" style="display:none;"&gt;
  No regressions detected.
@@ -679,9 +671,9 @@ scenario, metric group, or severity threshold, and click column headers to sort.
 
 
 var root = document.getElementById('regressions-list');
-var REGRESSION_THRESHOLD = parseFloat(root.dataset.regressionThreshold);
-var THRESHOLD_GREEN_SCORE = parseFloat(root.dataset.greenScoreThreshold);
-var THRESHOLD_YELLOW_SCORE = parseFloat(root.dataset.yellowScoreThreshold);
+var REGRESSION_THRESHOLD = 1 ;
+var THRESHOLD_GREEN_SCORE = 0.85 ;
+var THRESHOLD_YELLOW_SCORE = 0.7 ;
 var DATA_BASE = '\/data\/validation\/';
 var GITHUB_BASE = 'https:\/\/github.com\/kganitis\/bam-engine';
 var SCENARIO_ORDER = ["baseline","growth_plus","buffer_stock"];
@@ -1141,7 +1133,7 @@ A seed &amp;ldquo;passes&amp;rdquo; when all its metric scores exceed the tolera
 &lt;p&gt;Card border colors reflect the &lt;strong&gt;accuracy&lt;/strong&gt;:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Green&lt;/strong&gt;: accuracy ≥ 0.85&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Yellow&lt;/strong&gt;: accuracy 0.80–0.85 — marginal&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Red&lt;/strong&gt;: accuracy &amp;lt; 0.80 — regression&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Yellow&lt;/strong&gt;: accuracy 0.70–0.85 — warning&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Red&lt;/strong&gt;: accuracy &amp;lt; 0.70 — failing&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Stability is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).&lt;/p&gt;</description></item></channel></rss>
