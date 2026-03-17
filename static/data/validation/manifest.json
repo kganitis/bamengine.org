@@ -161,33 +161,6 @@
           "n_failing": 25
         }
       }
-    },
-    {
-      "commit_short": "71b014d",
-      "commit": "71b014d8a4d7b4724a06294a242a5f1e81cd8777",
-      "commit_date": "2026-03-13T09:08:12+02:00",
-      "timestamp": "2026-03-13T07:09:23",
-      "tag": "v0.7.0",
-      "scenarios": {
-        "baseline": {
-          "file": "baseline_v0_7_0_20260313T070923.json",
-          "pass_rate": 0.966,
-          "mean_score": 0.861441932471741,
-          "n_failing": 34
-        },
-        "buffer_stock": {
-          "file": "buffer_stock_v0_7_0_20260313T070923.json",
-          "pass_rate": 0.978,
-          "mean_score": 0.8785912159721209,
-          "n_failing": 22
-        },
-        "growth_plus": {
-          "file": "growth_plus_v0_7_0_20260313T070923.json",
-          "pass_rate": 0.984,
-          "mean_score": 0.8468836576711654,
-          "n_failing": 16
-        }
-      }
     }
   ]
 }
