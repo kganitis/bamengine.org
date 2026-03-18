@@ -1,0 +1,11 @@
+<section class="content-padding flex-row">
+  <div class="content-container">
+    {{ $latest := (first 8 (where $.Site.RegularPages.ByPublishDate.Reverse "Section" "news")) }}
+
+    {{ partial "posts/list-with-summary.html" $latest }}
+
+    <p>
+      <a href="{{ "news/" | relURL }}"><span class="sd-btn sd-btn-outline-info">Browse all news &nbsp;⟶</span></a>
+    </p>
+  </div>
+</section>

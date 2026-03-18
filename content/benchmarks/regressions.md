@@ -1,6 +1,6 @@
 ---
 title: Regressions
-description: "Regression tracker — metrics that degraded or recovered across BAM Engine releases."
+description: "Regression tracker: metrics that degraded or recovered across BAM Engine releases."
 url: /benchmarks/regressions/
 ---
 

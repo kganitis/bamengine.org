@@ -1,6 +1,7 @@
 ---
 title: "Baseline Scenario"
-description: "Baseline scenario output — GDP, unemployment, inflation, and stylized facts from default parameters."
+description: "Baseline scenario output: GDP, unemployment, inflation, and stylized facts from default parameters."
+weight: 1
 ---
 
 The baseline scenario reproduces section 3.9.1 of Delli Gatti et al. (2011)
@@ -17,7 +18,7 @@ wage, Phillips curve, Okun curve, Beveridge curve, and firm size distribution.*
 import bamengine as bam
 
 sim = bam.Simulation.init()
-results = sim.run(n_periods=1000, show=True)
+results = sim.run(n_periods=1000, collect=True)
 ```
 
 See the [full example](https://bam-engine.readthedocs.io/en/latest/auto_examples/basic/example_baseline_scenario.html).

@@ -1,6 +1,7 @@
 ---
 title: "Growth+ Extension"
-description: "Growth+ extension — macro and financial dynamics with R&D and firm growth."
+description: "Growth+ extension: macro and financial dynamics with R&D and firm growth."
+weight: 2
 ---
 
 The Growth+ extension adds R&D investment and endogenous productivity growth
@@ -26,7 +27,7 @@ from extensions.rnd import RND
 
 sim = bam.Simulation.init(seed=42)
 sim.use(RND)
-results = sim.run(n_periods=1000, show=True)
+results = sim.run(n_periods=1000, collect=True)
 ```
 
 See the [full example](https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_growth_plus.html).

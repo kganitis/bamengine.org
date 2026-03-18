@@ -1,34 +1,46 @@
 ```python
+# Part 1: Run a baseline simulation
 import bamengine as bam
+from bamengine import BASELINE_COLLECT
 
-sim = bam.Simulation.init(seed=42,
-    logging={"default_level": "ERROR"})
-results = sim.run(n_periods=100,
-                  collect=True)
+sim = bam.Simulation.init(
+    n_firms=100,
+    n_households=500,
+    n_banks=10,
+    seed=42,
+)
+results = sim.run(
+    n_periods=1000,
+    collect=BASELINE_COLLECT,
+)
 
-avg_price = results.economy_data["avg_price"]
+# Access economy-wide time series
 inflation = results.economy_data["inflation"]
+avg_price = results.economy_data["avg_price"]
 
-print(f'Final Average Market Price '
-      f'at period {sim.t}: '
-      f'{avg_price[-1]:.2}')
+# Access per-agent data
+production = results.get_array("Producer", "production")
 ```
 
 ```python
-import matplotlib.pyplot as plt
+# Part 2: Add the R&D extension
+from extensions.rnd import RND
 
-fig, (ax1, ax2) = plt.subplots(1, 2,
-                    figsize=(12, 4))
-ax1.plot(inflation)
-ax1.set_title('Inflation Rate')
-ax1.set_xlabel('Period')
-ax1.grid(True, alpha=0.3)
+sim = bam.Simulation.init(
+    n_firms=100,
+    n_households=500,
+    n_banks=10,
+    seed=42,
+)
+sim.use(RND)  # Activate R&D extension
+results = sim.run(
+    n_periods=1000,
+    collect=BASELINE_COLLECT,
+)
 
-ax2.plot(avg_price)
-ax2.set_title('Average Market Price')
-ax2.set_xlabel('Period')
-ax2.grid(True, alpha=0.3)
-
-plt.tight_layout()
-plt.show()
+# GDP now shows a growth trend
+from bamengine import ops
+production = results.get_array("Producer", "production")
+gdp = ops.sum(production, axis=1)
+print(f"GDP growth: {gdp[-1]/gdp[200]:.1f}x")
 ```

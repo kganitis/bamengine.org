@@ -6,8 +6,8 @@ description: "History, academic context, and acknowledgments for the BAM Engine 
 BAM Engine is a high-performance Python implementation of the BAM
 (Bottom-Up Adaptive Macroeconomics) model from
 *[Macroeconomics from the Bottom-up](https://doi.org/10.1007/978-88-470-1971-3)*
-(Delli Gatti et al., 2011). It simulates three agent types — households,
-firms, and banks — interacting across labor, credit, and consumption goods
+(Delli Gatti et al., 2011). It simulates three agent types (households,
+firms, and banks) interacting across labor, credit, and consumption goods
 markets. Macroeconomic dynamics emerge entirely from individual agent
 decisions.
 
@@ -37,17 +37,37 @@ and improving simulation speed by another 6.5%.
 | **Author** | Konstantinos Ganitis |
 | **Supervisor** | Dionysios Sotiropoulos |
 | **Department** | Department of Informatics, University of Piraeus, Greece |
+| **Degree** | MSc in Informatics |
 
-## Acknowledgments
-
-BAM Engine builds on the foundational work of the original BAM model
-authors: Domenico Delli Gatti, Saul Desiderio, Edoardo Gaffeo, Pasquale
-Cirillo, and Mauro Gallegati.
-
-The framework is built on [NumPy](https://numpy.org/),
-[SciPy](https://scipy.org/), [pandas](https://pandas.pydata.org/), and
-[Matplotlib](https://matplotlib.org/).
+If you use BAM Engine in your research, see [Citing BAM Engine](/cite/)
+for citation information and BibTeX entries.
 
 ## License
 
-MIT License. Copyright © 2025 Konstantinos Ganitis.
+BAM Engine is distributed under the [MIT License](https://opensource.org/licenses/MIT).
+Copyright © 2026 Konstantinos Ganitis. See the full
+[LICENSE](https://github.com/kganitis/bam-engine/blob/main/LICENSE) file
+for details.
+
+## Acknowledgments
+
+BAM Engine would not exist without the foundational work of the original BAM
+model authors:
+
+- Domenico Delli Gatti
+- Saul Desiderio
+- Edoardo Gaffeo
+- Pasquale Cirillo
+- Mauro Gallegati
+
+The project was developed at the **Department of Informatics, University of
+Piraeus, Greece**.
+
+BAM Engine is built on the Python scientific computing ecosystem, with
+particular reliance on [NumPy](https://numpy.org/),
+[SciPy](https://scipy.org/), [pandas](https://pandas.pydata.org/), and
+[Matplotlib](https://matplotlib.org/). Documentation is powered by
+[Sphinx](https://www.sphinx-doc.org/) with the
+[PyData theme](https://pydata-sphinx-theme.readthedocs.io/). Testing uses
+[pytest](https://docs.pytest.org/) and
+[Hypothesis](https://hypothesis.readthedocs.io/).

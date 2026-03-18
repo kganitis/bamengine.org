@@ -1,21 +1,21 @@
 ---
 title: Validation Dashboard
-description: "Validation dashboard — accuracy and stability metrics across scenarios and releases."
+description: "Validation dashboard: accuracy and stability metrics across scenarios and releases."
 url: /benchmarks/validation/
 ---
 
 The validation dashboard tracks two complementary metrics across releases:
 
-- **Accuracy** (0–1) — how closely simulation results match calibration targets
+- **Accuracy** (0–1): how closely simulation results match calibration targets
   from the original BAM model (Delli Gatti et al., 2011). Higher is better.
-- **Stability** (%) — how consistently random seeds produce valid results.
+- **Stability** (%): how consistently random seeds produce valid results.
   A seed "passes" when all its metric scores exceed the tolerance threshold.
 
 Card border colors reflect the **accuracy**:
 
 - **Green**: accuracy ≥ 0.85
-- **Yellow**: accuracy 0.70–0.85 — warning
-- **Red**: accuracy < 0.70 — failing
+- **Yellow**: accuracy 0.70–0.85 (warning)
+- **Red**: accuracy < 0.70 (failing)
 
 Stability is shown inline with its own coloring (green ≥ 97%, yellow ≥ 96%).
 

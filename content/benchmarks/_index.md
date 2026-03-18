@@ -12,7 +12,7 @@ consistently random seeds produce valid outcomes.
 ## [Benchmark List](/benchmarks/list/)
 
 Flat table of all validation metrics across scenarios. Sortable by score,
-stability, or weight — filterable by scenario and metric group.
+stability, or weight, filterable by scenario and metric group.
 
 ## [Regressions](/benchmarks/regressions/)
 

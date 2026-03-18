@@ -1,7 +1,19 @@
 ---
 title: BAM Engine
-description: "BAM Engine — a Python framework for agent-based macroeconomic simulation using the BAM model."
+description: "BAM Engine: a Python framework for agent-based macroeconomic simulation using the BAM model."
 ---
+
+## What is BAM Engine?
+
+BAM Engine is a Python implementation of the BAM (Bottom-Up Adaptive
+Macroeconomics) model from
+[*Macroeconomics from the Bottom-up*](https://doi.org/10.1007/978-88-470-1971-3)
+(Delli Gatti et al., 2011). It simulates individual workers, firms, and
+banks making decisions and interacting in markets, letting macroeconomic
+patterns (growth, unemployment, inflation, business cycles) emerge from
+the bottom up. Built for researchers who want to reproduce published
+results, extend the model with custom components, and validate
+simulations against real economic patterns.
 
 {{< grid columns="1 2 2 3" >}}
 
@@ -26,7 +38,7 @@ Entity-Component-System design separates agent data (Roles) from behavior
 type = 'card'
 title = 'Vectorized Performance'
 body = '''
-All agent operations use NumPy arrays — no Python loops over agents.
+All agent operations use NumPy arrays, with no Python loops over agents.
 Simulate economies of 100+ firms and 500+ households at interactive speed.
 '''
 
@@ -51,23 +63,19 @@ sweeps are built in.
 type = 'card'
 title = 'Calibration Pipeline'
 body = '''
-Morris screening, grid search, and tiered stability testing — all accessible
+Morris screening, grid search, and tiered stability testing, all accessible
 from the same high-level API. Reproducible parameter estimation out of the box.
 '''
 
 {{< /grid >}}
 
-## Quick Start
+<p align="center">
+  <a href="/benchmarks/validation/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="/images/validation-card-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="/images/validation-card-light.svg">
+      <img alt="Model Validation" src="/images/validation-card-light.svg" width="476">
+    </picture>
+  </a>
+</p>
 
-```bash
-pip install bamengine
-```
-
-```python
-import bamengine as bam
-
-sim = bam.Simulation.init(n_firms=100, n_households=500, seed=42)
-results = sim.run(n_periods=100, collect=True)
-```
-
-{{< blog >}}

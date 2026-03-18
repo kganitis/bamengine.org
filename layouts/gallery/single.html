@@ -1,0 +1,29 @@
+{{ define "main" }}
+<section class="content-padding">
+  <div class="content-container" style="display: flex; gap: 2rem;">
+    <div style="flex: 1; min-width: 0;">
+      {{ partial "breadcrumbs.html" . }}
+      <h1>{{ .Title }}</h1>
+      {{ if .Params.Subtitle }}
+      <h5 class="subtitle">{{ .Params.Subtitle }}</h5>
+      {{ end }}
+      {{ .Content }}
+    </div>
+    <nav style="width: 200px; flex-shrink: 0; padding-top: 3rem;">
+      <h4 style="margin-bottom: 0.5rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: var(--pst-color-text-muted);">Scenarios</h4>
+      <ul style="list-style: none; padding: 0; margin: 0;">
+        {{ range (where .Parent.Pages "Params.weight" "!=" nil).ByWeight }}
+        <li style="margin-bottom: 0.4rem;">
+          {{ if eq .RelPermalink $.RelPermalink }}
+          <strong>{{ .Title }}</strong>
+          {{ else }}
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+          {{ end }}
+        </li>
+        {{ end }}
+      </ul>
+    </nav>
+  </div>
+  {{ partial "shortcuts.html" . }}
+</section>
+{{ end }}

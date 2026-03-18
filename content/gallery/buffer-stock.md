@@ -1,6 +1,7 @@
 ---
 title: "Buffer-Stock Consumption"
-description: "Buffer-stock consumption extension — household savings behavior under uncertainty."
+description: "Buffer-stock consumption extension: household savings behavior under uncertainty."
+weight: 3
 ---
 
 The buffer-stock extension (section 3.9.4) replaces the baseline mean-field
@@ -21,7 +22,7 @@ from extensions.buffer_stock import BUFFER_STOCK
 sim = bam.Simulation.init(seed=42)
 sim.use(RND)
 sim.use(BUFFER_STOCK)
-results = sim.run(n_periods=1000, show=True)
+results = sim.run(n_periods=1000, collect=True)
 ```
 
 See the [full example](https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_buffer_stock.html).

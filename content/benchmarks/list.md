@@ -1,6 +1,6 @@
 ---
 title: Benchmark List
-description: "Per-metric benchmark list — detailed accuracy and stability for every validation metric."
+description: "Per-metric benchmark list: detailed accuracy and stability for every validation metric."
 url: /benchmarks/list/
 ---
 

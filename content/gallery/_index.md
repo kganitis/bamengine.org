@@ -1,6 +1,6 @@
 ---
 title: Gallery
-description: "Simulation output gallery — charts from BAM Engine scenario runs."
+description: "Simulation output gallery: charts from BAM Engine scenario runs."
 listPages: true
 ---
 

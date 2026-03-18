@@ -1,0 +1,42 @@
+{{ define "main" }}
+    {{ if .Site.Params.hero }}
+    {{ partial "hero.html" . }}
+    {{ end }}
+
+    {{ if .Site.GetPage "/news" }}
+    {{ partial "news.html" . }}
+    {{ end }}
+
+    {{ if .Content }}
+    <section class="content-padding">
+      <div class="content-container">
+        {{ .Content }}
+      </div>
+    </section>
+    {{ end }}
+
+    {{ if .Site.Params.shell }}
+    {{ partial "shell.html" . }}
+    {{ end }}
+
+    {{ if .Site.Params.tabs }}
+    {{ partial "tabs.html" . }}
+    {{ end }}
+
+    {{ if .Site.Params.casestudies }}
+    {{ partial "casestudies.html" . }}
+    {{ end }}
+
+    {{/* Blog section rendered last */}}
+    {{ $latest := (first 8 (where $.Site.RegularPages.ByPublishDate.Reverse "Section" "news")) }}
+    {{ if $latest }}
+    <section class="content-padding flex-row">
+      <div class="content-container">
+        {{ partial "posts/list-with-summary.html" $latest }}
+        <p>
+          <a href="{{ "news/" | relURL }}"><span class="sd-btn sd-btn-outline-info">Browse all news &nbsp;⟶</span></a>
+        </p>
+      </div>
+    </section>
+    {{ end }}
+{{ end }}

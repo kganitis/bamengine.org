@@ -1,6 +1,7 @@
 ---
 title: "Robustness Analysis"
-description: "Robustness analysis — cross-correlations, impulse-response, and sensitivity experiments."
+description: "Robustness analysis: cross-correlations, impulse-response, and sensitivity experiments."
+weight: 4
 ---
 
 Robustness analysis inspired by Section 3.10, using the Growth+ model for
@@ -37,7 +38,7 @@ from extensions.rnd import RND
 
 sim = bam.Simulation.init(seed=42)
 sim.use(RND)
-results = sim.run(n_periods=1000, show=True)
+results = sim.run(n_periods=1000, collect=True)
 ```
 
 See the [full example](https://bam-engine.readthedocs.io/en/latest/auto_examples/extensions/example_robustness.html).

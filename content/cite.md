@@ -1,6 +1,6 @@
 ---
-title: Publications & Citations
-description: "Academic publications, citation information, and DOI for BAM Engine."
+title: Citing BAM Engine
+description: "Citation information and BibTeX entries for BAM Engine and the original BAM model."
 ---
 
 If you use BAM Engine in your research, please cite both the software

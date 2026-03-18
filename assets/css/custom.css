@@ -10,7 +10,15 @@
 .hero-title {
   white-space: nowrap;
   font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
-  font-size: 5em;
+  font-size: 4em;
+}
+
+/* Center subtitle and CTA buttons */
+.hero-subtitle {
+  text-align: center;
+}
+.hero-cta {
+  justify-content: center;
 }
 
 /* Scale hero logo larger than text and center-align */
@@ -23,6 +31,33 @@
 /* Serif font for navbar logo text */
 .navbar-logo span {
   font-family: "Palatino Linotype", "Palatino", "Book Antiqua", Georgia, serif;
+}
+
+/* Secondary hero CTA button: outlined style */
+.cta-button-secondary {
+  background-color: transparent;
+  color: var(--spht-color-dark);
+  border: 2px solid var(--spht-color-dark);
+}
+.cta-button-secondary:hover {
+  background-color: var(--spht-color-dark);
+  color: var(--spht-color-light);
+}
+[data-theme="dark"] .cta-button-secondary {
+  color: var(--spht-color-light);
+  border-color: var(--spht-color-light);
+}
+[data-theme="dark"] .cta-button-secondary:hover {
+  background-color: var(--spht-color-light);
+  color: var(--spht-color-dark);
+}
+
+/* Footer: ensure columns have breathing room */
+#footer-columns {
+  gap: 2rem;
+}
+.footer-column {
+  min-width: 120px;
 }
 
 /* Mobile: allow wrapping, shrink title, stack logo below */
