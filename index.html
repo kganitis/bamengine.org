@@ -36,18 +36,26 @@ from the same high-level API. Reproducible parameter estimation out of the box.<
 </span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>bamengine</span> <span class=k>as</span> <span class=nn>bam</span>
 </span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>bamengine</span> <span class=kn>import</span> <span class=n>ops</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Create an economy with default agents</span>
 </span></span><span class=line><span class=cl><span class=n>sim</span> <span class=o>=</span> <span class=n>bam</span><span class=o>.</span><span class=n>Simulation</span><span class=o>.</span><span class=n>init</span><span class=p>(</span><span class=n>seed</span><span class=o>=</span><span class=mi>42</span><span class=p>,</span> <span class=n>log_level</span><span class=o>=</span><span class=s2>&#34;ERROR&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Run for 100 periods (each period = one</span>
+</span></span><span class=line><span class=cl><span class=c1># full economic cycle of hiring, producing,</span>
+</span></span><span class=line><span class=cl><span class=c1># and trading)</span>
 </span></span><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>n_periods</span><span class=o>=</span><span class=mi>100</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># GDP = total production across all firms</span>
 </span></span><span class=line><span class=cl><span class=n>gdp</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>production</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Baseline GDP: </span><span class=si>{</span><span class=n>gdp</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span></span></span></code></pre></div><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1># Add R&amp;D: firms invest in innovation, GDP grows</span>
 </span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>extensions.rnd</span> <span class=kn>import</span> <span class=n>RND</span>
 </span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Same economy, but now with R&amp;D</span>
 </span></span><span class=line><span class=cl><span class=n>sim</span> <span class=o>=</span> <span class=n>bam</span><span class=o>.</span><span class=n>Simulation</span><span class=o>.</span><span class=n>init</span><span class=p>(</span><span class=n>seed</span><span class=o>=</span><span class=mi>42</span><span class=p>,</span> <span class=n>log_level</span><span class=o>=</span><span class=s2>&#34;ERROR&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=n>sim</span><span class=o>.</span><span class=n>use</span><span class=p>(</span><span class=n>RND</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>sim</span><span class=o>.</span><span class=n>use</span><span class=p>(</span><span class=n>RND</span><span class=p>)</span>  <span class=c1># Activate the R&amp;D extension</span>
 </span></span><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>n_periods</span><span class=o>=</span><span class=mi>100</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Compare: GDP now shows a growth trend</span>
 </span></span><span class=line><span class=cl><span class=n>gdp</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>production</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;Growth+ GDP: </span><span class=si>{</span><span class=n>gdp</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
