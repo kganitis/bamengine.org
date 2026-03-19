@@ -30,32 +30,16 @@ loan applications, and provide credit to firms.</li><li><strong><code>seed</code
 always produces the same simulation results. Change the seed to see
 different realizations of the same economy.</li></ul><p>Behind the scenes, <code>init()</code> assigns initial conditions to every agent
 (starting prices, wages, inventories, cash balances) and builds the event
-pipeline, the sequence of economic actions that happen each period.</p><hr><h2 id=running-the-simulation>Running the Simulation<a class=headerlink href=#running-the-simulation title="Link to this heading">#</a></h2><p>Now let&rsquo;s run the economy for 1,000 time steps:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>n_periods</span><span class=o>=</span><span class=mi>1000</span><span class=p>)</span></span></span></code></pre></div><ul><li><strong><code>n_periods</code></strong>: How many time steps to simulate. Each period
+pipeline, the sequence of economic actions that happen each period.</p><hr><h2 id=running-the-simulation>Running the Simulation<a class=headerlink href=#running-the-simulation title="Link to this heading">#</a></h2><p>Now let&rsquo;s run the economy for 1,000 time steps:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=n>n_periods</span><span class=o>=</span><span class=mi>1000</span><span class=p>,</span>     <span class=c1># Simulate 1000 economic cycles</span>
+</span></span><span class=line><span class=cl><span class=p>)</span></span></span></code></pre></div><ul><li><strong><code>n_periods</code></strong>: How many time steps to simulate. Each period
 represents one complete economic cycle: firms plan production, hire
 workers in the labor market, borrow from banks in the credit market,
 produce goods, sell in the goods market, pay dividends, and update
-their books.</li></ul><p>That&rsquo;s it. The simulation has run. No data collection yet; we will
-add that next to see what happened inside the economy.</p><hr><h2 id=collecting-data>Collecting Data<a class=headerlink href=#collecting-data title="Link to this heading">#</a></h2><p>The economy state (<code>sim.ec</code>) tracks a few aggregate indicators
-automatically, but for richer analysis (computing GDP, unemployment,
-or comparing wages to productivity) we need per-agent data. That is
-what the <code>collect</code> parameter is for.</p><p>BAM Engine provides a pre-configured collection setup called
-<code>BASELINE_COLLECT</code> that captures exactly the data needed for standard
-macroeconomic analysis:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=kn>from</span> <span class=nn>bamengine</span> <span class=kn>import</span> <span class=n>BASELINE_COLLECT</span></span></span></code></pre></div><p><code>BASELINE_COLLECT</code> is a dictionary that tells the simulation what to
-record:</p><ul><li><strong>Producer</strong> data: <code>production</code> and <code>labor_productivity</code> for each firm</li><li><strong>Worker</strong> data: <code>wage</code> and <code>employed</code> status for each household</li><li><strong>Employer</strong> data: number of <code>n_vacancies</code> posted by each firm</li><li><strong>Economy</strong> data: aggregate price, inflation, bankruptcies</li><li><strong>Capture timing</strong>: when to record each metric (e.g., production after
-firms finish producing, wages after workers get paid)</li></ul><p>Let&rsquo;s re-initialize and run the simulation with data collection:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>sim</span> <span class=o>=</span> <span class=n>bam</span><span class=o>.</span><span class=n>Simulation</span><span class=o>.</span><span class=n>init</span><span class=p>(</span>
-</span></span><span class=line><span class=cl>    <span class=n>n_firms</span><span class=o>=</span><span class=mi>100</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>    <span class=n>n_households</span><span class=o>=</span><span class=mi>500</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>    <span class=n>n_banks</span><span class=o>=</span><span class=mi>10</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>    <span class=n>seed</span><span class=o>=</span><span class=mi>42</span><span class=p>,</span>
-</span></span><span class=line><span class=cl><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span>
-</span></span><span class=line><span class=cl>    <span class=n>n_periods</span><span class=o>=</span><span class=mi>1000</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>    <span class=n>collect</span><span class=o>=</span><span class=n>BASELINE_COLLECT</span><span class=p>,</span>
-</span></span><span class=line><span class=cl><span class=p>)</span></span></span></code></pre></div><ul><li><strong><code>collect</code></strong>: Specifies what data to record. Passing <code>BASELINE_COLLECT</code>
-captures the standard macroeconomic metrics. You can also pass
-<code>collect=True</code> to record everything, or a custom dictionary for
-fine-grained control.</li></ul><p>Now <code>results</code> is a <code>SimulationResults</code> object containing per-agent data
-at every time step. Let&rsquo;s see what the economy has been doing.</p><p>In the plots below, we skip the first 200 periods (the &ldquo;burn-in&rdquo;).
+their books.</li></ul><p><code>sim.run()</code> automatically collects per-agent data at every time step
+and returns a <code>SimulationResults</code> object. You can access the data using
+bracket notation (<code>results["Role.variable"]</code>) or attribute-style access
+(<code>results.Role.variable</code>).</p><p>In the plots below, we skip the first 200 periods (the &ldquo;burn-in&rdquo;).
 Agent-based models start from artificial initial conditions (all firms
 identical, no one employed, no loans outstanding), so the first few
 hundred periods are dominated by the economy organizing itself rather
@@ -67,7 +51,7 @@ focus on the settled behavior.</p><hr><h2 id=unemployment>Unemployment<a class=h
 </span></span><span class=line><span class=cl><span class=n>burn_in</span> <span class=o>=</span> <span class=mi>200</span>  <span class=c1># Skip initial transient before the economy settles</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># Get employment status: shape (n_periods, n_households)</span>
-</span></span><span class=line><span class=cl><span class=n>employed</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Worker&#34;</span><span class=p>,</span> <span class=s2>&#34;employed&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>employed</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Worker</span><span class=o>.</span><span class=n>employed</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># Unemployment rate = fraction of workers without a job</span>
 </span></span><span class=line><span class=cl><span class=n>unemployment</span> <span class=o>=</span> <span class=mi>1</span> <span class=o>-</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>employed</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=nb>float</span><span class=p>),</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
@@ -78,18 +62,18 @@ focus on the settled behavior.</p><hr><h2 id=unemployment>Unemployment<a class=h
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>ylabel</span><span class=p>(</span><span class=s2>&#34;Unemployment Rate&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s2>&#34;Unemployment Rate Over Time&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>tight_layout</span><span class=p>()</span>
-</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span></span></span></code></pre></div><p><img src=/images/learn/unemployment.png alt="Unemployment rate"></p><p><code>results.get_array("Worker", "employed")</code> returns a 2D NumPy array
-with shape <code>(n_periods, n_households)</code>, where each value is <code>True</code> if
-the household has a job and <code>False</code> otherwise. Averaging across
-households (axis=1) gives the employment rate; subtracting from 1 gives
-the unemployment rate.</p><p>Notice the oscillations: these are <strong>business cycles</strong>, and they were
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span></span></span></code></pre></div><p><img src=/images/learn/unemployment.png alt="Unemployment rate"></p><p><code>results.Worker.employed</code> returns a 2D NumPy array with shape
+<code>(n_periods, n_households)</code>, where each value is <code>True</code> if the household
+has a job and <code>False</code> otherwise. Averaging across households (axis=1)
+gives the employment rate; subtracting from 1 gives the unemployment
+rate.</p><p>Notice the oscillations: these are <strong>business cycles</strong>, and they were
 not programmed. There is no &ldquo;recession function&rdquo; or &ldquo;boom equation&rdquo; in
 the code. Each firm independently decides how many workers to hire based
 on its own sales, and each household independently searches for jobs.
 When many firms cut production at once, unemployment rises; when they
 expand, it falls. The entire pattern emerges from the bottom up, from
 thousands of simple, local decisions interacting through markets.</p><hr><h2 id=inflation>Inflation<a class=headerlink href=#inflation title="Link to this heading">#</a></h2><p>Inflation measures how the average market price changes from period to
-period:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>inflation</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>economy_data</span><span class=p>[</span><span class=s2>&#34;inflation&#34;</span><span class=p>]</span>
+period:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>inflation</span> <span class=o>=</span> <span class=n>results</span><span class=p>[</span><span class=s2>&#34;Economy.inflation&#34;</span><span class=p>]</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=mi>4</span><span class=p>))</span>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>inflation</span><span class=p>[</span><span class=n>burn_in</span><span class=p>:],</span> <span class=n>linewidth</span><span class=o>=</span><span class=mf>0.8</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s2>&#34;tab:orange&#34;</span><span class=p>)</span>
@@ -104,7 +88,7 @@ aggregate inflation pattern is a collective outcome of thousands of
 individual pricing decisions, none of which have any knowledge of the
 &ldquo;big picture.&rdquo;</p><hr><h2 id=gdp>GDP<a class=headerlink href=#gdp title="Link to this heading">#</a></h2><p>GDP (Gross Domestic Product) is the total production of all firms.
 Since we collected per-firm production data, we can compute it:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1># Get production data: shape (n_periods, n_firms)</span>
-</span></span><span class=line><span class=cl><span class=n>production</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Producer&#34;</span><span class=p>,</span> <span class=s2>&#34;production&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>production</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>production</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># GDP = sum of all firms&#39; production each period</span>
 </span></span><span class=line><span class=cl><span class=n>gdp</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>production</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
@@ -115,19 +99,19 @@ Since we collected per-firm production data, we can compute it:</p><div class=hi
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>ylabel</span><span class=p>(</span><span class=s2>&#34;Total Production (GDP)&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s2>&#34;Real GDP Over Time&#34;</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>tight_layout</span><span class=p>()</span>
-</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span></span></span></code></pre></div><p><img src=/images/learn/gdp.png alt=GDP></p><p><code>results.get_array("Producer", "production")</code> returns a 2D NumPy array
-with shape <code>(n_periods, n_firms)</code>. Summing across firms (axis=1) gives
-total GDP each period.</p><p>GDP is not a variable in the model. No equation computes it. It is
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span></span></span></code></pre></div><p><img src=/images/learn/gdp.png alt=GDP></p><p><code>results.Producer.production</code> returns a 2D NumPy array with shape
+<code>(n_periods, n_firms)</code>. Summing across firms (axis=1) gives total GDP
+each period.</p><p>GDP is not a variable in the model. No equation computes it. It is
 simply the sum of what every firm happened to produce, and that depends
 on how many workers each firm managed to hire, how much credit it could
 secure, and what price it set. The macroeconomic output is an emergent
 property of microeconomic interactions.</p><p>In the baseline model (without R&amp;D), GDP fluctuates around a relatively
 stable level. There is no long-run growth because firms cannot innovate;
 they produce with fixed technology.</p><hr><h2 id=wages-and-productivity>Wages and Productivity<a class=headerlink href=#wages-and-productivity title="Link to this heading">#</a></h2><p>Let&rsquo;s compare the average real wage to average productivity:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=c1># Average price each period (for converting nominal to real)</span>
-</span></span><span class=line><span class=cl><span class=n>avg_price</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>economy_data</span><span class=p>[</span><span class=s2>&#34;avg_price&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>avg_price</span> <span class=o>=</span> <span class=n>results</span><span class=p>[</span><span class=s2>&#34;Economy.avg_price&#34;</span><span class=p>]</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=c1># Worker wages and employment status</span>
-</span></span><span class=line><span class=cl><span class=n>wages</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Worker&#34;</span><span class=p>,</span> <span class=s2>&#34;wage&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=c1># Worker wages</span>
+</span></span><span class=line><span class=cl><span class=n>wages</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Worker</span><span class=o>.</span><span class=n>wage</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># Average wage among employed workers</span>
 </span></span><span class=line><span class=cl><span class=n>wages_employed</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>where</span><span class=p>(</span><span class=n>employed</span><span class=p>,</span> <span class=n>wages</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>)</span>
@@ -139,7 +123,7 @@ they produce with fixed technology.</p><hr><h2 id=wages-and-productivity>Wages a
 </span></span><span class=line><span class=cl><span class=n>real_wage</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>divide</span><span class=p>(</span><span class=n>avg_wage</span><span class=p>,</span> <span class=n>avg_price</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=c1># Production-weighted average productivity</span>
-</span></span><span class=line><span class=cl><span class=n>productivity</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Producer&#34;</span><span class=p>,</span> <span class=s2>&#34;labor_productivity&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>productivity</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>labor_productivity</span>
 </span></span><span class=line><span class=cl><span class=n>weighted_prod</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>ops</span><span class=o>.</span><span class=n>multiply</span><span class=p>(</span><span class=n>productivity</span><span class=p>,</span> <span class=n>production</span><span class=p>),</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>avg_productivity</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>divide</span><span class=p>(</span><span class=n>weighted_prod</span><span class=p>,</span> <span class=n>gdp</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
@@ -162,15 +146,12 @@ BAM Engine&rsquo;s extension system lets you find out with three extra lines:</p
 </span></span><span class=line><span class=cl>    <span class=n>seed</span><span class=o>=</span><span class=mi>42</span><span class=p>,</span>
 </span></span><span class=line><span class=cl><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>sim</span><span class=o>.</span><span class=n>use</span><span class=p>(</span><span class=n>RND</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span>
-</span></span><span class=line><span class=cl>    <span class=n>n_periods</span><span class=o>=</span><span class=mi>1000</span><span class=p>,</span>
-</span></span><span class=line><span class=cl>    <span class=n>collect</span><span class=o>=</span><span class=n>BASELINE_COLLECT</span><span class=p>,</span>
-</span></span><span class=line><span class=cl><span class=p>)</span></span></span></code></pre></div><ul><li><strong><code>from extensions.rnd import RND</code></strong>: imports the R&amp;D extension
+</span></span><span class=line><span class=cl><span class=n>results</span> <span class=o>=</span> <span class=n>sim</span><span class=o>.</span><span class=n>run</span><span class=p>(</span><span class=n>n_periods</span><span class=o>=</span><span class=mi>1000</span><span class=p>)</span></span></span></code></pre></div><ul><li><strong><code>from extensions.rnd import RND</code></strong>: imports the R&amp;D extension
 bundle, which contains new roles (R&amp;D intensity for each firm), new
 events (firms invest in R&amp;D, productivity grows), and configuration
 parameters.</li><li><strong><code>sim.use(RND)</code></strong>: activates the extension. This adds the R&amp;D
 components to the simulation and inserts the new events into the
-pipeline at the right points.</li></ul><p>Now let&rsquo;s see what changed:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>production_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Producer&#34;</span><span class=p>,</span> <span class=s2>&#34;production&#34;</span><span class=p>)</span>
+pipeline at the right points.</li></ul><p>Now let&rsquo;s see what changed:</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>production_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>production</span>
 </span></span><span class=line><span class=cl><span class=n>gdp_rnd</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span><span class=n>production_rnd</span><span class=p>,</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=mi>4</span><span class=p>))</span>
@@ -185,9 +166,9 @@ productivity. Higher productivity means more output per worker,
 which accumulates into economy-wide growth.</p><p>Notice that the business cycle dynamics are still present: even with
 growth, the economy oscillates around the trend. Recessions and
 expansions continue to emerge from agent interactions, but now they
-ride on top of a rising trajectory rather than a flat baseline.</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>avg_price_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>economy_data</span><span class=p>[</span><span class=s2>&#34;avg_price&#34;</span><span class=p>]</span>
-</span></span><span class=line><span class=cl><span class=n>wages_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Worker&#34;</span><span class=p>,</span> <span class=s2>&#34;wage&#34;</span><span class=p>)</span>
-</span></span><span class=line><span class=cl><span class=n>employed_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Worker&#34;</span><span class=p>,</span> <span class=s2>&#34;employed&#34;</span><span class=p>)</span>
+ride on top of a rising trajectory rather than a flat baseline.</p><div class=highlight><pre class=chroma><code><span class=line><span class=cl><span class=n>avg_price_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=p>[</span><span class=s2>&#34;Economy.avg_price&#34;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>wages_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Worker</span><span class=o>.</span><span class=n>wage</span>
+</span></span><span class=line><span class=cl><span class=n>employed_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Worker</span><span class=o>.</span><span class=n>employed</span>
 </span></span><span class=line><span class=cl><span class=n>employed_float_rnd</span> <span class=o>=</span> <span class=n>employed_rnd</span><span class=o>.</span><span class=n>astype</span><span class=p>(</span><span class=nb>float</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>wages_employed_rnd</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>where</span><span class=p>(</span><span class=n>employed_rnd</span><span class=p>,</span> <span class=n>wages_rnd</span><span class=p>,</span> <span class=mf>0.0</span><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>avg_wage_rnd</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>divide</span><span class=p>(</span>
@@ -196,7 +177,7 @@ ride on top of a rising trajectory rather than a flat baseline.</p><div class=hi
 </span></span><span class=line><span class=cl><span class=p>)</span>
 </span></span><span class=line><span class=cl><span class=n>real_wage_rnd</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>divide</span><span class=p>(</span><span class=n>avg_wage_rnd</span><span class=p>,</span> <span class=n>avg_price_rnd</span><span class=p>)</span>
 </span></span><span class=line><span class=cl>
-</span></span><span class=line><span class=cl><span class=n>productivity_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>get_array</span><span class=p>(</span><span class=s2>&#34;Producer&#34;</span><span class=p>,</span> <span class=s2>&#34;labor_productivity&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>productivity_rnd</span> <span class=o>=</span> <span class=n>results</span><span class=o>.</span><span class=n>Producer</span><span class=o>.</span><span class=n>labor_productivity</span>
 </span></span><span class=line><span class=cl><span class=n>weighted_prod_rnd</span> <span class=o>=</span> <span class=n>ops</span><span class=o>.</span><span class=n>sum</span><span class=p>(</span>
 </span></span><span class=line><span class=cl>    <span class=n>ops</span><span class=o>.</span><span class=n>multiply</span><span class=p>(</span><span class=n>productivity_rnd</span><span class=p>,</span> <span class=n>production_rnd</span><span class=p>),</span> <span class=n>axis</span><span class=o>=</span><span class=mi>1</span>
 </span></span><span class=line><span class=cl><span class=p>)</span>
