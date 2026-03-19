@@ -12,15 +12,15 @@
 </a><a href=/community/ class=navbar-item>Community
 </a><a href=/about/ class=navbar-item>About</a></div></div></div></nav><link rel=stylesheet href=/pagefind/pagefind-ui.css><script type=text/javascript src=/pagefind/pagefind-ui.js></script><dialog class=search-dialog></dialog><section class=hero><div class=hero-container><div class=hero-content><div class=hero-title-content><div class=hero-title>BAM Engine
 <img class="hero-logo dark-light" src=/images/logo-icon.svg alt="BAM Engine logo. BAM Engine"></div><div class=flex-column><div class=hero-subtitle>Agent-based macroeconomic simulation in Python</div><div class=hero-cta><a href=/install/><button class=cta-button>Get Started</button></a>
-<a href=/learn/><button class="cta-button cta-button-secondary">Learn</button></a></div></div></div></div></div></section><div class=news-container><div class=news-title><a href=/news>BAM Engine 0.9.0: Results API Redesign</a></div><div class=news-date><a href=/news>2026-03-19</a></div></div><section class=content-padding><div class=content-container><h2 id=what-is-bam-engine>What is BAM Engine?<a class=headerlink href=#what-is-bam-engine title="Link to this heading">#</a></h2><p>BAM Engine is a Python implementation of the BAM (Bottom-Up Adaptive
-Macroeconomics) model from
+<a href=/learn/><button class="cta-button cta-button-secondary">Learn</button></a></div></div></div></div></div></section><div class=news-container><div class=news-title><a href=/news>BAM Engine 0.9.0: Results API Redesign</a></div><div class=news-date><a href=/news>2026-03-19</a></div></div><section class=content-padding><div class=content-container><h2 id=what-is-bam-engine>What is BAM Engine?<a class=headerlink href=#what-is-bam-engine title="Link to this heading">#</a></h2><p>Imagine a virtual economy where thousands of workers look for jobs,
+companies compete for customers, and banks decide who gets a loan.
+BAM Engine creates exactly that: a computer simulation where economic
+patterns like unemployment, inflation, and business cycles emerge
+naturally from these individual decisions, just as they do in the real
+world. It is a Python framework that implements the BAM model from
 <a href=https://doi.org/10.1007/978-88-470-1971-3><em>Macroeconomics from the Bottom-up</em></a>
-(Delli Gatti et al., 2011). It runs simulations of individual workers, firms, and
-banks making decisions and interacting in labor, credit and goods markets, letting
-macroeconomic patterns (growth, unemployment, inflation, business cycles) <strong>emerge from
-the bottom up</strong>, instead of assuming them with aggregate equations. Built for researchers
-who want to reproduce published results, extend the model with custom components, and
-validate simulations against real economic patterns.</p><div class="sd-container-fluid sd-mb-4 false"><div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-3 sd-g-2 sd-g-xs-1 sd-g-sm-2 sd-g-md-2 sd-g-lg-3"><div class="sd-col sd-d-flex-row"><div class="sd-card sd-w-100 sd-shadow-sm"><div class=sd-card-body><div class="sd-card-title sd-font-weight-bold">Complete BAM Model</div>Full implementation of the BAM model from Delli Gatti et al. (2011).
+(Delli Gatti et al., 2011), designed for researchers in computational
+economics and agent-based modeling.</p><div class="sd-container-fluid sd-mb-4 false"><div class="sd-row sd-row-cols-1 sd-row-cols-xs-1 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-3 sd-g-2 sd-g-xs-1 sd-g-sm-2 sd-g-md-2 sd-g-lg-3"><div class="sd-col sd-d-flex-row"><div class="sd-card sd-w-100 sd-shadow-sm"><div class=sd-card-body><div class="sd-card-title sd-font-weight-bold">Complete BAM Model</div>Full implementation of the BAM model from Delli Gatti et al. (2011).
 Firms, households, and banks interact across labor, credit, and goods markets.
 Macroeconomic dynamics emerge from the bottom up.</div></div></div><div class="sd-col sd-d-flex-row"><div class="sd-card sd-w-100 sd-shadow-sm"><div class=sd-card-body><div class="sd-card-title sd-font-weight-bold">ECS Architecture</div>Entity-Component-System design separates agent data (Roles) from behavior
 (Events). Extend or override any aspect of the model without forking the core.</div></div></div><div class="sd-col sd-d-flex-row"><div class="sd-card sd-w-100 sd-shadow-sm"><div class=sd-card-body><div class="sd-card-title sd-font-weight-bold">Vectorized Performance</div>All agent operations use NumPy arrays, with no Python loops over agents.
