@@ -8,12 +8,12 @@ description: "BAM Engine: a Python framework for agent-based macroeconomic simul
 BAM Engine is a Python implementation of the BAM (Bottom-Up Adaptive
 Macroeconomics) model from
 [*Macroeconomics from the Bottom-up*](https://doi.org/10.1007/978-88-470-1971-3)
-(Delli Gatti et al., 2011). It simulates individual workers, firms, and
-banks making decisions and interacting in markets, letting macroeconomic
-patterns (growth, unemployment, inflation, business cycles) emerge from
-the bottom up. Built for researchers who want to reproduce published
-results, extend the model with custom components, and validate
-simulations against real economic patterns.
+(Delli Gatti et al., 2011). It runs simulations of individual workers, firms, and
+banks making decisions and interacting in labor, credit and goods markets, letting
+macroeconomic patterns (growth, unemployment, inflation, business cycles) **emerge from
+the bottom up**, instead of assuming them with aggregate equations. Built for researchers
+who want to reproduce published results, extend the model with custom components, and
+validate simulations against real economic patterns.
 
 {{< grid columns="1 2 2 3" >}}
 
