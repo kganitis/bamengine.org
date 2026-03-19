@@ -1,6 +1,60 @@
 {
   "runs": [
     {
+      "commit_short": "3f52a12",
+      "commit": "3f52a12909555f8d9946f15f0661c1f8437910b3",
+      "commit_date": "2026-03-19T20:47:28+02:00",
+      "timestamp": "2026-03-19T18:47:43",
+      "tag": "v0.9.1",
+      "scenarios": {
+        "baseline": {
+          "file": "baseline_v0_9_1_20260319T184743.json",
+          "pass_rate": 0.98,
+          "mean_score": 0.8919411038134463,
+          "n_failing": 20
+        },
+        "buffer_stock": {
+          "file": "buffer_stock_v0_9_1_20260319T184743.json",
+          "pass_rate": 0.992,
+          "mean_score": 0.8648743893607275,
+          "n_failing": 8
+        },
+        "growth_plus": {
+          "file": "growth_plus_v0_9_1_20260319T184743.json",
+          "pass_rate": 0.971,
+          "mean_score": 0.853540465955284,
+          "n_failing": 29
+        }
+      }
+    },
+    {
+      "commit_short": "332ae6c",
+      "commit": "332ae6c9813ed698d31e4d11b308330b29974b67",
+      "commit_date": "2026-03-19T17:06:37+02:00",
+      "timestamp": "2026-03-19T15:06:53",
+      "tag": "v0.9.0",
+      "scenarios": {
+        "baseline": {
+          "file": "baseline_v0_9_0_20260319T150653.json",
+          "pass_rate": 0.98,
+          "mean_score": 0.8919411038134463,
+          "n_failing": 20
+        },
+        "buffer_stock": {
+          "file": "buffer_stock_v0_9_0_20260319T150653.json",
+          "pass_rate": 0.992,
+          "mean_score": 0.8648743893607275,
+          "n_failing": 8
+        },
+        "growth_plus": {
+          "file": "growth_plus_v0_9_0_20260319T150653.json",
+          "pass_rate": 0.971,
+          "mean_score": 0.8535404659552841,
+          "n_failing": 29
+        }
+      }
+    },
+    {
       "commit_short": "c9ac089",
       "commit": "c9ac08918cbee0b5ce7f00de1ffd9f12f160b106",
       "commit_date": "2026-03-17T17:10:35+02:00",

@@ -59,7 +59,9 @@ pipeline, the sequence of economic actions that happen each period.
 Now let's run the economy for 1,000 time steps:
 
 ```python
-sim.run(n_periods=1000)
+results = sim.run(
+    n_periods=1000,     # Simulate 1000 economic cycles
+)
 ```
 
 - **`n_periods`**: How many time steps to simulate. Each period
@@ -68,58 +70,10 @@ sim.run(n_periods=1000)
   produce goods, sell in the goods market, pay dividends, and update
   their books.
 
-That's it. The simulation has run. No data collection yet; we will
-add that next to see what happened inside the economy.
-
----
-
-## Collecting Data
-
-The economy state (`sim.ec`) tracks a few aggregate indicators
-automatically, but for richer analysis (computing GDP, unemployment,
-or comparing wages to productivity) we need per-agent data. That is
-what the `collect` parameter is for.
-
-BAM Engine provides a pre-configured collection setup called
-`BASELINE_COLLECT` that captures exactly the data needed for standard
-macroeconomic analysis:
-
-```python
-from bamengine import BASELINE_COLLECT
-```
-
-`BASELINE_COLLECT` is a dictionary that tells the simulation what to
-record:
-
-- **Producer** data: `production` and `labor_productivity` for each firm
-- **Worker** data: `wage` and `employed` status for each household
-- **Employer** data: number of `n_vacancies` posted by each firm
-- **Economy** data: aggregate price, inflation, bankruptcies
-- **Capture timing**: when to record each metric (e.g., production after
-  firms finish producing, wages after workers get paid)
-
-Let's re-initialize and run the simulation with data collection:
-
-```python
-sim = bam.Simulation.init(
-    n_firms=100,
-    n_households=500,
-    n_banks=10,
-    seed=42,
-)
-results = sim.run(
-    n_periods=1000,
-    collect=BASELINE_COLLECT,
-)
-```
-
-- **`collect`**: Specifies what data to record. Passing `BASELINE_COLLECT`
-  captures the standard macroeconomic metrics. You can also pass
-  `collect=True` to record everything, or a custom dictionary for
-  fine-grained control.
-
-Now `results` is a `SimulationResults` object containing per-agent data
-at every time step. Let's see what the economy has been doing.
+`sim.run()` automatically collects per-agent data at every time step
+and returns a `SimulationResults` object. You can access the data using
+bracket notation (`results["Role.variable"]`) or attribute-style access
+(`results.Role.variable`).
 
 In the plots below, we skip the first 200 periods (the "burn-in").
 Agent-based models start from artificial initial conditions (all firms
@@ -142,7 +96,7 @@ from bamengine import ops
 burn_in = 200  # Skip initial transient before the economy settles
 
 # Get employment status: shape (n_periods, n_households)
-employed = results.get_array("Worker", "employed")
+employed = results.Worker.employed
 
 # Unemployment rate = fraction of workers without a job
 unemployment = 1 - np.mean(employed.astype(float), axis=1)
@@ -158,11 +112,11 @@ plt.show()
 
 ![Unemployment rate](/images/learn/unemployment.png)
 
-`results.get_array("Worker", "employed")` returns a 2D NumPy array
-with shape `(n_periods, n_households)`, where each value is `True` if
-the household has a job and `False` otherwise. Averaging across
-households (axis=1) gives the employment rate; subtracting from 1 gives
-the unemployment rate.
+`results.Worker.employed` returns a 2D NumPy array with shape
+`(n_periods, n_households)`, where each value is `True` if the household
+has a job and `False` otherwise. Averaging across households (axis=1)
+gives the employment rate; subtracting from 1 gives the unemployment
+rate.
 
 Notice the oscillations: these are **business cycles**, and they were
 not programmed. There is no "recession function" or "boom equation" in
@@ -180,7 +134,7 @@ Inflation measures how the average market price changes from period to
 period:
 
 ```python
-inflation = results.economy_data["inflation"]
+inflation = results["Economy.inflation"]
 
 plt.figure(figsize=(10, 4))
 plt.plot(inflation[burn_in:], linewidth=0.8, color="tab:orange")
@@ -209,7 +163,7 @@ Since we collected per-firm production data, we can compute it:
 
 ```python
 # Get production data: shape (n_periods, n_firms)
-production = results.get_array("Producer", "production")
+production = results.Producer.production
 
 # GDP = sum of all firms' production each period
 gdp = ops.sum(production, axis=1)
@@ -225,9 +179,9 @@ plt.show()
 
 ![GDP](/images/learn/gdp.png)
 
-`results.get_array("Producer", "production")` returns a 2D NumPy array
-with shape `(n_periods, n_firms)`. Summing across firms (axis=1) gives
-total GDP each period.
+`results.Producer.production` returns a 2D NumPy array with shape
+`(n_periods, n_firms)`. Summing across firms (axis=1) gives total GDP
+each period.
 
 GDP is not a variable in the model. No equation computes it. It is
 simply the sum of what every firm happened to produce, and that depends
@@ -247,10 +201,10 @@ Let's compare the average real wage to average productivity:
 
 ```python
 # Average price each period (for converting nominal to real)
-avg_price = results.economy_data["avg_price"]
+avg_price = results["Economy.avg_price"]
 
-# Worker wages and employment status
-wages = results.get_array("Worker", "wage")
+# Worker wages
+wages = results.Worker.wage
 
 # Average wage among employed workers
 wages_employed = ops.where(employed, wages, 0.0)
@@ -262,7 +216,7 @@ avg_wage = ops.divide(
 real_wage = ops.divide(avg_wage, avg_price)
 
 # Production-weighted average productivity
-productivity = results.get_array("Producer", "labor_productivity")
+productivity = results.Producer.labor_productivity
 weighted_prod = ops.sum(ops.multiply(productivity, production), axis=1)
 avg_productivity = ops.divide(weighted_prod, gdp)
 
@@ -299,10 +253,7 @@ sim = bam.Simulation.init(
     seed=42,
 )
 sim.use(RND)
-results = sim.run(
-    n_periods=1000,
-    collect=BASELINE_COLLECT,
-)
+results = sim.run(n_periods=1000)
 ```
 
 - **`from extensions.rnd import RND`**: imports the R&D extension
@@ -316,7 +267,7 @@ results = sim.run(
 Now let's see what changed:
 
 ```python
-production_rnd = results.get_array("Producer", "production")
+production_rnd = results.Producer.production
 gdp_rnd = ops.sum(production_rnd, axis=1)
 
 plt.figure(figsize=(10, 4))
@@ -341,9 +292,9 @@ expansions continue to emerge from agent interactions, but now they
 ride on top of a rising trajectory rather than a flat baseline.
 
 ```python
-avg_price_rnd = results.economy_data["avg_price"]
-wages_rnd = results.get_array("Worker", "wage")
-employed_rnd = results.get_array("Worker", "employed")
+avg_price_rnd = results["Economy.avg_price"]
+wages_rnd = results.Worker.wage
+employed_rnd = results.Worker.employed
 employed_float_rnd = employed_rnd.astype(float)
 wages_employed_rnd = ops.where(employed_rnd, wages_rnd, 0.0)
 avg_wage_rnd = ops.divide(
@@ -352,7 +303,7 @@ avg_wage_rnd = ops.divide(
 )
 real_wage_rnd = ops.divide(avg_wage_rnd, avg_price_rnd)
 
-productivity_rnd = results.get_array("Producer", "labor_productivity")
+productivity_rnd = results.Producer.labor_productivity
 weighted_prod_rnd = ops.sum(
     ops.multiply(productivity_rnd, production_rnd), axis=1
 )

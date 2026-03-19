@@ -1,46 +1,35 @@
-```python
-# Part 1: Run a baseline simulation
-import bamengine as bam
-from bamengine import BASELINE_COLLECT
-
-sim = bam.Simulation.init(
-    n_firms=100,
-    n_households=500,
-    n_banks=10,
-    seed=42,
-)
-results = sim.run(
-    n_periods=1000,
-    collect=BASELINE_COLLECT,
-)
-
-# Access economy-wide time series
-inflation = results.economy_data["inflation"]
-avg_price = results.economy_data["avg_price"]
-
-# Access per-agent data
-production = results.get_array("Producer", "production")
+```
+To try the examples in the browser:
+1. Type code in the input cell and press
+   Shift + Enter to execute
+2. Or copy paste the code, and click on
+   the "Run" button in the toolbar
 ```
 
 ```python
-# Part 2: Add the R&D extension
-from extensions.rnd import RND
-
-sim = bam.Simulation.init(
-    n_firms=100,
-    n_households=500,
-    n_banks=10,
-    seed=42,
-)
-sim.use(RND)  # Activate R&D extension
-results = sim.run(
-    n_periods=1000,
-    collect=BASELINE_COLLECT,
-)
-
-# GDP now shows a growth trend
+# Baseline: GDP fluctuates but stays flat
+import bamengine as bam
 from bamengine import ops
-production = results.get_array("Producer", "production")
-gdp = ops.sum(production, axis=1)
-print(f"GDP growth: {gdp[-1]/gdp[200]:.1f}x")
+
+sim = bam.Simulation.init(seed=42, log_level="ERROR")
+results = sim.run(n_periods=100)
+
+# Business cycles emerge from agent interactions
+gdp = ops.sum(results.Producer.production, axis=1)
+print(f"Baseline GDP: {gdp[-1]:.0f}")
+```
+
+```python
+# With R&D: GDP now grows over time
+from extensions.rnd import RND
+import matplotlib.pyplot as plt
+
+sim = bam.Simulation.init(seed=42, log_level="ERROR")
+sim.use(RND)
+results = sim.run(n_periods=100)
+
+gdp = ops.sum(results.Producer.production, axis=1)
+plt.plot(gdp)
+plt.title("GDP with R&D")
+plt.show()
 ```
