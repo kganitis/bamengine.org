@@ -86,6 +86,11 @@ Make the framework more powerful and easier to extend:
   fields to a built-in role) requires workarounds. The registration system
   should support extending existing components without breaking discovery.
 
+**Performance**
+
+- **Goods market vectorization**: The goods market is the only remaining
+sequential Python loop in the engine. Labor and credit markets use vectorized batch matching, but the goods market requires sequential processing because each consumer's purchase depletes shared firm inventory, creating chain dependencies. Experimental work explored round-by-round vectorization (grouped cumsum and proportional rationing), but the resuts are highly unstable and sensitive to the calibration. The goal is to find a stable vectorized solution without sacrificing model accuracy.
+
 **Research Extensions**
 
 Add extensions from the broader CATS family: CC-MABM, a capital and
