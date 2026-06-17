@@ -1,5 +1,5 @@
 baseURL: "https://bamengine.org/"
-languageCode: "en-us"
+languageCode: "en-US"
 title: "BAM Engine"
 theme: scientific-python-hugo-theme
 disableKinds: ["taxonomy"]
@@ -14,6 +14,9 @@ markup:
 params:
   description: "Agent-based macroeconomic simulation in Python"
   colorScheme: auto
+  # Google Search Console: create a property for bamengine.org, choose the
+  # "HTML tag" verification method, and paste the content token below.
+  googleSiteVerification: ""
   images:
     - /images/og-image.png
   author:

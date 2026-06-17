@@ -1,2 +1,41 @@
 <link rel="icon" type="image/svg+xml" href="{{ "images/favicon.svg" | relURL }}" />
 {{ template "_internal/opengraph.html" . }}
+
+{{/* Google Search Console verification. Paste the token into params.googleSiteVerification in config.yaml. Renders nothing while empty. */}}
+{{ with .Site.Params.googleSiteVerification }}<meta name="google-site-verification" content="{{ . }}" />{{ end }}
+
+{{/* Self-referencing canonical. baseof.html already emits one when a page sets canonicalURL, so only add ours otherwise. */}}
+{{ if not .Params.canonicalURL }}<link rel="canonical" href="{{ .Permalink }}" />{{ end }}
+
+{{/* Structured data describing the project entity (homepage only). */}}
+{{ if .IsHome }}
+{{- $personID := printf "%s#person" .Site.BaseURL -}}
+{{- $person := dict
+  "@type" "Person"
+  "@id" $personID
+  "name" .Site.Params.author.name
+  "url" "https://github.com/kganitis" -}}
+{{- $website := dict
+  "@type" "WebSite"
+  "@id" (printf "%s#website" .Site.BaseURL)
+  "url" .Site.BaseURL
+  "name" .Site.Title
+  "description" .Site.Params.description
+  "publisher" (dict "@id" $personID) -}}
+{{- $app := dict
+  "@type" "SoftwareApplication"
+  "name" .Site.Title
+  "applicationCategory" "DeveloperApplication"
+  "operatingSystem" "Cross-platform"
+  "description" .Site.Params.description
+  "url" .Site.BaseURL
+  "programmingLanguage" "Python"
+  "license" "https://opensource.org/licenses/MIT"
+  "downloadUrl" "https://pypi.org/project/bamengine/"
+  "codeRepository" "https://github.com/kganitis/bam-engine"
+  "author" (dict "@id" $personID)
+  "offers" (dict "@type" "Offer" "price" "0" "priceCurrency" "USD")
+  "sameAs" (slice "https://github.com/kganitis/bam-engine" "https://pypi.org/project/bamengine/") -}}
+{{- $ld := dict "@context" "https://schema.org" "@graph" (slice $website $person $app) -}}
+<script type="application/ld+json">{{ $ld | jsonify (dict "indent" "  ") | safeJS }}</script>
+{{ end }}
