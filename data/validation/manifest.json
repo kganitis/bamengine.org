@@ -1,6 +1,33 @@
 {
   "runs": [
     {
+      "commit_short": "5a9cff2",
+      "commit": "5a9cff20db588f19b5656f09c57708874f5fa9ff",
+      "commit_date": "2026-07-06T23:42:10+03:00",
+      "timestamp": "2026-07-06T20:42:21",
+      "tag": "v0.10.1",
+      "scenarios": {
+        "baseline": {
+          "file": "baseline_v0_10_1_20260706T204221.json",
+          "pass_rate": 0.988,
+          "mean_score": 0.8915300866800238,
+          "n_failing": 12
+        },
+        "buffer_stock": {
+          "file": "buffer_stock_v0_10_1_20260706T204221.json",
+          "pass_rate": 0.988,
+          "mean_score": 0.8657002610821835,
+          "n_failing": 12
+        },
+        "growth_plus": {
+          "file": "growth_plus_v0_10_1_20260706T204221.json",
+          "pass_rate": 0.972,
+          "mean_score": 0.8542128853070449,
+          "n_failing": 28
+        }
+      }
+    },
+    {
       "commit_short": "772f195",
       "commit": "772f1955334374e1f37e571b2e65da03b64e9269",
       "commit_date": "2026-07-06T17:27:32+03:00",
