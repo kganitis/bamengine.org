@@ -1,8 +1,8 @@
 {
   "runs": [
     {
-      "commit_short": "5a9cff2",
-      "commit": "5a9cff20db588f19b5656f09c57708874f5fa9ff",
+      "commit_short": "1b13901",
+      "commit": "1b139010b30a52eb510b00648b4d170ccf622038",
       "commit_date": "2026-07-06T23:42:10+03:00",
       "timestamp": "2026-07-06T20:42:21",
       "tag": "v0.10.1",
@@ -28,8 +28,8 @@
       }
     },
     {
-      "commit_short": "772f195",
-      "commit": "772f1955334374e1f37e571b2e65da03b64e9269",
+      "commit_short": "91056e1",
+      "commit": "91056e1b51c80fb227349537b92938dce95649ea",
       "commit_date": "2026-07-06T17:27:32+03:00",
       "timestamp": "2026-07-06T14:27:47",
       "tag": "v0.10.0",
@@ -82,8 +82,8 @@
       }
     },
     {
-      "commit_short": "3f52a12",
-      "commit": "3f52a12909555f8d9946f15f0661c1f8437910b3",
+      "commit_short": "260c256",
+      "commit": "260c256174974888af33fea89e424c0fc763a4f8",
       "commit_date": "2026-03-19T20:47:28+02:00",
       "timestamp": "2026-03-19T18:47:43",
       "tag": "v0.9.1",
@@ -109,8 +109,8 @@
       }
     },
     {
-      "commit_short": "332ae6c",
-      "commit": "332ae6c9813ed698d31e4d11b308330b29974b67",
+      "commit_short": "1ce3525",
+      "commit": "1ce3525f76bc78f7e950c98f35b48fa5f7e81780",
       "commit_date": "2026-03-19T17:06:37+02:00",
       "timestamp": "2026-03-19T15:06:53",
       "tag": "v0.9.0",
@@ -136,8 +136,8 @@
       }
     },
     {
-      "commit_short": "c9ac089",
-      "commit": "c9ac08918cbee0b5ce7f00de1ffd9f12f160b106",
+      "commit_short": "299dce4",
+      "commit": "299dce4f9fee6de9f5d4df9f313edfcaf6d0bc1f",
       "commit_date": "2026-03-17T17:10:35+02:00",
       "timestamp": "2026-03-17T15:10:50",
       "tag": "v0.8.0",
