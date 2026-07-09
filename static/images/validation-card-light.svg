@@ -1,27 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="476" height="158" viewBox="0 0 476 158">
   <rect width="476" height="158" rx="6" fill="#ffffff" stroke="#d0d7de"/>
   <text x="16" y="21" fill="#1f2328" font-size="12" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">Model Validation</text>
-  <text x="460" y="21" fill="#656d76" font-size="11" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">v0.10.1</text>
+  <text x="460" y="21" fill="#656d76" font-size="11" text-anchor="end" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">v0.10.2</text>
   <line x1="0" y1="32" x2="476" y2="32" stroke="#d0d7de"/>
   <rect x="16" y="44" width="140" height="102" rx="4" fill="#f6f8fa" stroke="#d0d7de"/>
   <circle cx="26" cy="56" r="4" fill="#1a7f37"/>
   <text x="35" y="60" fill="#1f2328" font-size="11" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">Baseline</text>
-  <text x="26" y="88" fill="#1a7f37" font-size="20" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">0.892</text>
+  <text x="26" y="88" fill="#1a7f37" font-size="20" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">0.891</text>
   <text x="26" y="102" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">accuracy</text>
-  <text x="26" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">98.8%</text>
+  <text x="26" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">98.6%</text>
   <text x="26" y="134" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">stability</text>
   <rect x="168" y="44" width="140" height="102" rx="4" fill="#f6f8fa" stroke="#d0d7de"/>
   <circle cx="178" cy="56" r="4" fill="#1a7f37"/>
   <text x="187" y="60" fill="#1f2328" font-size="11" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">Growth+</text>
   <text x="178" y="88" fill="#1a7f37" font-size="20" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">0.854</text>
   <text x="178" y="102" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">accuracy</text>
-  <text x="178" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">97.2%</text>
+  <text x="178" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">97.1%</text>
   <text x="178" y="134" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">stability</text>
   <rect x="320" y="44" width="140" height="102" rx="4" fill="#f6f8fa" stroke="#d0d7de"/>
   <circle cx="330" cy="56" r="4" fill="#1a7f37"/>
   <text x="339" y="60" fill="#1f2328" font-size="11" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">Buffer-Stock</text>
   <text x="330" y="88" fill="#1a7f37" font-size="20" font-weight="700" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">0.866</text>
   <text x="330" y="102" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">accuracy</text>
-  <text x="330" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">98.8%</text>
+  <text x="330" y="120" fill="#1a7f37" font-size="14" font-weight="600" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">99.4%</text>
   <text x="330" y="134" fill="#656d76" font-size="10" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif">stability</text>
 </svg>
