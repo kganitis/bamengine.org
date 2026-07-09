@@ -23,7 +23,7 @@ You can also participate without writing code:
 - **Testing & reporting**: try the framework, run simulations, and
   report any unexpected behavior
 - **Questions & discussions**: ask questions or start a discussion on
-  [GitHub Issues](https://github.com/kganitis/bam-engine/issues)
+  [GitHub Discussions](https://github.com/kganitis/bam-engine/discussions)
 - **Spread the word**: star the
   [repository](https://github.com/kganitis/bam-engine) or share the
   project with colleagues
