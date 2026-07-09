@@ -560,9 +560,14 @@ Agent-Based Macroeconomic Model&lt;/em&gt; [Computer software].
 &lt;p&gt;Delli Gatti, D., Desiderio, S., Gaffeo, E., Cirillo, P., &amp;amp; Gallegati, M.
 (2011). &lt;em&gt;Macroeconomics from the Bottom-up&lt;/em&gt;. Springer Milano.
 &lt;a href="https://doi.org/10.1007/978-88-470-1971-3"&gt;https://doi.org/10.1007/978-88-470-1971-3&lt;/a&gt;&lt;/p&gt;</description></item><item><title>Community</title><link>https://bamengine.org/community/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bamengine.org/community/</guid><description>&lt;h2 id="get-involved"&gt;Get Involved&lt;a class="headerlink" href="#get-involved" title="Link to this heading"&gt;#&lt;/a&gt;&lt;/h2&gt;
-&lt;p&gt;BAM Engine is part of ongoing MSc thesis research at the University of
-Piraeus. Code contributions will be welcome after thesis submission. In
-the meantime, there are several ways to participate:&lt;/p&gt;
+&lt;p&gt;Contributions to BAM Engine are welcome. Bug fixes, documentation, tests,
+performance work, and new extensions are all appreciated. For substantial
+or model-behavior changes, please
+&lt;a href="https://github.com/kganitis/bam-engine/issues"&gt;open an issue&lt;/a&gt; first to
+discuss the approach. See the
+&lt;a href="https://github.com/kganitis/bam-engine/blob/main/CONTRIBUTING.md"&gt;contributing guide&lt;/a&gt;
+for the full guidelines and quality bar.&lt;/p&gt;
+&lt;p&gt;You can also participate without writing code:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;Bug reports &amp;amp; feature requests&lt;/strong&gt;: found a bug or have an idea?
 Open an issue on the &lt;a href="https://github.com/kganitis/bam-engine/issues"&gt;issue tracker&lt;/a&gt;&lt;/li&gt;
