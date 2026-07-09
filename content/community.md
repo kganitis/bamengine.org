@@ -5,9 +5,15 @@ description: "Get involved with BAM Engine: report bugs, share feedback, and exp
 
 ## Get Involved
 
-BAM Engine is part of ongoing MSc thesis research at the University of
-Piraeus. Code contributions will be welcome after thesis submission. In
-the meantime, there are several ways to participate:
+Contributions to BAM Engine are welcome. Bug fixes, documentation, tests,
+performance work, and new extensions are all appreciated. For substantial
+or model-behavior changes, please
+[open an issue](https://github.com/kganitis/bam-engine/issues) first to
+discuss the approach. See the
+[contributing guide](https://github.com/kganitis/bam-engine/blob/main/CONTRIBUTING.md)
+for the full guidelines and quality bar.
+
+You can also participate without writing code:
 
 - **Bug reports & feature requests**: found a bug or have an idea?
   Open an issue on the [issue tracker](https://github.com/kganitis/bam-engine/issues)
